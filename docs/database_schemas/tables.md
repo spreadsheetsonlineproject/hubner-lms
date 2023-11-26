@@ -71,6 +71,8 @@ CREATE INDEX idx_users_unique_id ON users(unique_id);
 ## Production Flow items
 Through the production different orders requires different steps to take. These steps are defined in the PO.
 
+*This is the table, where the flow of production can be followed. Additional field can make the tracking more precise.*
+
 > Table name: flow_items
 
 | Field name |  Key  | Description               | Type    | Default value | Required |
@@ -104,7 +106,7 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 
 ## Jobs
 This table stores the available actions that the users can perform during the production process. These jobs are
-small parts of the processes in production.
+small parts of the processes in production. An entry in this table is the main definition of the job.
 
 > Table name: jobs
 
@@ -149,21 +151,51 @@ CREATE INDEX idx_code_name on jobs(code_name);
 
 
 ## Job Items
-A single item of a job.
+A single representation of a job. When the user take any action in the production that is represented by a [job](#jobs) item. This table
+stores details of the taken action not just the metadata of the job.
 
 > Table name: job_items
 
 | Field name                                 |  Key  | Description                  | Type      | Default value | Required |
 | ------------------------------------------ | :---: | ---------------------------- | --------- | :-----------: | :------: |
 | id                                         |  PK   | Unique ID                    | Integer   |   sequence    |    -     |
-| job_id                                     |  FK   | Job item id                  | Integer   |       -       |    Y     |
+| [job_id](#jobs)                            |  FK   | Job item id                  | Integer   |       -       |    Y     |
 | description                                |   -   | Short description of the job | Varchar   |       -       |    N     |
 | created_at                                 |   -   | Time of creation             | Timestamp |      now      |    N     |
-| [virtual_assembly_id](#virtual-assemblies) |  FK   | In case of assembled product | Integer   |       -       |    N     |
+
+Indexing should be created on the **job_id** field. Most queries are going to look for **id** or **job_id**.
+
+<!-- tabs:start -->
+### **MsSQL**
+
+``` sql
+CREATE TABLE job_items (
+    id INT PRIMARY KEY,
+    job_id INT REFERENCES jobs(id) NOT NULL,
+    description NVARCHAR(MAX),
+    created_at DATETIME DEFAULT GETDATE()
+);
+CREATE INDEX idx_job_items_job_id ON job_items(job_id);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE job_items (
+    id SERIAL PRIMARY KEY,
+    job_id INT REFERENCES jobs(id) NOT NULL,
+    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_job_items_job_id ON job_items(job_id);
+```
+<!-- tabs:end -->
 
 ## Workstations
 A single workstation item in the database is a single place in the production area where workers can do
-their job. A workstation can perform multiple type of [jobs](#jobs), that assigend to the workstation.
+their jobs. A workstation can perform multiple type of [jobs](#jobs), that assigend to the workstation.
+
+Workstation and job connections are going to be defined in the [job_workstation_jobs](#job-and-workstation-links)
 
 > Table name: workstations
 
@@ -172,6 +204,29 @@ their job. A workstation can perform multiple type of [jobs](#jobs), that assige
 | id         |  PK   | Unique ID                        | Integer |   sequence    |    N     |
 | name       |   -   | Name of the workstation (Unique) | Varchar |       -       |    Y     |
 | active     |   -   | Allow to use the workstation     | Bool    |     true      |    N     |
+
+<!-- tabs:start -->
+### **MsSQL**
+
+``` sql
+CREATE TABLE workstations (
+    id INT PRIMARY KEY,
+    name NVARCHAR(MAX),
+    active BIT DEFAULT 1,
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE workstations(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    active BOOLEAN DEFAULT true
+);
+```
+<!-- tabs:end -->
+
 
 ## Job and Workstation links
 A single workstation can perform multiple jobs. This table is ment to create the connection between
@@ -184,8 +239,30 @@ jobs an workstations.
 | [workstation_id](#workstations) | PK, FK | Id of the workstation      | Integer |       -       |    Y     |
 | [job_id](#jobs)                 | PK, FK | Id of the job that allowed | Integer |       -       |    Y     |
 
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE job_workstation_links (
+    workstation_id INT REFERENCES work_stations(id),
+    job_id INT REFERENCES jobs(id),
+    PRIMARY KEY (workstation_id, job_id)
+);
+```
+
+### **PostgreSQL**
+``` sql
+CREATE TABLE job_workstation_links (
+    workstation_id INT REFERENCES work_stations(id),
+    job_id INT REFERENCES jobs(id),
+    PRIMARY KEY (workstation_id, job_id)
+);
+```
+<!-- tabs:end -->
+
 ## Permissions
-Content of permissions table define what is the level of access when the user tries to perform actions.
+Content of permissions table define the level of access when the user tries to perform actions.
 
 > Table name: permissions
 
@@ -194,6 +271,31 @@ Content of permissions table define what is the level of access when the user tr
 | id         |  PK   | Unique ID                             | Integer |   sequence    |    N     |
 | code_name  |   -   | Short name of the permission (Unique) | Varchar |       -       |    Y     |
 | name       |   -   | Detailed name of the permission       | Varchar |       -       |    N     |
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE permissions (
+    id INT PRIMARY KEY,
+    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
+    name NVARCHAR(MAX) NOT NULL
+);
+
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE permissions (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+```
+
+<!-- tabs:end -->
 
 Recommended values:
 1. can_view
@@ -214,6 +316,35 @@ access levels for different areas in the LMS system.
 | id         |  PK   | Unique ID                        | Integer |   sequence    |    N     |
 | code_name  |   -   | Short name of the group (Unique) | Varchar |       -       |    Y     |
 | name       |   -   | Detailed name of the group       | Varchar |       -       |    N     |
+
+Indexing on **code_name** field is highly recommended.
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE groups (
+    id INT PRIMARY KEY,
+    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
+    name NVARCHAR(MAX) NOT NULL
+);
+CREATE INDEX idx_groups_code_name ON groups(code_name);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE groups (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL
+);
+CREATE INDEX idx_groups_code_name ON groups(code_name);
+```
+
+<!-- tabs:end -->
+
 
 ## Group and Permission links
 Define the connections between [groups](#groups) and [permissions](#permissions) tables. With these links
