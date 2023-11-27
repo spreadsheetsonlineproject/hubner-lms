@@ -35,6 +35,7 @@
             loadSidebar: true,
             subMaxLevel: 2,
             relativePath: false,
+            auto2top: true,
             repo: 'https://github.com/spreadsheetsonlineproject/hubner-lms',
             tabs: {
                 persist: true,      // default
@@ -42,7 +43,12 @@
                 theme: 'classic', // default
                 tabComments: true,      // default
                 tabHeadings: true       // default
-            }
+            },
+            copyCode: {
+                buttonText: 'Copy to clipboard',
+                errorText: 'Error',
+                successText: 'Copied',
+            },
         }
     </script>
     <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
@@ -50,6 +56,10 @@
     <!-- <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script> -->
     <!-- Tabs -->
     <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <!-- Copy code -->
+    <script src="https://unpkg.com/docsify-copy-code@2"></script>
+    <!-- Syntax highlight SQL -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
 </body>
 
 </html>
