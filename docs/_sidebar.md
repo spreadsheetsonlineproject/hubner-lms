@@ -3,7 +3,7 @@ Hübner Kft.
 </div>
 
 * [LMS](/)
-* [Flows](flows/README.md)
+* Flows
   * [Register Product](flows/register_product.md)
-* [Schemas](database_schemas/README.md)
+* Database
   * [Tables](database_schemas/tables.md)
