@@ -439,7 +439,7 @@ CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
 <!-- tabs:end -->
 
 ## Quality reasons
-This table stores the available quality reason codes.
+This table stores the available quality reason codes. These codes are going to be used when the user inspect any product in the production.
 
 > Table name: qa_reasons
 
@@ -451,6 +451,36 @@ This table stores the available quality reason codes.
 | active                                             |   -   | Allows to deactivate reason        | Bool    |     true      |    N     |
 | [severity_level_id](#severity-level-of-qa-reasons) |   -   | Define the seriocity of the reason | Integer |       Y       |    Y     |
 
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE qa_reasons (
+    id INT PRIMARY KEY,
+    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
+    name NVARCHAR(MAX),
+    active BIT DEFAULT 1,
+    severity_level_id INT NOT NULL,
+    FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
+);
+CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE qa_reasons (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    active BOOLEAN DEFAULT true,
+    severity_level_id INT NOT NULL REFERENCES severity_levels(id)
+);
+CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
+```
+
+<!-- tabs:end -->
 
 ## Severity Level of QA reasons
 Set a level to a qa reason item.
@@ -463,8 +493,33 @@ Set a level to a qa reason item.
 | value               |   -   | Integer value where the 1 is the most serious | Integer |       -       |    Y     |
 | allow_product_usage |   -   | Allow to use the product production           | Bool    |       -       |    Y     |
 
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE severity_levels (
+    id INT PRIMARY KEY,
+    value INT NOT NULL,
+    allow_product_usage BIT NOT NULL
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+create table severity_levels (
+    id SERIAL PRIMARY KEY,
+    value INT NOT NULL,
+    allow_product_usage BOOLEAN NOT NULL
+);
+```
+
+<!-- tabs:end -->
+
 ## QA items
-Represent a quality check by the user.
+Represent a quality check by the user. This is the point, where the product is going to be marked with any quality reason.
 
 > Table name: qa_items
 
@@ -473,11 +528,40 @@ Represent a quality check by the user.
 | id                               |  PK   | Unique ID                             | Integer   |   sequence    |    N     |
 | description                      |   -   | User description of the qa inspection | Varchar   |       -       |    Y     |
 | created_at                       |   -   | Time of creation                      | Timestamp |      now      |    N     |
-| created_by                       |   -   | User id                               | Integer   |       -       |    Y     |
+| [created_by](#users)             |  FK   | User id                               | Integer   |       -       |    Y     |
 | [qa_reason_id](#quality-reasons) |  FK   | Quality reason item                   | Integer   |       -       |    Y     |
 
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE qa_items (
+    id INT PRIMARY KEY,
+    description NVARCHAR(MAX) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    created_by INT REFERENCES users(id) NOT NULL,
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE qa_items (
+    id SERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES users(id) NOT NULL,
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
+);
+```
+
+<!-- tabs:end -->
+
 ## SAP Production Order
-Placeholder table for future development
+Placeholder table for future development. This table is going to store the production orders from the SAP system.
+Allows the LMS system to track the production orders and get an type of information from the SAP system.
 
 > Table name: sap_production_orders
 
@@ -486,9 +570,34 @@ Placeholder table for future development
 | id         |  PK   | Unique ID                        | Integer |   sequence    |    N     |
 | po_number  |   -   | Production Order number (Unique) | Varchar |       -       |    Y     |
 
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE sap_production_orders (
+    id INT PRIMARY KEY,
+    po_number NVARCHAR(MAX) UNIQUE NOT NULL
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE sap_production_orders (
+    id SERIAL PRIMARY KEY,
+    po_number VARCHAR(255) UNIQUE NOT NULL
+);
+```
+
+<!-- tabs:end -->
+
 
 ## Products
-Product base information
+The main table of the LMS system. This table stores the products that are going to be produced. Every product has a unique data matrix number.
+Other tables of the system are created to support the tracking of the products.
+
+> Table name: products
 
 | Field name                                       |  Key  | Description                          | Type       | Default value | Required |
 | ------------------------------------------------ | :---: | ------------------------------------ | ---------- | :-----------: | :------: |
@@ -500,8 +609,47 @@ Product base information
 | [virtual_assembly_id](#virtual-assemblies)       |  FK   | Item from the Virtual Assembly table | Integer    |       -       |    N     |
 | [qa_reason_id](#quality-reasons)                 |   -   | Quality status                       | Integer    |       -       |    N     |
 
+Indexing on **data_matrix** and **po_number** fields is recommended. These fields are going to be queried a lot.
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE products (
+    id INT PRIMARY KEY,
+    data_matrix BIGINT UNIQUE NOT NULL,
+    po_number NVARCHAR(MAX) NOT NULL,
+    active BIT DEFAULT 1,
+    sap_production_order_id INT REFERENCES sap_production_orders(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+CREATE INDEX idx_products_data_matrix ON products(data_matrix);
+CREATE INDEX idx_products_po_number ON products(po_number);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    data_matrix BIGINT UNIQUE NOT NULL,
+    po_number VARCHAR(255) NOT NULL,
+    active BOOLEAN DEFAULT true,
+    sap_production_order_id INT REFERENCES sap_production_orders(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+CREATE INDEX idx_products_data_matrix ON products(data_matrix);
+CREATE INDEX idx_products_po_number ON products(po_number);
+```
+
 ## Product Histories
-History item of a product
+One of the most important tables in the LMS system. This table stores the history of the products. Every time when the product
+is going to be moved to another workstation or the product is going to be inspected, the history table is going to be updated.
+
+> Table name: product_histories
 
 | Field name  |  Key  | Description              | Type      | Default value | Required |
 | ----------- | :---: | ------------------------ | --------- | :-----------: | :------: |
@@ -511,11 +659,65 @@ History item of a product
 | qa_item_id  |   -   | QA item                  | Integer   |       -       |    N     |
 | job_item_id |   -   | Job that made by user    | Integer   |       -       |    Y     |
 
+<!-- tabs:start -->
 
+### **MsSQL**
+
+``` sql
+CREATE TABLE product_histories (
+    id INT PRIMARY KEY,
+    created_at DATETIME DEFAULT GETDATE(),
+    created_by INT REFERENCES users(id) NOT NULL,
+    qa_item_id INT REFERENCES qa_items(id),
+    job_item_id INT REFERENCES job_items(id) NOT NULL
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE product_histories (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES users(id) NOT NULL,
+    qa_item_id INT REFERENCES qa_items(id),
+    job_item_id INT REFERENCES job_items(id) NOT NULL
+);
+```
+
+<!-- tabs:end -->
 
 ## Virtual Assemblies
 Collection of assembled products.
 
-| Field name |  Key  | Description | Type    | Default value | Required |
-| ---------- | :---: | ----------- | ------- | :-----------: | :------: |
-| id         |  PK   | Unique ID   | Integer |   sequence    |    -     |
+> Table name: virtual_assemblies
+
+| Field name                       |  Key  | Description        | Type    | Default value | Required |
+| -------------------------------- | :---: | ------------------ | ------- | :-----------: | :------: |
+| id                               |  PK   | Unique ID          | Integer |   sequence    |    -     |
+| active                           |   -   | Is the item active | Bool    |     true      |    -     |
+| [qa_reason_id](#quality-reasons) |   -   | Quality status     | Integer |       -       |    N     |
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE virtual_assemblies (
+    id INT PRIMARY KEY,
+    active BIT DEFAULT 1,
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE virtual_assemblies (
+    id SERIAL PRIMARY KEY,
+    active BOOLEAN DEFAULT true,
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+```
+
+<!-- tabs:end -->
