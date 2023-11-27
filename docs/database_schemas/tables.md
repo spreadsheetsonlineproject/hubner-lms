@@ -108,6 +108,8 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 This table stores the available actions that the users can perform during the production process. These jobs are
 small parts of the processes in production. An entry in this table is the main definition of the job.
 
+This is the place where the required permission is set on the specific job.
+
 > Table name: jobs
 
 | Field name                             |  Key  | Description                           | Type    | Default value | Required |
@@ -117,6 +119,7 @@ small parts of the processes in production. An entry in this table is the main d
 | description                            |   -   | Short description of the job          | Varchar |       -       |    N     |
 | active                                 |   -   | Determine the availability of the job | Bool    |     true      |    N     |
 | [flow_item_id](#production-flow-items) |  FK   | Flow item made by this job            | Integer |       -       |    Y     |
+| [permission_id](#permissions)          |  FK   | Required permission                   | Integer |       -       |    Y     |
 
 Querying the table is going to be made through the **id** field in most cases. Sometimes the quiery will look for **flow_item_id**
 so indexing of this field should be helpful.
@@ -130,7 +133,8 @@ CREATE TABLE jobs (
     name NVARCHAR(MAX) UNIQUE NOT NULL,
     description NVARCHAR(MAX),
     active BIT DEFAULT 1,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL
+    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
+    permission_id INT REFERENCES permissions(id) NOT NULL
 );
 CREATE INDEX idx_code_name on jobs(code_name);
 ```
@@ -143,7 +147,8 @@ CREATE TABLE jobs (
     name VARCHAR(255) UNIQUE NOT NULL,
     description VARCHAR(255),
     active BOOLEAN DEFAULT true,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL
+    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
+    permission_id INT REFERENCES permissions(id) NOT NULL
 );
 CREATE INDEX idx_code_name on jobs(code_name);
 ```
@@ -156,12 +161,12 @@ stores details of the taken action not just the metadata of the job.
 
 > Table name: job_items
 
-| Field name                                 |  Key  | Description                  | Type      | Default value | Required |
-| ------------------------------------------ | :---: | ---------------------------- | --------- | :-----------: | :------: |
-| id                                         |  PK   | Unique ID                    | Integer   |   sequence    |    -     |
-| [job_id](#jobs)                            |  FK   | Job item id                  | Integer   |       -       |    Y     |
-| description                                |   -   | Short description of the job | Varchar   |       -       |    N     |
-| created_at                                 |   -   | Time of creation             | Timestamp |      now      |    N     |
+| Field name      |  Key  | Description                  | Type      | Default value | Required |
+| --------------- | :---: | ---------------------------- | --------- | :-----------: | :------: |
+| id              |  PK   | Unique ID                    | Integer   |   sequence    |    -     |
+| [job_id](#jobs) |  FK   | Job item id                  | Integer   |       -       |    Y     |
+| description     |   -   | Short description of the job | Varchar   |       -       |    N     |
+| created_at      |   -   | Time of creation             | Timestamp |      now      |    N     |
 
 Indexing should be created on the **job_id** field. Most queries are going to look for **id** or **job_id**.
 
@@ -298,12 +303,12 @@ CREATE TABLE permissions (
 <!-- tabs:end -->
 
 Recommended values:
-1. can_view
-2. can_create
-3. can_update
-4. can_delete
+1. `can_view`
+2. `can_create`
+3. `can_update`
+4. `can_delete`
 
-Values above and their combination can define any access level.
+Values above and their combinations can define any access level.
 
 ## Groups
 Instance of the table represents multiple permissions grouped in one. This allowes to customize differen
@@ -357,6 +362,36 @@ any access, role can be defined.
 | [group_id](#groups)           | PK, FK | Id of the group                   | Integer |       -       |    Y     |
 | [permission_id](#permissions) | PK, FK | Id of the permission that allowed | Integer |       -       |    Y     |
 
+This table is going to be queried a lot. Creating index on both fields is recommended.
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE group_permission_links (
+    group_id INT REFERENCES groups(id),
+    permission_id INT REFERENCES permissions(id),
+    PRIMARY KEY (group_id, permission_id)
+);
+CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
+CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE group_permission_links (
+    group_id INT REFERENCES groups(id),
+    permission_id INT REFERENCES permissions(id),
+    PRIMARY KEY (group_id, permission_id)
+);
+CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
+CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
+```
+
+<!-- tabs:end -->
+
 
 ## User and Job links
 Jobs need to be assigned to users.
@@ -368,6 +403,40 @@ Jobs need to be assigned to users.
 | [user_id](#users)   | PK, FK | User id             | Integer |       -       |    Y     |
 | [job_id](#jobs)     | PK, FK | Job id              | Integer |       -       |    Y     |
 | [group_id](#groups) | PK, FK | Permission group id | Integer |       -       |    Y     |
+
+Required to create index on every field.
+
+<!-- tabs:start -->
+
+### **MsSQL**
+
+``` sql
+CREATE TABLE user_job_links (
+    user_id INT REFERENCES users(id),
+    job_id INT REFERENCES jobs(id),
+    group_id INT REFERENCES groups(id),
+    PRIMARY KEY (user_id, job_id, group_id)
+);
+CREATE INDEX idx_user_job_links_user_id ON user_job_links(user_id);
+CREATE INDEX idx_user_job_links_job_id ON user_job_links(job_id);
+CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
+```
+
+### **PostgreSQL**
+
+``` sql
+CREATE TABLE user_job_links (
+    user_id INT REFERENCES users(id),
+    job_id INT REFERENCES jobs(id),
+    group_id INT REFERENCES groups(id),
+    PRIMARY KEY (user_id, job_id, group_id)
+);
+CREATE INDEX idx_user_job_links_user_id ON user_job_links(user_id);
+CREATE INDEX idx_user_job_links_job_id ON user_job_links(job_id);
+CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
+```
+
+<!-- tabs:end -->
 
 ## Quality reasons
 This table stores the available quality reason codes.
