@@ -8,11 +8,16 @@
     <meta name="description" content="Description">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
     <!-- Docsify v4 -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4.11.4/themes/vue.css" />
     <!-- Mermaid support -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/fontawesome.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/brands.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/regular.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css" />
     <!-- custom style -->
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 
 <body>
@@ -20,21 +25,49 @@
     <script>
         window.$docsify = {
             name: 'Hübner LMS',
-            repo: ''
+            loadSidebar: true,
+            subMaxLevel: 2,
+            relativePath: false,
+            auto2top: true,
+            repo: 'https://github.com/spreadsheetsonlineproject/hubner-lms',
+            tabs: {
+                persist: true,      // default
+                sync: true,      // default
+                theme: 'classic', // default
+                tabComments: true,      // default
+                tabHeadings: true       // default
+            },
+            copyCode: {
+                buttonText: 'Copy to clipboard',
+                errorText: 'Error',
+                successText: 'Copied',
+            },
+            'flexible-alerts': {
+                style: 'callout',
+                comment: {
+                    label: 'Comment',
+
+                    // Assuming that we use Font Awesome
+                    icon: 'fas fa-comment',
+                    className: 'note'
+                }
+            }
         }
     </script>
     <!-- Docsify v4 -->
-    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-    <!-- Sidebar config -->
-    <script>
-        window.$docsify = {
-            loadSidebar: true,
-            subMaxLevel: 2
-        }
-    </script>
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4.11.4"></script>
     <!-- Mermaid support -->
     <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <!-- Tabs -->
+    <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <!-- Copy code -->
+    <script src="https://unpkg.com/docsify-copy-code@2"></script>
+    <!-- Syntax highlight SQL -->
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+    <!-- Styled BlockQuotes  https://github.com/fzankl/docsify-plugin-flexible-alerts -->
+    <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+    <!-- FontAwesome -->
+    <script src="//unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
 </body>
 
 </html>

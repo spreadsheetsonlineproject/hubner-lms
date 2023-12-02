@@ -11,8 +11,12 @@ flowchart
 
     Flow((Register Product)) --> RequestUserID[\Request User ID\]
     Stop --> Flow
-    RequestUserID --> UserHasAccess{User Has Access}
+    RequestUserID --> GetUserFromDB[(Get User From DB)]
+    GetUserFromDB --> UserIsActive{User is Active}
+    UserIsActive -->|YES| GetUserRightsFromDB[(Get User Rights)]
+    GetUserRightsFromDB -->|YES| UserHasAccess{User has Access}
     UserHasAccess -->|NO| Stop((Stop))
+    UserIsActive -->|NO| Stop
     UserHasAccess -->|YES| RequestProductID[\Request Product ID\]
     RequestProductID --> ProductIdInDB{Product ID in DB}
     ProductIdInDB -->|YES| Stop
@@ -20,9 +24,18 @@ flowchart
     RequestPO --> DbAction[(Database actions)]
 ```
 
-## API Flow
-Describes the database actions from the register product
-job to the database.
+## Database flow
+When a new product is being created in the database a new entry is written in the following tables:
+1. [products](database_schemas/tables.md#products),
+2. [product_histories](database_schemas/tables.md#product-histories),
+3. [job_items](database_schemas/tables.md#job-items),
+
+There are required fields to create a new product in the tables above. The required fields are the following:
+1. User ID,
+2. PO number,
+3. Job ID,
+
+
 
 ``` mermaid
 flowchart
