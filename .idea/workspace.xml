@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Writerside/writerside.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/writerside.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +126,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "base",
+    "git-widget-placeholder": "feature/power-automate/0.0.2",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/SSOPInfo/WritersideProjects/hubner_lms",
     "settings.editor.selected.configurable": "vcs.Git",
@@ -147,6 +148,11 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="base init" />
     <MESSAGE value="github workflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="github workflow" />
+    <MESSAGE value="github repo" />
+    <MESSAGE value="Assemble endpoint header" />
+    <MESSAGE value="project meta" />
+    <MESSAGE value="schemas move under database" />
+    <MESSAGE value="project title fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="project title fix" />
   </component>
 </project>

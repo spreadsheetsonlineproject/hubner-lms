@@ -33,3 +33,9 @@ Input attributes:
 | Attribute   | Type   | Position |
 |-------------|--------|----------|
 | ProductDbID | Number | 1        |
+
+
+## Assemble Product
+
+Multiple product items are become a single product during the assembly process.
+
