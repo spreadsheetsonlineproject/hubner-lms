@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="base init">
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/DatabaseSchemasAndRelations.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/LifecycleManagementSystem.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/PowerAutomateApiEndpoints.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/ProductionProcesses.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/Products.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/RegisterProduct.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/TableSchemas.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Writerside/topics/Users.md" afterDir="false" />
+    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
