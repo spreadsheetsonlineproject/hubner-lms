@@ -30,6 +30,12 @@ When a new product is being created in the database a new entry is written in th
 2. [product_histories](database_schemas/tables.md#product-histories),
 3. [job_items](database_schemas/tables.md#job-items),
 
+There are required fields to create a new product in the tables above. The required fields are the following:
+1. User ID,
+2. PO number,
+3. Job ID,
+
+
 
 ``` mermaid
 flowchart
