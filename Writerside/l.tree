@@ -3,7 +3,7 @@
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
 <instance-profile id="l"
-                 name="lms"
+                 name="Hübner Kft. Lifecycle Management System"
                   start-page="LifecycleManagementSystem.md">
 
     <toc-element topic="LifecycleManagementSystem.md"/>
