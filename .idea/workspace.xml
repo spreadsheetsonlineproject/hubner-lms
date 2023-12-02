@@ -13,6 +13,9 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -129,7 +132,7 @@
     "git-widget-placeholder": "feature/power-automate/0.0.2",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/SSOPInfo/WritersideProjects/hubner_lms",
-    "settings.editor.selected.configurable": "vcs.Git",
+    "settings.editor.selected.configurable": "advanced.settings",
     "writerside.last.selected.producthubner_lms": "l"
   }
 }]]></component>
@@ -153,6 +156,7 @@
     <MESSAGE value="project meta" />
     <MESSAGE value="schemas move under database" />
     <MESSAGE value="project title fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="project title fix" />
+    <MESSAGE value="GitHub workflow deployment added" />
+    <option name="LAST_COMMIT_MESSAGE" value="GitHub workflow deployment added" />
   </component>
 </project>
