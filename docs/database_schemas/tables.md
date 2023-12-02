@@ -10,13 +10,15 @@ in the LMS system, who is part of the table and they are in **active** status. W
 field is set as true then the active status should set to false but that is not mandatory. This step
 just makes the continous development more stable.
 
-Hard delete of any record from this table is not recommended. Instead use the soft delete by
-setting the **deleted** field to `true` and the **deleted_at** value to the time of deletition.
+> [!ATTENTION]
+> Hard delete of any record from this table is not recommended. Instead use the soft delete by
+> setting the **deleted** field to `true` and the **deleted_at** value to the time of deletition.
 
 **Email** or **badge_number** fields are useful when an old user needs to be activated again. This information
 gives the advantage of continuing the user history over an inactive period of time.
 
-> Table name: users
+> [!NOTE]
+> Table name: `users`
 
 | Field name   |  Key  | Description                        | Type       | Default value | Required |
 | ------------ | :---: | ---------------------------------- | ---------- | :-----------: | :------: |
@@ -73,7 +75,8 @@ Through the production different orders requires different steps to take. These 
 
 *This is the table, where the flow of production can be followed. Additional field can make the tracking more precise.*
 
-> Table name: flow_items
+> [!NOTE]
+> Table name: `flow_items`
 
 | Field name |  Key  | Description               | Type    | Default value | Required |
 | ---------- | :---: | ------------------------- | ------- | :-----------: | :------: |
@@ -110,7 +113,8 @@ small parts of the processes in production. An entry in this table is the main d
 
 This is the place where the required permission is set on the specific job.
 
-> Table name: jobs
+> [!NOTE]
+> Table name: `jobs`
 
 | Field name                             |  Key  | Description                           | Type    | Default value | Required |
 | -------------------------------------- | :---: | ------------------------------------- | ------- | :-----------: | :------: |
@@ -159,7 +163,8 @@ CREATE INDEX idx_code_name on jobs(code_name);
 A single representation of a job. When the user take any action in the production that is represented by a [job](#jobs) item. This table
 stores details of the taken action not just the metadata of the job.
 
-> Table name: job_items
+> [!NOTE]
+> Table name: `job_items`
 
 | Field name      |  Key  | Description                  | Type      | Default value | Required |
 | --------------- | :---: | ---------------------------- | --------- | :-----------: | :------: |
@@ -202,7 +207,8 @@ their jobs. A workstation can perform multiple type of [jobs](#jobs), that assig
 
 Workstation and job connections are going to be defined in the [job_workstation_jobs](#job-and-workstation-links)
 
-> Table name: workstations
+> [!NOTE]
+> Table name: `workstations`
 
 | Field name |  Key  | Description                      | Type    | Default value | Required |
 | ---------- | :---: | -------------------------------- | ------- | :-----------: | :------: |
@@ -237,7 +243,8 @@ CREATE TABLE workstations(
 A single workstation can perform multiple jobs. This table is ment to create the connection between
 jobs an workstations.
 
-> Table name: job_workstation_links
+> [!NOTE]
+> Table name: `job_workstation_links`
 
 | Field name                      |  Key   | Description                | Type    | Default value | Required |
 | ------------------------------- | :----: | -------------------------- | ------- | :-----------: | :------: |
@@ -269,7 +276,8 @@ CREATE TABLE job_workstation_links (
 ## Permissions
 Content of permissions table define the level of access when the user tries to perform actions.
 
-> Table name: permissions
+> [!NOTE]
+> Table name: `permissions`
 
 | Field name |  Key  | Description                           | Type    | Default value | Required |
 | ---------- | :---: | ------------------------------------- | ------- | :-----------: | :------: |
@@ -302,19 +310,21 @@ CREATE TABLE permissions (
 
 <!-- tabs:end -->
 
-Recommended values:
-1. `can_view`
-2. `can_create`
-3. `can_update`
-4. `can_delete`
-
-Values above and their combinations can define any access level.
+> [!NOTE]
+> Recommended values:
+> 1. `can_view`
+> 2. `can_create`
+> 3. `can_update`
+> 4. `can_delete`
+>
+> Values above and their combinations can define any access level.
 
 ## Groups
 Instance of the table represents multiple permissions grouped in one. This allowes to customize differen
 access levels for different areas in the LMS system.
 
-> Table name: groups
+> [!NOTE]
+> Table name: `groups`
 
 | Field name |  Key  | Description                      | Type    | Default value | Required |
 | ---------- | :---: | -------------------------------- | ------- | :-----------: | :------: |
@@ -355,7 +365,8 @@ CREATE INDEX idx_groups_code_name ON groups(code_name);
 Define the connections between [groups](#groups) and [permissions](#permissions) tables. With these links
 any access, role can be defined.
 
-> Table name: group_permission_links
+> [!NOTE]
+> Table name: `group_permission_links`
 
 | Field name                    |  Key   | Description                       | Type    | Default value | Required |
 | ----------------------------- | :----: | --------------------------------- | ------- | :-----------: | :------: |
@@ -396,7 +407,8 @@ CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(
 ## User and Job links
 Jobs need to be assigned to users.
 
-> Table name: user_job_links
+> [!NOTE]
+> Table name: `user_job_links`
 
 | Field name          |  Key   | Description         | Type    | Default value | Required |
 | ------------------- | :----: | ------------------- | ------- | :-----------: | :------: |
@@ -441,7 +453,8 @@ CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
 ## Quality reasons
 This table stores the available quality reason codes. These codes are going to be used when the user inspect any product in the production.
 
-> Table name: qa_reasons
+> [!NOTE]
+> Table name: `qa_reasons`
 
 | Field name                                         |  Key  | Description                        | Type    | Default value | Required |
 | -------------------------------------------------- | :---: | ---------------------------------- | ------- | :-----------: | :------: |
@@ -485,7 +498,8 @@ CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 ## Severity Level of QA reasons
 Set a level to a qa reason item.
 
-> Table name: severity_levels
+> [!NOTE]
+> Table name: `severity_levels`
 
 | Field name          |  Key  | Description                                   | Type    | Default value | Required |
 | ------------------- | :---: | --------------------------------------------- | ------- | :-----------: | :------: |
@@ -521,7 +535,8 @@ create table severity_levels (
 ## QA items
 Represent a quality check by the user. This is the point, where the product is going to be marked with any quality reason.
 
-> Table name: qa_items
+> [!NOTE]
+> Table name: `qa_items`
 
 | Field name                       |  Key  | Description                           | Type      | Default value | Required |
 | -------------------------------- | :---: | ------------------------------------- | --------- | :-----------: | :------: |
@@ -563,7 +578,8 @@ CREATE TABLE qa_items (
 Placeholder table for future development. This table is going to store the production orders from the SAP system.
 Allows the LMS system to track the production orders and get an type of information from the SAP system.
 
-> Table name: sap_production_orders
+> [!NOTE]
+> Table name: `sap_production_orders`
 
 | Field name |  Key  | Description                      | Type    | Default value | Required |
 | ---------- | :---: | -------------------------------- | ------- | :-----------: | :------: |
@@ -597,7 +613,8 @@ CREATE TABLE sap_production_orders (
 The main table of the LMS system. This table stores the products that are going to be produced. Every product has a unique data matrix number.
 Other tables of the system are created to support the tracking of the products.
 
-> Table name: products
+> [!NOTE]
+> Table name: `products`
 
 | Field name                                       |  Key  | Description                          | Type       | Default value | Required |
 | ------------------------------------------------ | :---: | ------------------------------------ | ---------- | :-----------: | :------: |
@@ -649,7 +666,8 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 One of the most important tables in the LMS system. This table stores the history of the products. Every time when the product
 is going to be moved to another workstation or the product is going to be inspected, the history table is going to be updated.
 
-> Table name: product_histories
+> [!NOTE]
+> Table name: `product_histories`
 
 | Field name  |  Key  | Description              | Type      | Default value | Required |
 | ----------- | :---: | ------------------------ | --------- | :-----------: | :------: |
@@ -690,7 +708,8 @@ CREATE TABLE product_histories (
 ## Virtual Assemblies
 Collection of assembled products.
 
-> Table name: virtual_assemblies
+> [!NOTE]
+> Table name: `virtual_assemblies`
 
 | Field name                       |  Key  | Description        | Type    | Default value | Required |
 | -------------------------------- | :---: | ------------------ | ------- | :-----------: | :------: |
