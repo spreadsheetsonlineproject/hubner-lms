@@ -11,10 +11,13 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4.11.4/themes/vue.css" />
     <!-- Mermaid support -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
-    <!-- Dark mode -->
-    <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/style.min.css" /> -->
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/fontawesome.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/brands.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/regular.css" />
+    <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css" />
     <!-- custom style -->
-    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
 
 <body>
@@ -22,16 +25,6 @@
     <script>
         window.$docsify = {
             name: 'Hübner LMS',
-            repo: ''
-        }
-    </script>
-    <!-- Docsify v4 -->
-    <script src="//cdn.jsdelivr.net/npm/docsify@4.11.4"></script>
-    <!-- Mermaid support -->
-    <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <!-- Sidebar config -->
-    <script>
-        window.$docsify = {
             loadSidebar: true,
             subMaxLevel: 2,
             relativePath: false,
@@ -49,17 +42,32 @@
                 errorText: 'Error',
                 successText: 'Copied',
             },
+            'flexible-alerts': {
+                style: 'callout',
+                comment: {
+                    label: 'Comment',
+
+                    // Assuming that we use Font Awesome
+                    icon: 'fas fa-comment',
+                    className: 'note'
+                }
+            }
         }
     </script>
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
-    <!-- Dark mode -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/docsify-dark-mode@latest/dist/index.min.js"></script> -->
+    <!-- Docsify v4 -->
+    <script src="//cdn.jsdelivr.net/npm/docsify@4.11.4"></script>
+    <!-- Mermaid support -->
+    <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <!-- Tabs -->
     <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
     <!-- Copy code -->
     <script src="https://unpkg.com/docsify-copy-code@2"></script>
     <!-- Syntax highlight SQL -->
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+    <!-- Styled BlockQuotes  https://github.com/fzankl/docsify-plugin-flexible-alerts -->
+    <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
+    <!-- FontAwesome -->
+    <script src="//unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
 </body>
 
 </html>
