@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Writerside/writerside.cfg" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/writerside.cfg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,6 +146,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="base init" />
-    <option name="LAST_COMMIT_MESSAGE" value="base init" />
+    <MESSAGE value="github workflow" />
+    <option name="LAST_COMMIT_MESSAGE" value="github workflow" />
   </component>
 </project>
