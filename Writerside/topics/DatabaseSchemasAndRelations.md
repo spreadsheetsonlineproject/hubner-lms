@@ -1,3 +1,3 @@
 # Database Schemas and Relations
 
-Start typing here...
+Detailed description about the database structure.
