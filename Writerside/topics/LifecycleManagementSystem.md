@@ -29,3 +29,18 @@ The project is built with the following technologies:
     - PowerApps
     - PowerAutomate
     - PowerBI
+
+## Definition of Terms
+
+LMS
+: Lifecycle Management System
+
+UI
+: User Interface
+: The graphical representation of the application. This is the place where
+users can interact with the system. They can view and send information.
+
+API
+: Application Programming Interface
+: One of the layers of the system which is responsible for make
+communication between the database and the UI.
