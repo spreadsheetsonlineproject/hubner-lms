@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="better description">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="better table definitions">
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/RelationsBetweenTables.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Writerside/topics/TableSchemas.md" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/topics/TableSchemas.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Writerside/l.tree" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/l.tree" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,6 +166,7 @@
     <MESSAGE value="endpoints general description" />
     <MESSAGE value="processes general description" />
     <MESSAGE value="better description" />
-    <option name="LAST_COMMIT_MESSAGE" value="better description" />
+    <MESSAGE value="better table definitions" />
+    <option name="LAST_COMMIT_MESSAGE" value="better table definitions" />
   </component>
 </project>

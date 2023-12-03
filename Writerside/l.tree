@@ -17,5 +17,6 @@
     </toc-element>
     <toc-element topic="DatabaseSchemasAndRelations.md">
         <toc-element topic="TableSchemas.md"/>
+        <toc-element topic="RelationsBetweenTables.md"/>
     </toc-element>
 </instance-profile>
