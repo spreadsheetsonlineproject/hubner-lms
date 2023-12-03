@@ -3,16 +3,19 @@
 The schema of a table describes the different fields and gives an overview about
 the usage of the table.
 
-Every section describes a table in the database. You are going to find the
-recommendations, schema and indexes with the MsSQL and Postgresql queries.
+Every section describes a single table in the database. You are going to find
+extra information about the tables.
+
+SQL queries are also attached to this documentation with the index creation
+queries as well.
 
 ## Users
 
 Users table stores the individual's information. Only those people can make any
-actions in the LMS system, who is part of the table, and they are in **active**
-status. When the **deleted** field is set as true as the active status should
-set to false but that is not mandatory. This step just makes the continuous
-development more stable.
+actions in the LMS system, who is member of the table, and they are in
+**active** status. When the **deleted** field is set as true, as the active
+status should set to false but that is not mandatory. This step just makes the
+continuous development more stable.
 
 > Hard delete of any record from this table is not recommended. Instead, use the
 > soft delete by setting the **deleted** field to `true` and the **deleted_at**
@@ -22,7 +25,7 @@ development more stable.
 activated again. This information gives the advantage of continuing the user
 history over an inactive period of time.
 
-> Table name: `users`
+> Table name:`users`
 
 | Field name   | Key | Description                        | Type       | Default value | Required |
 |--------------|:---:|------------------------------------|------------|:-------------:|:--------:|
@@ -75,18 +78,25 @@ CREATE INDEX idx_users_unique_id ON users(unique_id);
 
 ## Production Flow items
 
-Through the production different orders requires different steps to take. These
-steps are defined in the PO.
+Through the production, different orders require different steps to take. These
+steps are defined by the production order. The instances of the table gives the
+ability to track the technology steps and journey of a single product.
 
-*This is the table, where the flow of production cna be followed.*
+> Hard delete not recommended in this table. In case, the flow item is not
+> used, the active field should be set to `false` value. Please note that
+> the [jobs](#jobs) table has a foreign key to these items. That means the
+> jobs where the deactivated flow item is member, should be deactivated as well.
+
+*This is the table, where the flow of production can be followed.*
 *Additional fields can make the tracking more precise.*
 
 > Table name: `flow_items`
 
-| Field name | Key | Description               | Type    | Default value | Required |
-|------------|:---:|---------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                 | Integer |   sequence    |    N     |
-| code_name  |  -  | Codename of the flow item | Varchar |       -       |    Y     |
+| Field name | Key | Description                | Type    | Default value | Required |
+|------------|:---:|----------------------------|---------|:-------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer |   sequence    |    N     |
+| code_name  |  -  | Codename of the flow item  | Varchar |       -       |    Y     |
+| active     |  -  | Allow user to take actions | Bool    |     true      |    N     |
 
 Indexing of the table can be made by the **code_name** field.
 
@@ -95,7 +105,8 @@ Indexing of the table can be made by the **code_name** field.
 ``` sql
 CREATE TABLE flow_items (
     id INT PRIMARY KEY,
-    code_name NVARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(MAX) NOT NULL,
+    active BIT DEFAULT 1
 );
 CREATE INDEX idx_code_name on flow_items(code_name);
 ```
@@ -105,7 +116,8 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 ``` sql
 CREATE TABLE flow_items (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) NOT NULL
+    code_name VARCHAR(255) NOT NULL,
+    active BOOLEAN DEFAULT true
 );
 CREATE INDEX idx_code_name on flow_items(code_name);
 ```
@@ -113,9 +125,8 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 ## Jobs
 
 This table stores the available actions that the users can perform during the
-production process. These jobs are
-small parts of the processes in production. An entry in this table is the main
-definition of the job.
+production process. These jobs are small parts of the processes in production.
+An entry in this table is the main definition of the job.
 
 This is the place where the required permission is set on the specific job.
 
@@ -131,9 +142,8 @@ This is the place where the required permission is set on the specific job.
 | [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -       |    Y     |
 
 Querying the table is going to be made through the **id** field in most cases.
-Sometimes the query will look for *
-*flow_item_id**
-so indexing of this field should be helpful.
+Sometimes the query will look for **flow_item_id** so indexing of these fields
+should be helpful.
 
 **MsSQL**
 
@@ -146,7 +156,7 @@ CREATE TABLE jobs (
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_code_name on jobs(code_name);
+CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
 ```
 
 **Postgresql**
@@ -160,24 +170,24 @@ CREATE TABLE jobs (
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_code_name on jobs(code_name);
+CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
 ```
 
 ## Job Items
 
-A single representation of a job. When the user take any action in the
-production that is represented by a [job](#jobs)
-item. This table
-stores details of the taken action not just the metadata of the job.
+A single representation of a job. When the user takes any action in the
+production that is represented by a [job](#jobs) item. This table stores details
+of the taken actions not just the metadata of the job.
 
 > Table name: `job_items`
 
-| Field name      | Key | Description                  | Type      | Default value | Required |
-|-----------------|:---:|------------------------------|-----------|:-------------:|:--------:|
-| id              | PK  | Unique ID                    | Integer   |   sequence    |    -     |
-| [job_id](#jobs) | FK  | Job item id                  | Integer   |       -       |    Y     |
-| description     |  -  | Short description of the job | Varchar   |       -       |    N     |
-| created_at      |  -  | Time of creation             | Timestamp |      now      |    N     |
+| Field name           | Key | Description                   | Type      | Default value | Required |
+|----------------------|:---:|-------------------------------|-----------|:-------------:|:--------:|
+| id                   | PK  | Unique ID                     | Integer   |   sequence    |    -     |
+| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -       |    Y     |
+| description          |  -  | Short description by the user | Varchar   |       -       |    N     |
+| [created_by](#users) | FK  | User id                       | Integer   |       -       |    Y     |
+| created_at           |  -  | Time of creation              | Timestamp |      now      |    N     |
 
 Indexing should be created on the **job_id** field. Most queries are going to
 look for **id** or **job_id**.
@@ -189,6 +199,7 @@ CREATE TABLE job_items (
     id INT PRIMARY KEY,
     job_id INT REFERENCES jobs(id) NOT NULL,
     description NVARCHAR(MAX),
+    created_by INT REFERENCES users(id) NOT NULL,
     created_at DATETIME DEFAULT GETDATE()
 );
 CREATE INDEX idx_job_items_job_id ON job_items(job_id);
@@ -201,6 +212,7 @@ CREATE TABLE job_items (
     id SERIAL PRIMARY KEY,
     job_id INT REFERENCES jobs(id) NOT NULL,
     description VARCHAR(255),
+    created_by INT REFERENCES users(id) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX idx_job_items_job_id ON job_items(job_id);
@@ -209,12 +221,12 @@ CREATE INDEX idx_job_items_job_id ON job_items(job_id);
 ## Workstations
 
 A single workstation item in the database is a single place in the production
-area where workers can do
-their jobs. A workstation can perform multiple type of [jobs](#jobs), that
-assigned to the workstation.
+area where workers can do their jobs. Workstation can be described as a device
+where users can open an LMS application. A workstation can perform multiple type
+of [jobs](#jobs), that assigned to the workstation.
 
 Workstation and job connections are going to be defined in
-the [job_workstation_jobs](#job-and-workstation-links)
+the [job_workstation_links](#job-and-workstation-links)
 
 > Table name: `workstations`
 
@@ -246,9 +258,8 @@ CREATE TABLE workstations(
 
 ## Job and Workstation links
 
-A single workstation can perform multiple jobs. This table is meant to create the
-connection between
-jobs and workstations.
+A single workstation can perform multiple jobs. This table is meant to create
+the connection between jobs and workstations.
 
 > Table name: `job_workstation_links`
 
@@ -280,7 +291,9 @@ CREATE TABLE job_workstation_links (
 ## Permissions
 
 Content of permissions table define the level of access when the user tries to
-perform actions.
+perform actions. Processes require different types of permissions. The checking
+of the necessary permission is validated through
+the [user_job_links](#user-and-job-links) table.
 
 > Table name: `permissions`
 
@@ -322,8 +335,8 @@ CREATE TABLE permissions (
 ## Groups
 
 Instance of the table represents multiple permissions grouped in one. This
-allows to customize different
-access levels for different areas in the LMS system.
+allows to customize different access levels for different areas in the LMS
+system.
 
 > Table name: `groups`
 
@@ -360,8 +373,7 @@ CREATE INDEX idx_groups_code_name ON groups(code_name);
 ## Group and Permission links
 
 Define the connections between [groups](#groups) and [permissions](#permissions)
-tables. With these links
-any access, role can be defined.
+tables. With these links any access, role can be defined.
 
 > Table name: `group_permission_links`
 
@@ -397,9 +409,45 @@ CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group
 CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
 ```
 
+> For example
+>
+> There are rows in the [permissions](#permissions) table where the values are
+>
+> | id | code_name  | name                        |
+> |----|------------|-----------------------------|
+> | 1  | can_view   | User can view content       |
+> | 2  | can_update | User can update content     |
+> | 3  | can_delete | User can delete content     |
+> | 4  | can_create | User can create new content |
+>
+> Some groups are defined in the [groups](#groups) table, like
+>
+> | id | code_name    | name                                   |
+> |----|--------------|----------------------------------------|
+> | 1  | default_user | Worker in the production               |
+> | 2  | qa_inspector | QA reason can be modified by this user |
+>
+> Let's define the necessary permissions for these groups.
+>
+> | group_id | permission_id |
+> |:--------:|:-------------:| 
+> |    2     |       2       |
+> |    2     |       4       |
+> |    2     |       1       |
+> |    1     |       4       |
+> |    1     |       1       |
+>
+> This small sample table shows that the qa_inspector group is able to
+> update a value in tables, but the default_user is allowed to create a new
+> item. That would mean, if a user find some qa issue, they can register the
+> problem, but not allowed to change a qa item. The quality inspector is
+> able to change the status of the quality item.
+
 ## User and Job links
 
-Jobs need to be assigned to users.
+This is the place, where users can be assigned for different jobs on a different
+permission level. There will be users who have higher permission on certain
+jobs, where other users will have lower permission level.
 
 > Table name: `user_job_links`
 
@@ -442,8 +490,7 @@ CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
 ## Quality reasons
 
 This table stores the available quality reason codes. These codes are going to
-be used when the user inspect any product
-in the production.
+be used when the user inspect any product in the production.
 
 > Table name: `qa_reasons`
 
@@ -484,7 +531,8 @@ CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 
 ## Severity Level of QA reasons
 
-Set a level to a qa reason item.
+Set a level to a qa reason item. Extending this table with different fields can
+help building more sophisticated quality tracking system.
 
 > Table name: `severity_levels`
 
@@ -517,8 +565,9 @@ create table severity_levels (
 ## QA items
 
 Represent a quality check by the user. This is the point, where the product is
-going to be marked with any quality
-reason.
+going to be marked with any quality reason. Other quality related tables are
+contains metadata of the quality status. This table will provide more details
+about the actual inspection.
 
 > Table name: `qa_items`
 
@@ -557,9 +606,8 @@ CREATE TABLE qa_items (
 ## SAP Production Order
 
 Placeholder table for future development. This table is going to store the
-production orders from the SAP system.
-Allows the LMS system to track the production orders and get a type of
-information from the SAP system.
+production orders from the SAP system. Allows the LMS system to track the
+production orders and get information from the SAP system.
 
 > Table name: `sap_production_orders`
 
@@ -589,9 +637,8 @@ CREATE TABLE sap_production_orders (
 ## Products
 
 The main table of the LMS system. This table stores the products that are going
-to be produced. Every product has a
-unique data matrix number.
-Other tables of the system are created to support the tracking of the products.
+to be produced. Every product has a unique data matrix number. Other tables of
+the system are created to support the tracking of the products.
 
 > Table name: `products`
 
@@ -643,11 +690,9 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 ## Product Histories
 
 One of the most important tables in the LMS system. This table stores the
-history of the products. Every time when the
-product
-is going to be moved to another workstation or the product is going to be
-inspected, the history table is going to be
-updated.
+history of the products. Every time when the product is going to be moved to
+another workstation or the product is going to be inspected, a new rows is going
+to be created in the history table.
 
 > Table name: `product_histories`
 
@@ -714,4 +759,3 @@ CREATE TABLE virtual_assemblies (
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
 ```
-
