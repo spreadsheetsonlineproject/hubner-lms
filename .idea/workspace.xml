@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="table relations topic added">
+      <change beforePath="$PROJECT_DIR$/Writerside/topics/DatabaseSchemasAndRelations.md" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/topics/DatabaseSchemasAndRelations.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,12 +126,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "feature/power-automate/0.0.2",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/SSOPInfo/WritersideProjects/hubner_lms",
-    "settings.editor.selected.configurable": "advanced.settings",
+    "settings.editor.selected.configurable": "preferences.sourceCode.Markdown",
     "writerside.last.selected.producthubner_lms": "l"
   }
 }]]></component>
@@ -157,6 +158,14 @@
     <MESSAGE value="schemas move under database" />
     <MESSAGE value="project title fix" />
     <MESSAGE value="GitHub workflow deployment added" />
-    <option name="LAST_COMMIT_MESSAGE" value="GitHub workflow deployment added" />
+    <MESSAGE value="deploy p change" />
+    <MESSAGE value="files rename" />
+    <MESSAGE value="definition of terms added" />
+    <MESSAGE value="endpoints general description" />
+    <MESSAGE value="processes general description" />
+    <MESSAGE value="better description" />
+    <MESSAGE value="better table definitions" />
+    <MESSAGE value="table relations topic added" />
+    <option name="LAST_COMMIT_MESSAGE" value="table relations topic added" />
   </component>
 </project>

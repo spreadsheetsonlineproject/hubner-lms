@@ -1,11 +1,11 @@
 # Register New Product
 
-## Overview
 When the user registers new product, then the physical item becomes available in
-the LMS system. The new product will have PO number attribute.
+the LMS system. The new product will have PO number and future processes are
+going to be applicable on the product.
 
 ## Production flow
-The Register Product application knows the id of the job.
+
 ``` mermaid
 flowchart
 
@@ -21,24 +21,24 @@ flowchart
     RequestProductID --> ProductIdInDB{Product ID in DB}
     ProductIdInDB -->|YES| Stop
     ProductIdInDB -->|NO| RequestPO[\Request PO\]
-    RequestPO --> DbAction[(Database actions)]
+    RequestPO --> RegisterProduct[(Register Product)]
 ```
 
-## Database flow
-When a new product is being created in the database a new entry is written in the following tables:
-1. [products](TableSchemas.md#products),
-2. [product_histories](TableSchemas.md#product-histories),
-3. [job_items](TableSchemas.md#job-items),
+## Database actions
 
-There are required fields to create a new product in the tables above. The required fields are the following:
-1. User ID,
-2. PO number,
-3. Job ID,
+### Get User From DB
 
+This action is going to return `true` or `false` depends on the user active
+or not. To get this result call the [ApiUserActive](UsersApiEndpoints.md#active)
+API function from **PowerAutomate**.
 
+### User has Access
 
-``` mermaid
-flowchart
+Users needs to have the required permission to create new product in the LMS.
+Checking the permissions of the current user should be done by calling the
+[ApiUserAccess](UsersApiEndpoints.md#has-permission) endpoint.
 
-    RegisterProduct((Register Product)) --> RegisterProductAPI((API))
-```
+### Register Product
+
+The [ApiRegisterProduct](ProductsApiEndpoints.md#register-product) API
+endpoint should be called when the user is active and 

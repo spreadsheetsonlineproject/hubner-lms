@@ -14,7 +14,6 @@ In case of any inconsistent changes on the **deleted** and **active** field of
 the [users](TableSchemas.md#users)
 table
 
-> [!NOTE]
 > The name of the flow is **ApiUserActive**
 
 The flow requires a single input value to check the active status of a user. The
@@ -34,8 +33,8 @@ table.
 |-----------|---------|----------|
 | Active    | Boolean | 1        |
 
-> [!WARNING]
-> If the user does not exist in the database, the API endpoint will return error.
+> If the user does not exist in the database, the API endpoint will return
+> error.
 
 ## Has permission
 
@@ -46,7 +45,6 @@ Different permission levels are assigned to users.
 This endpoint checks the required permission level for the current user for the
 given job.
 
-> [!NOTE]
 > The name of the flow is **ApiUserAccess**
 
 **Input attributes:**
@@ -63,6 +61,5 @@ given job.
 |---------------|---------|----------|
 | HasPermission | Boolean | 1        |
 
-> [!WARNING]
 > If the user, job or permission do not exist in the database, the API endpoint
 > will return error.
