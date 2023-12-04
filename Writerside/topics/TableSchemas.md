@@ -482,6 +482,44 @@ CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
 CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
+## User and Group Links
+
+When a user become member of any groups than the user will have access to the
+assigned jobs based on the permission level of the group.
+
+> Table name: 'user_group_links'
+
+| Field name          |  Key   | Description         | Type    | Default value | Required |
+|---------------------|:------:|---------------------|---------|:-------------:|:--------:|
+| [user_id](#users)   | PK, FK | User id             | Integer |       -       |    Y     |
+| [group_id](#groups) | PK, FK | Permission group id | Integer |       -       |    Y     |
+
+Indexing on both fields is required.
+
+**MsSQL**
+
+``` sql
+CREATE TABLE user_group_links (
+    user_id INT REFERENCES users(id),
+    group_id INT REFERENCES groups(id),
+    PRIMARY KEY (job_id, group_id)
+);
+CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
+CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE user_group_links (
+    job_id INT REFERENCES jobs(id),
+    group_id INT REFERENCES groups(id),
+    PRIMARY KEY (job_id, group_id)
+);
+CREATE INDEX idx_user_group_links_job_id ON user_group_links(user_id);
+CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
+```
+
 ## Quality reasons
 
 This table stores the available quality reason codes. These codes are going to
