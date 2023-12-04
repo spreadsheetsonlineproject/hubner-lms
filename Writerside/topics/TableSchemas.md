@@ -449,7 +449,7 @@ This is the place, where jobs are going to be assigned for different groups. A
 job can be assigned for multiple groups and group can have multiple jobs of
 course.
 
-> Table name: `user_job_links`
+> Table name: `group_job_links`
 
 | Field name          |  Key   | Description         | Type    | Default value | Required |
 |---------------------|:------:|---------------------|---------|:-------------:|:--------:|
@@ -502,7 +502,7 @@ Indexing on both fields is required.
 CREATE TABLE user_group_links (
     user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
+    PRIMARY KEY (user_id, group_id)
 );
 CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
 CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
@@ -512,11 +512,11 @@ CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 
 ``` sql
 CREATE TABLE user_group_links (
-    job_id INT REFERENCES jobs(id),
+    user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
+    PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_job_id ON user_group_links(user_id);
+CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
 CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
