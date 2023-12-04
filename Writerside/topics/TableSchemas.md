@@ -449,7 +449,7 @@ This is the place, where jobs are going to be assigned for different groups. A
 job can be assigned for multiple groups and group can have multiple jobs of
 course.
 
-> Table name: `user_job_links`
+> Table name: `group_job_links`
 
 | Field name          |  Key   | Description         | Type    | Default value | Required |
 |---------------------|:------:|---------------------|---------|:-------------:|:--------:|
@@ -502,7 +502,7 @@ Indexing on both fields is required.
 CREATE TABLE user_group_links (
     user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
+    PRIMARY KEY (user_id, group_id)
 );
 CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
 CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
@@ -512,11 +512,11 @@ CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 
 ``` sql
 CREATE TABLE user_group_links (
-    job_id INT REFERENCES jobs(id),
+    user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
+    PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_job_id ON user_group_links(user_id);
+CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
 CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
@@ -734,8 +734,9 @@ to be created in the history table.
 | id          | PK  | Unique ID                | Integer   |   sequence    |    N     |
 | created_at  |  -  | Time the item created    | Timestamp |      now      |    N     |
 | created_by  |  -  | User who create the item | Integer   |       -       |    Y     |
-| qa_item_id  |  -  | QA item                  | Integer   |       -       |    N     |
-| job_item_id |  -  | Job that made by user    | Integer   |       -       |    Y     |
+| qa_item_id  | FK  | QA item                  | Integer   |       -       |    N     |
+| job_item_id | FK  | Job that made by user    | Integer   |       -       |    Y     |
+| product_id  | FK  | Product to belong        | Integer   |       -       |    Y     |
 
 **MsSQL**
 
@@ -746,6 +747,7 @@ CREATE TABLE product_histories (
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL
+    product_id INT REFERENCES products(id) NOT NULL
 );
 ```
 
@@ -758,6 +760,7 @@ CREATE TABLE product_histories (
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL
+    product_id INT REFERENCES products(id) NOT NULL
 );
 ```
 
@@ -791,4 +794,52 @@ CREATE TABLE virtual_assemblies (
     active BOOLEAN DEFAULT true,
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
+```
+
+## Product and Virtual Assembly Links
+
+A single product can be part of different Virtual Assembly Products.
+
+> Table name: 'product_virtual_assembly_links'
+
+| Field name                                 |  Key   | Description                             | Type    | Default value | Required |
+|--------------------------------------------|:------:|-----------------------------------------|---------|:-------------:|:--------:|
+| [product_id](#products)                    | PK, FK | Product id as part of a virtual product | Integer |       -       |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |  <br/>     -  |    Y     |
+| active                                     |   -    | Connection active                       | Bool    |     true      |    N     |
+
+Indexing on both fields is required.
+
+**MsSQL**
+
+``` sql
+CREATE TABLE product_virtual_assembly_links (
+    product_id INT REFERENCES products(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    active BIT DEFAULT 1,
+    PRIMARY KEY (product_id, virtual_assembly_id)
+);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
+product_virtual_assembly_links
+(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
+product_virtual_assembly_links
+(virtual_assembly_id);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE product_virtual_assembly_links (
+    product_id INT REFERENCES products(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    active BOOLEAN DEFAULT true,
+    PRIMARY KEY (product_id, virtual_assembly_id)
+);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
+product_virtual_assembly_links
+(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
+product_virtual_assembly_links
+(virtual_assembly_id);
 ```
