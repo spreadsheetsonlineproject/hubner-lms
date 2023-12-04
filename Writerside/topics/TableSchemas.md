@@ -734,8 +734,9 @@ to be created in the history table.
 | id          | PK  | Unique ID                | Integer   |   sequence    |    N     |
 | created_at  |  -  | Time the item created    | Timestamp |      now      |    N     |
 | created_by  |  -  | User who create the item | Integer   |       -       |    Y     |
-| qa_item_id  |  -  | QA item                  | Integer   |       -       |    N     |
-| job_item_id |  -  | Job that made by user    | Integer   |       -       |    Y     |
+| qa_item_id  | FK  | QA item                  | Integer   |       -       |    N     |
+| job_item_id | FK  | Job that made by user    | Integer   |       -       |    Y     |
+| product_id  | FK  | Product to belong        | Integer   |       -       |    Y     |
 
 **MsSQL**
 
@@ -746,6 +747,7 @@ CREATE TABLE product_histories (
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL
+    product_id INT REFERENCES products(id) NOT NULL
 );
 ```
 
@@ -758,6 +760,7 @@ CREATE TABLE product_histories (
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL
+    product_id INT REFERENCES products(id) NOT NULL
 );
 ```
 
