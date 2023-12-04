@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="table relations topic added">
-      <change beforePath="$PROJECT_DIR$/Writerside/topics/DatabaseSchemasAndRelations.md" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/topics/DatabaseSchemasAndRelations.md" afterDir="false" />
+    <list default="true" id="d183facf-fd62-4a6f-a64b-db2988136d05" name="Changes" comment="base description">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Writerside/topics/RelationsBetweenTables.md" beforeDir="false" afterPath="$PROJECT_DIR$/Writerside/topics/RelationsBetweenTables.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +131,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "feature/power-automate/0.0.2",
+    "git-widget-placeholder": "future/database/8-database-table-relations",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/SSOPInfo/WritersideProjects/hubner_lms",
     "settings.editor.selected.configurable": "preferences.sourceCode.Markdown",
@@ -166,6 +167,7 @@
     <MESSAGE value="better description" />
     <MESSAGE value="better table definitions" />
     <MESSAGE value="table relations topic added" />
-    <option name="LAST_COMMIT_MESSAGE" value="table relations topic added" />
+    <MESSAGE value="base description" />
+    <option name="LAST_COMMIT_MESSAGE" value="base description" />
   </component>
 </project>
