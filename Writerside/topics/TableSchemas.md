@@ -293,7 +293,7 @@ CREATE TABLE job_workstation_links (
 Content of permissions table define the level of access when the user tries to
 perform actions. Processes require different types of permissions. The checking
 of the necessary permission is validated through
-the [user_job_links](#user-and-job-links) table.
+the [user_job_links](#group-and-job-links) table.
 
 > Table name: `permissions`
 
@@ -443,17 +443,16 @@ CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(
 > problem, but not allowed to change a qa item. The quality inspector is
 > able to change the status of the quality item.
 
-## User and Job links
+## Group and Job links
 
-This is the place, where users can be assigned for different jobs on a different
-permission level. There will be users who have higher permission on certain
-jobs, where other users will have lower permission level.
+This is the place, where jobs are going to be assigned for different groups. A
+job can be assigned for multiple groups and group can have multiple jobs of
+course.
 
 > Table name: `user_job_links`
 
 | Field name          |  Key   | Description         | Type    | Default value | Required |
 |---------------------|:------:|---------------------|---------|:-------------:|:--------:|
-| [user_id](#users)   | PK, FK | User id             | Integer |       -       |    Y     |
 | [job_id](#jobs)     | PK, FK | Job id              | Integer |       -       |    Y     |
 | [group_id](#groups) | PK, FK | Permission group id | Integer |       -       |    Y     |
 
@@ -462,29 +461,25 @@ Required to create index on every field.
 **MsSQL**
 
 ``` sql
-CREATE TABLE user_job_links (
-    user_id INT REFERENCES users(id),
+CREATE TABLE group_job_links (
     job_id INT REFERENCES jobs(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (user_id, job_id, group_id)
+    PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_user_job_links_user_id ON user_job_links(user_id);
-CREATE INDEX idx_user_job_links_job_id ON user_job_links(job_id);
-CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
+CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
+CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 **Postgresql**
 
 ``` sql
-CREATE TABLE user_job_links (
-    user_id INT REFERENCES users(id),
+CREATE TABLE group_job_links (
     job_id INT REFERENCES jobs(id),
     group_id INT REFERENCES groups(id),
-    PRIMARY KEY (user_id, job_id, group_id)
+    PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_user_job_links_user_id ON user_job_links(user_id);
-CREATE INDEX idx_user_job_links_job_id ON user_job_links(job_id);
-CREATE INDEX idx_user_job_links_group_id ON user_job_links(group_id);
+CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
+CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 ## Quality reasons
