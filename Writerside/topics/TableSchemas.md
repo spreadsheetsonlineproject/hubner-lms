@@ -795,3 +795,51 @@ CREATE TABLE virtual_assemblies (
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
 ```
+
+## Product and Virtual Assembly Links
+
+A single product can be part of different Virtual Assembly Products.
+
+> Table name: 'product_virtual_assembly_links'
+
+| Field name                                 |  Key   | Description                             | Type    | Default value | Required |
+|--------------------------------------------|:------:|-----------------------------------------|---------|:-------------:|:--------:|
+| [product_id](#products)                    | PK, FK | Product id as part of a virtual product | Integer |       -       |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |  <br/>     -  |    Y     |
+| active                                     |   -    | Connection active                       | Bool    |     true      |    N     |
+
+Indexing on both fields is required.
+
+**MsSQL**
+
+``` sql
+CREATE TABLE product_virtual_assembly_links (
+    product_id INT REFERENCES products(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    active BIT DEFAULT 1,
+    PRIMARY KEY (product_id, virtual_assembly_id)
+);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
+product_virtual_assembly_links
+(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
+product_virtual_assembly_links
+(virtual_assembly_id);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE product_virtual_assembly_links (
+    product_id INT REFERENCES products(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    active BOOLEAN DEFAULT true,
+    PRIMARY KEY (product_id, virtual_assembly_id)
+);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
+product_virtual_assembly_links
+(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
+product_virtual_assembly_links
+(virtual_assembly_id);
+```
