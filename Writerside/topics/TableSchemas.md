@@ -311,7 +311,7 @@ CREATE TABLE permissions (
     code_name NVARCHAR(MAX) UNIQUE NOT NULL,
     name NVARCHAR(MAX) NOT NULL
 );
-
+CREATE INDEX idx_code_name on permissions(code_name);
 ```
 
 **Postgresql**
@@ -322,6 +322,7 @@ CREATE TABLE permissions (
     code_name VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL
 );
+CREATE INDEX idx_code_name on permissions(code_name);
 ```
 
 > Recommended values:
@@ -382,8 +383,8 @@ tables. With these links any access, role can be defined.
 | [group_id](#groups)           | PK, FK | Id of the group                   | Integer |       -       |    Y     |
 | [permission_id](#permissions) | PK, FK | Id of the permission that allowed | Integer |       -       |    Y     |
 
-This table is going to be queried a lot. Creating index on both fields is
-recommended.
+This table is going to be queried a lot. Creating index on both fields is done
+by database server by default.
 
 **MsSQL**
 
@@ -393,8 +394,6 @@ CREATE TABLE group_permission_links (
     permission_id INT REFERENCES permissions(id),
     PRIMARY KEY (group_id, permission_id)
 );
-CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
-CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
 ```
 
 **Postgresql**
@@ -405,8 +404,6 @@ CREATE TABLE group_permission_links (
     permission_id INT REFERENCES permissions(id),
     PRIMARY KEY (group_id, permission_id)
 );
-CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
-CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
 ```
 
 > For example
@@ -466,8 +463,6 @@ CREATE TABLE group_job_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
-CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 **Postgresql**
@@ -478,8 +473,6 @@ CREATE TABLE group_job_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
-CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 ## User and Group Links
@@ -504,8 +497,6 @@ CREATE TABLE user_group_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
-CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
 **Postgresql**
@@ -516,8 +507,6 @@ CREATE TABLE user_group_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
-CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
 ## Quality reasons
@@ -800,12 +789,12 @@ CREATE TABLE virtual_assemblies (
 
 A single product can be part of different Virtual Assembly Products.
 
-> Table name: 'product_virtual_assembly_links'
+> Table name: `product_virtual_assembly_links`
 
 | Field name                                 |  Key   | Description                             | Type    | Default value | Required |
 |--------------------------------------------|:------:|-----------------------------------------|---------|:-------------:|:--------:|
 | [product_id](#products)                    | PK, FK | Product id as part of a virtual product | Integer |       -       |    Y     |
-| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |  <br/>     -  |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |       -       |    Y     |
 | active                                     |   -    | Connection active                       | Bool    |     true      |    N     |
 
 Indexing on both fields is required.
@@ -820,11 +809,9 @@ CREATE TABLE product_virtual_assembly_links (
     PRIMARY KEY (product_id, virtual_assembly_id)
 );
 CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
-product_virtual_assembly_links
-(product_id);
+    product_virtual_assembly_links(product_id);
 CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
-product_virtual_assembly_links
-(virtual_assembly_id);
+    product_virtual_assembly_links(virtual_assembly_id);
 ```
 
 **Postgresql**
@@ -842,4 +829,107 @@ product_virtual_assembly_links
 CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
 product_virtual_assembly_links
 (virtual_assembly_id);
+```
+
+## International
+
+### Languages
+
+The LMS must be able to handle different languages for different sites. The
+available list of languages are going to be defined in `languages` table.
+
+> Table name: `international_languages`
+
+| Field name | Key | Description                | Type    | Default value | Required |
+|------------|:---:|----------------------------|---------|:-------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer |   sequence    |    -     |
+| code_name  |  -  | Short name of the language | Bool    |       -       |    Y     |
+| language   |  -  | Language                   | Varchar |       -       |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_languages (
+id INT PRIMARY KEY,
+code_name NVARCHAR(MAX) NOT NULL,
+language VARCHAR(MAX) NOT NULL
+);
+```
+
+**Postgresql**
+
+``` sql 
+CREATE TABLE international_languages (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(255) NOT NULL,
+    language VARCHAR(255) NOT NULL
+);
+```
+
+### Labels
+
+> Table name: `international_labels`
+
+| Field name  | Key | Description             | Type    | Default value | Required |
+|-------------|:---:|-------------------------|---------|:-------------:|:--------:|
+| id          | PK  | Unique ID               | Integer |   sequence    |    -     |
+| usage_label |  -  | Identifies the use case | Varchar |       -       |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_labels (
+    id INT PRIMARY KEY,
+    usage_label NVARCHAR(MAX) NOT NULL
+);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE international_labels (
+    id SERIAL PRIMARY KEY,
+    usage_label VARCHAR(255) NOT NULL
+);
+```
+
+### Translations
+
+> Table name: `international_translations`
+
+| Field name                | Key | Description          | Type    | Default value | Required |
+|---------------------------|:---:|----------------------|---------|:-------------:|:--------:|
+| id                        | PK  | Unique ID            | Integer |   sequence    |    -     |
+| international_language_id | FK  | Defines the language | Integer |       -       |    Y     |
+| international_label_id    | FK  | Defines the use case | Integer |       -       |    Y     |
+| value                     |  -  | Text to display      | Varchar |       -       |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_translations (
+    id INT PRIMARY KEY,
+    international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
+    international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
+    value NVARCHAR(MAX) NOT NULL
+);
+CREATE INDEX idx_international_translations_international_language_id on
+    international_translations(international_language_id);
+CREATE INDEX idx_international_translations_international_label_id on
+    international_translations(international_label_id);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE international_translations (
+    id SERIAL PRIMARY KEY,
+    international_language_id INT REFERENCES international_languages(id),
+    international_label_id INT REFERENCES international_labels(id),
+    value VARCHAR(255) NOT NULL
+);
+CREATE INDEX idx_international_translations_international_language_id on
+    international_translations(international_language_id); 
+CREATE INDEX idx_international_translations_international_label_id on
+    international_translations(international_label_id);
 ```
