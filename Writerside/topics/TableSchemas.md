@@ -46,7 +46,7 @@ most queried field in this table.
 
 ``` sql
 CREATE TABLE users (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     unique_id BIGINT UNIQUE,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
@@ -104,7 +104,7 @@ Indexing of the table can be made by the **code_name** field.
 
 ``` sql
 CREATE TABLE flow_items (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(MAX) NOT NULL,
     active BIT DEFAULT 1
 );
@@ -149,7 +149,7 @@ should be helpful.
 
 ``` sql
 CREATE TABLE jobs (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(MAX) UNIQUE NOT NULL,
     description NVARCHAR(MAX),
     active BIT DEFAULT 1,
@@ -196,7 +196,7 @@ look for **id** or **job_id**.
 
 ``` sql
 CREATE TABLE job_items (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
     description NVARCHAR(MAX),
     created_by INT REFERENCES users(id) NOT NULL,
@@ -240,7 +240,7 @@ the [job_workstation_links](#job-and-workstation-links)
 
 ``` sql
 CREATE TABLE workstations (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(MAX),
     active BIT DEFAULT 1,
 );
@@ -307,7 +307,7 @@ the [user_job_links](#group-and-job-links) table.
 
 ``` sql
 CREATE TABLE permissions (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(MAX) UNIQUE NOT NULL,
     name NVARCHAR(MAX) NOT NULL
 );
@@ -353,7 +353,7 @@ Indexing on **code_name** field is highly recommended.
 
 ``` sql
 CREATE TABLE groups (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(MAX) UNIQUE NOT NULL,
     name NVARCHAR(MAX) NOT NULL
 );
@@ -528,7 +528,7 @@ be used when the user inspect any product in the production.
 
 ``` sql
 CREATE TABLE qa_reasons (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(MAX) UNIQUE NOT NULL,
     name NVARCHAR(MAX),
     active BIT DEFAULT 1,
@@ -568,7 +568,7 @@ help building more sophisticated quality tracking system.
 
 ``` sql
 CREATE TABLE severity_levels (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     value INT NOT NULL,
     allow_product_usage BIT NOT NULL
 );
@@ -605,7 +605,7 @@ about the actual inspection.
 
 ``` sql
 CREATE TABLE qa_items (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     description NVARCHAR(MAX) NOT NULL,
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
@@ -642,7 +642,7 @@ production orders and get information from the SAP system.
 
 ``` sql
 CREATE TABLE sap_production_orders (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     po_number NVARCHAR(MAX) UNIQUE NOT NULL
 );
 ```
@@ -681,7 +681,7 @@ fields are going to be queried a lot.
 
 ``` sql
 CREATE TABLE products (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     data_matrix BIGINT UNIQUE NOT NULL,
     po_number NVARCHAR(MAX) NOT NULL,
     active BIT DEFAULT 1,
@@ -731,7 +731,7 @@ to be created in the history table.
 
 ``` sql
 CREATE TABLE product_histories (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
@@ -769,7 +769,7 @@ Collection of assembled products.
 
 ``` sql
 CREATE TABLE virtual_assemblies (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     active BIT DEFAULT 1,
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
@@ -779,7 +779,7 @@ CREATE TABLE virtual_assemblies (
 
 ``` sql
 CREATE TABLE virtual_assemblies (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY IDENTITY(1,1),
     active BOOLEAN DEFAULT true,
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
@@ -850,9 +850,9 @@ available list of languages are going to be defined in `languages` table.
 
 ``` sql
 CREATE TABLE international_languages (
-id INT PRIMARY KEY,
-code_name NVARCHAR(MAX) NOT NULL,
-language VARCHAR(MAX) NOT NULL
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(MAX) NOT NULL,
+    language VARCHAR(MAX) NOT NULL
 );
 ```
 
@@ -879,7 +879,7 @@ CREATE TABLE international_languages (
 
 ``` sql
 CREATE TABLE international_labels (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     usage_label NVARCHAR(MAX) NOT NULL
 );
 ```
@@ -908,7 +908,7 @@ CREATE TABLE international_labels (
 
 ``` sql
 CREATE TABLE international_translations (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
     international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
     value NVARCHAR(MAX) NOT NULL
