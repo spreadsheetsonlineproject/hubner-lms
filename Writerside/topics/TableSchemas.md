@@ -27,17 +27,17 @@ history over an inactive period of time.
 
 > Table name:`users`
 
-| Field name   | Key | Description                        | Type       | Default value | Required |
-|--------------|:---:|------------------------------------|------------|:-------------:|:--------:|
-| id           | PK  | Unique ID                          | Integer    |   sequence    |    N     |
-| unique_id    |  -  | User's Data matrix number (Unique) | BigInteger |       -       |    Y     |
-| active       |  -  | Allow user to take actions         | Bool       |     true      |    N     |
-| deleted      |  -  | Deny any actions                   | Bool       |     false     |    N     |
-| deleted_at   |  -  | Time of deletion                   | Timestamp  |       -       |    N     |
-| email        |  -  | Email to identify person           | Varchar    |       -       |    Y     |
-| badge_number |  -  | Employee id to identify person     | Varchar    |       -       |    Y     |
-| first_name   |  -  | First name                         | Varchar    |       -       |    Y     |
-| last_name    |  -  | First name                         | Varchar    |       -       |    Y     |
+| Field name   | Key | Description                        | Type       | Default value  | Required |
+|--------------|:---:|------------------------------------|------------|:--------------:|:--------:|
+| id           | PK  | Unique ID                          | Integer    | auto increment |    N     |
+| unique_id    |  -  | User's Data matrix number (Unique) | BigInteger |       -        |    Y     |
+| active       |  -  | Allow user to take actions         | Bool       |      true      |    N     |
+| deleted      |  -  | Deny any actions                   | Bool       |     false      |    N     |
+| deleted_at   |  -  | Time of deletion                   | Timestamp  |       -        |    N     |
+| email        |  -  | Email to identify person           | Varchar    |       -        |    Y     |
+| badge_number |  -  | Employee id to identify person     | Varchar    |       -        |    Y     |
+| first_name   |  -  | First name                         | Varchar    |       -        |    Y     |
+| last_name    |  -  | First name                         | Varchar    |       -        |    Y     |
 
 Indexes of the table should be the **unique_id**. This field is going to be the
 most queried field in this table.
@@ -92,11 +92,11 @@ ability to track the technology steps and journey of a single product.
 
 > Table name: `flow_items`
 
-| Field name | Key | Description                | Type    | Default value | Required |
-|------------|:---:|----------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                  | Integer |   sequence    |    N     |
-| code_name  |  -  | Codename of the flow item  | Varchar |       -       |    Y     |
-| active     |  -  | Allow user to take actions | Bool    |     true      |    N     |
+| Field name | Key | Description                | Type    | Default value  | Required |
+|------------|:---:|----------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer | auto increment |    N     |
+| code_name  |  -  | Codename of the flow item  | Varchar |       -        |    Y     |
+| active     |  -  | Allow user to take actions | Bool    |      true      |    N     |
 
 Indexing of the table can be made by the **code_name** field.
 
@@ -132,14 +132,14 @@ This is the place where the required permission is set on the specific job.
 
 > Table name: `jobs`
 
-| Field name                             | Key | Description                           | Type    | Default value | Required |
-|----------------------------------------|:---:|---------------------------------------|---------|:-------------:|:--------:|
-| id                                     | PK  | Unique ID                             | Integer |   sequence    |    N     |
-| name                                   |  -  | Name of the job (Unique)              | Varchar |       -       |    Y     |
-| description                            |  -  | Short description of the job          | Varchar |       -       |    N     |
-| active                                 |  -  | Determine the availability of the job | Bool    |     true      |    N     |
-| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -       |    Y     |
-| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -       |    Y     |
+| Field name                             | Key | Description                           | Type    | Default value  | Required |
+|----------------------------------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id                                     | PK  | Unique ID                             | Integer | auto increment |    N     |
+| name                                   |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
+| description                            |  -  | Short description of the job          | Varchar |       -        |    N     |
+| active                                 |  -  | Determine the availability of the job | Bool    |      true      |    N     |
+| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -        |    Y     |
+| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -        |    Y     |
 
 Querying the table is going to be made through the **id** field in most cases.
 Sometimes the query will look for **flow_item_id** so indexing of these fields
@@ -181,13 +181,13 @@ of the taken actions not just the metadata of the job.
 
 > Table name: `job_items`
 
-| Field name           | Key | Description                   | Type      | Default value | Required |
-|----------------------|:---:|-------------------------------|-----------|:-------------:|:--------:|
-| id                   | PK  | Unique ID                     | Integer   |   sequence    |    -     |
-| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -       |    Y     |
-| description          |  -  | Short description by the user | Varchar   |       -       |    N     |
-| [created_by](#users) | FK  | User id                       | Integer   |       -       |    Y     |
-| created_at           |  -  | Time of creation              | Timestamp |      now      |    N     |
+| Field name           | Key | Description                   | Type      | Default value  | Required |
+|----------------------|:---:|-------------------------------|-----------|:--------------:|:--------:|
+| id                   | PK  | Unique ID                     | Integer   | auto increment |    -     |
+| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -        |    Y     |
+| description          |  -  | Short description by the user | Varchar   |       -        |    N     |
+| [created_by](#users) | FK  | User id                       | Integer   |       -        |    Y     |
+| created_at           |  -  | Time of creation              | Timestamp |      now       |    N     |
 
 Indexing should be created on the **job_id** field. Most queries are going to
 look for **id** or **job_id**.
@@ -230,11 +230,11 @@ the [job_workstation_links](#job-and-workstation-links)
 
 > Table name: `workstations`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| name       |  -  | Name of the workstation (Unique) | Varchar |       -       |    Y     |
-| active     |  -  | Allow to use the workstation     | Bool    |     true      |    N     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| name       |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
+| active     |  -  | Allow to use the workstation     | Bool    |      true      |    N     |
 
 **MsSQL**
 
@@ -297,11 +297,11 @@ the [user_job_links](#group-and-job-links) table.
 
 > Table name: `permissions`
 
-| Field name | Key | Description                           | Type    | Default value | Required |
-|------------|:---:|---------------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                             | Integer |   sequence    |    N     |
-| code_name  |  -  | Short name of the permission (Unique) | Varchar |       -       |    Y     |
-| name       |  -  | Detailed name of the permission       | Varchar |       -       |    N     |
+| Field name | Key | Description                           | Type    | Default value  | Required |
+|------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                             | Integer | auto increment |    N     |
+| code_name  |  -  | Short name of the permission (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Detailed name of the permission       | Varchar |       -        |    N     |
 
 **MsSQL**
 
@@ -341,11 +341,11 @@ system.
 
 > Table name: `groups`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| code_name  |  -  | Short name of the group (Unique) | Varchar |       -       |    Y     |
-| name       |  -  | Detailed name of the group       | Varchar |       -       |    N     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| code_name  |  -  | Short name of the group (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Detailed name of the group       | Varchar |       -        |    N     |
 
 Indexing on **code_name** field is highly recommended.
 
@@ -516,13 +516,13 @@ be used when the user inspect any product in the production.
 
 > Table name: `qa_reasons`
 
-| Field name                                         | Key | Description                          | Type    | Default value | Required |
-|----------------------------------------------------|:---:|--------------------------------------|---------|:-------------:|:--------:|
-| id                                                 | PK  | Unique ID                            | Integer |   sequence    |    N     |
-| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -       |    Y     |
-| name                                               |  -  | Descriptive name of the reason       | Varchar |       -       |    N     |
-| active                                             |  -  | Allows to deactivate reason          | Bool    |     true      |    N     |
-| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y       |    Y     |
+| Field name                                         | Key | Description                          | Type    | Default value  | Required |
+|----------------------------------------------------|:---:|--------------------------------------|---------|:--------------:|:--------:|
+| id                                                 | PK  | Unique ID                            | Integer | auto increment |    N     |
+| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -        |    Y     |
+| name                                               |  -  | Descriptive name of the reason       | Varchar |       -        |    N     |
+| active                                             |  -  | Allows to deactivate reason          | Bool    |      true      |    N     |
+| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y        |    Y     |
 
 **MsSQL**
 
@@ -558,11 +558,11 @@ help building more sophisticated quality tracking system.
 
 > Table name: `severity_levels`
 
-| Field name          | Key | Description                                   | Type    | Default value | Required |
-|---------------------|:---:|-----------------------------------------------|---------|:-------------:|:--------:|
-| id                  | PK  | Unique ID                                     | Integer |   sequence    |    N     |
-| value               |  -  | Integer value where the 1 is the most serious | Integer |       -       |    Y     |
-| allow_product_usage |  -  | Allow to use the product production           | Bool    |       -       |    Y     |
+| Field name          | Key | Description                                   | Type    | Default value  | Required |
+|---------------------|:---:|-----------------------------------------------|---------|:--------------:|:--------:|
+| id                  | PK  | Unique ID                                     | Integer | auto increment |    N     |
+| value               |  -  | Integer value where the 1 is the most serious | Integer |       -        |    Y     |
+| allow_product_usage |  -  | Allow to use the product production           | Bool    |       -        |    Y     |
 
 **MsSQL**
 
@@ -593,13 +593,13 @@ about the actual inspection.
 
 > Table name: `qa_items`
 
-| Field name                       | Key | Description                           | Type      | Default value | Required |
-|----------------------------------|:---:|---------------------------------------|-----------|:-------------:|:--------:|
-| id                               | PK  | Unique ID                             | Integer   |   sequence    |    N     |
-| description                      |  -  | User description of the qa inspection | Varchar   |       -       |    Y     |
-| created_at                       |  -  | Time of creation                      | Timestamp |      now      |    N     |
-| [created_by](#users)             | FK  | User id                               | Integer   |       -       |    Y     |
-| [qa_reason_id](#quality-reasons) | FK  | Quality reason item                   | Integer   |       -       |    Y     |
+| Field name                       | Key | Description                           | Type      | Default value  | Required |
+|----------------------------------|:---:|---------------------------------------|-----------|:--------------:|:--------:|
+| id                               | PK  | Unique ID                             | Integer   | auto increment |    N     |
+| description                      |  -  | User description of the qa inspection | Varchar   |       -        |    Y     |
+| created_at                       |  -  | Time of creation                      | Timestamp |      now       |    N     |
+| [created_by](#users)             | FK  | User id                               | Integer   |       -        |    Y     |
+| [qa_reason_id](#quality-reasons) | FK  | Quality reason item                   | Integer   |       -        |    Y     |
 
 **MsSQL**
 
@@ -633,10 +633,10 @@ production orders and get information from the SAP system.
 
 > Table name: `sap_production_orders`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| po_number  |  -  | Production Order number (Unique) | Varchar |       -       |    Y     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| po_number  |  -  | Production Order number (Unique) | Varchar |       -        |    Y     |
 
 **MsSQL**
 
@@ -664,15 +664,15 @@ the system are created to support the tracking of the products.
 
 > Table name: `products`
 
-| Field name                                       | Key | Description                          | Type       | Default value | Required |
-|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
-| id                                               | PK  | Unique ID                            | Integer    |   sequence    |    N     |
-| data_matrix                                      |  -  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
-| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
-| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
-| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
-| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
-| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
+| Field name                                       | Key | Description                          | Type       | Default value  | Required |
+|--------------------------------------------------|:---:|--------------------------------------|------------|:--------------:|:--------:|
+| id                                               | PK  | Unique ID                            | Integer    | auto increment |    N     |
+| data_matrix                                      |  -  | Data matrix value (Unique)           | BigInteger |       -        |    Y     |
+| po_number                                        |  -  | PO number                            | Varchar    |       -        |    Y     |
+| active                                           |  -  | Is the item active                   | Bool       |       Y        |    N     |
+| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -        |    N     |
+| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -        |    N     |
+| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -        |    N     |
 
 Indexing on **data_matrix** and **po_number** fields is recommended. These
 fields are going to be queried a lot.
@@ -718,14 +718,14 @@ to be created in the history table.
 
 > Table name: `product_histories`
 
-| Field name  | Key | Description              | Type      | Default value | Required |
-|-------------|:---:|--------------------------|-----------|:-------------:|:--------:|
-| id          | PK  | Unique ID                | Integer   |   sequence    |    N     |
-| created_at  |  -  | Time the item created    | Timestamp |      now      |    N     |
-| created_by  |  -  | User who create the item | Integer   |       -       |    Y     |
-| qa_item_id  | FK  | QA item                  | Integer   |       -       |    N     |
-| job_item_id | FK  | Job that made by user    | Integer   |       -       |    Y     |
-| product_id  | FK  | Product to belong        | Integer   |       -       |    Y     |
+| Field name  | Key | Description              | Type      | Default value  | Required |
+|-------------|:---:|--------------------------|-----------|:--------------:|:--------:|
+| id          | PK  | Unique ID                | Integer   | auto increment |    N     |
+| created_at  |  -  | Time the item created    | Timestamp |      now       |    N     |
+| created_by  |  -  | User who create the item | Integer   |       -        |    Y     |
+| qa_item_id  | FK  | QA item                  | Integer   |       -        |    N     |
+| job_item_id | FK  | Job that made by user    | Integer   |       -        |    Y     |
+| product_id  | FK  | Product to belong        | Integer   |       -        |    Y     |
 
 **MsSQL**
 
@@ -759,11 +759,11 @@ Collection of assembled products.
 
 > Table name: `virtual_assemblies`
 
-| Field name                       | Key | Description        | Type    | Default value | Required |
-|----------------------------------|:---:|--------------------|---------|:-------------:|:--------:|
-| id                               | PK  | Unique ID          | Integer |   sequence    |    -     |
-| active                           |  -  | Is the item active | Bool    |     true      |    -     |
-| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -       |    N     |
+| Field name                       | Key | Description        | Type    | Default value  | Required |
+|----------------------------------|:---:|--------------------|---------|:--------------:|:--------:|
+| id                               | PK  | Unique ID          | Integer | auto increment |    -     |
+| active                           |  -  | Is the item active | Bool    |      true      |    -     |
+| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -        |    N     |
 
 **MsSQL**
 
@@ -831,20 +831,18 @@ product_virtual_assembly_links
 (virtual_assembly_id);
 ```
 
-## International
-
-### Languages
+## International Languages
 
 The LMS must be able to handle different languages for different sites. The
 available list of languages are going to be defined in `languages` table.
 
 > Table name: `international_languages`
 
-| Field name | Key | Description                | Type    | Default value | Required |
-|------------|:---:|----------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                  | Integer |   sequence    |    -     |
-| code_name  |  -  | Short name of the language | Bool    |       -       |    Y     |
-| language   |  -  | Language                   | Varchar |       -       |    Y     |
+| Field name | Key | Description                | Type    | Default value  | Required |
+|------------|:---:|----------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer | auto increment |    -     |
+| code_name  |  -  | Short name of the language | Bool    |       -        |    Y     |
+| language   |  -  | Language                   | Varchar |       -        |    Y     |
 
 **MsSQL**
 
@@ -866,14 +864,14 @@ CREATE TABLE international_languages (
 );
 ```
 
-### Labels
+## International Labels
 
 > Table name: `international_labels`
 
-| Field name  | Key | Description             | Type    | Default value | Required |
-|-------------|:---:|-------------------------|---------|:-------------:|:--------:|
-| id          | PK  | Unique ID               | Integer |   sequence    |    -     |
-| usage_label |  -  | Identifies the use case | Varchar |       -       |    Y     |
+| Field name  | Key | Description             | Type    | Default value  | Required |
+|-------------|:---:|-------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID               | Integer | auto increment |    -     |
+| usage_label |  -  | Identifies the use case | Varchar |       -        |    Y     |
 
 **MsSQL**
 
@@ -893,16 +891,16 @@ CREATE TABLE international_labels (
 );
 ```
 
-### Translations
+## International Translations
 
 > Table name: `international_translations`
 
-| Field name                | Key | Description          | Type    | Default value | Required |
-|---------------------------|:---:|----------------------|---------|:-------------:|:--------:|
-| id                        | PK  | Unique ID            | Integer |   sequence    |    -     |
-| international_language_id | FK  | Defines the language | Integer |       -       |    Y     |
-| international_label_id    | FK  | Defines the use case | Integer |       -       |    Y     |
-| value                     |  -  | Text to display      | Varchar |       -       |    Y     |
+| Field name                | Key | Description          | Type    | Default value  | Required |
+|---------------------------|:---:|----------------------|---------|:--------------:|:--------:|
+| id                        | PK  | Unique ID            | Integer | auto increment |    -     |
+| international_language_id | FK  | Defines the language | Integer |       -        |    Y     |
+| international_label_id    | FK  | Defines the use case | Integer |       -        |    Y     |
+| value                     |  -  | Text to display      | Varchar |       -        |    Y     |
 
 **MsSQL**
 
