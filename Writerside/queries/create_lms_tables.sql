@@ -5,58 +5,68 @@ CREATE TABLE users (
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(MAX) NOT NULL,
-    badge_number NVARCHAR(MAX) NOT NULL,
-    first_name NVARCHAR(MAX) NOT NULL,
-    last_name NVARCHAR(MAX) NOT NULL
+    email NVARCHAR(60) NOT NULL,
+    badge_number NVARCHAR(20) NOT NULL,
+    first_name NVARCHAR(60) NOT NULL,
+    last_name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_users_unique_id ON users(unique_id);
 
 -- create production flow items for technology steps
 CREATE TABLE flow_items (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) NOT NULL,
+    code_name NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1
 );
-CREATE INDEX idx_code_name on flow_items(code_name);
+CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 
 -- create permissions table
 CREATE TABLE permissions (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_code_name on permissions(code_name);
+CREATE INDEX idx_permissions_code_name on permissions(code_name);
 
 -- create groups
 CREATE TABLE groups (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
 
 -- create jobs table
 CREATE TABLE jobs (
     id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(MAX) UNIQUE NOT NULL,
-    description NVARCHAR(MAX),
+    name NVARCHAR(20) UNIQUE NOT NULL,
+    description NVARCHAR(255),
     active BIT DEFAULT 1,
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
+CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
+
+-- create job items
+CREATE TABLE job_items (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    job_id INT REFERENCES jobs(id) NOT NULL,
+    description NVARCHAR(255),
+    created_by INT REFERENCES users(id) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE()
+);
+CREATE INDEX idx_job_items_job_id ON job_items(job_id);
 
 -- create workstations
 CREATE TABLE workstations (
     id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(MAX),
+    name NVARCHAR(60),
     active BIT DEFAULT 1,
 );
 
 -- create job and workstation links
 CREATE TABLE job_workstation_links (
-    workstation_id INT REFERENCES work_stations(id),
+    workstation_id INT REFERENCES workstations(id),
     job_id INT REFERENCES jobs(id),
     PRIMARY KEY (workstation_id, job_id)
 );
@@ -92,8 +102,8 @@ CREATE TABLE severity_levels (
 -- create qa reasons table
 CREATE TABLE qa_reasons (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(20),
     active BIT DEFAULT 1,
     severity_level_id INT NOT NULL,
     FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
@@ -103,7 +113,7 @@ CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 -- create the qa items field
 CREATE TABLE qa_items (
     id INT PRIMARY KEY IDENTITY(1,1),
-    description NVARCHAR(MAX) NOT NULL,
+    description NVARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
@@ -112,7 +122,7 @@ CREATE TABLE qa_items (
 -- create sap placeholder table
 CREATE TABLE sap_production_orders (
     id INT PRIMARY KEY IDENTITY(1,1),
-    po_number NVARCHAR(MAX) UNIQUE NOT NULL
+    po_number NVARCHAR(20) UNIQUE NOT NULL
 );
 
 -- create virtual assemblies table
@@ -126,7 +136,7 @@ CREATE TABLE virtual_assemblies (
 CREATE TABLE products (
     id INT PRIMARY KEY IDENTITY(1,1),
     data_matrix BIGINT UNIQUE NOT NULL,
-    po_number NVARCHAR(MAX) NOT NULL,
+    po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
@@ -141,7 +151,7 @@ CREATE TABLE product_histories (
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL
+    job_item_id INT REFERENCES job_items(id) NOT NULL,
     product_id INT REFERENCES products(id) NOT NULL
 );
 

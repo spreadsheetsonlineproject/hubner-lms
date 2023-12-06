@@ -51,10 +51,10 @@ CREATE TABLE users (
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(MAX) NOT NULL,
-    badge_number NVARCHAR(MAX) NOT NULL,
-    first_name NVARCHAR(MAX) NOT NULL,
-    last_name NVARCHAR(MAX) NOT NULL
+    email NVARCHAR(60) NOT NULL,
+    badge_number NVARCHAR(20) NOT NULL,
+    first_name NVARCHAR(60) NOT NULL,
+    last_name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
@@ -68,10 +68,10 @@ CREATE TABLE users (
     active BOOLEAN DEFAULT true,
     deleted BOOLEAN DEFAULT false,
     deleted_at TIMESTAMP,
-    email VARCHAR(255) NOT NULL,
-    badge_number VARCHAR(255) NOT NULL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL
+    email VARCHAR(60) NOT NULL,
+    badge_number VARCHAR(20) NOT NULL,
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
@@ -105,10 +105,10 @@ Indexing of the table can be made by the **code_name** field.
 ``` sql
 CREATE TABLE flow_items (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) NOT NULL,
+    code_name NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1
 );
-CREATE INDEX idx_code_name on flow_items(code_name);
+CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 ```
 
 **Postgresql**
@@ -116,10 +116,10 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 ``` sql
 CREATE TABLE flow_items (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) NOT NULL,
+    code_name VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true
 );
-CREATE INDEX idx_code_name on flow_items(code_name);
+CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 ```
 
 ## Jobs
@@ -150,13 +150,13 @@ should be helpful.
 ``` sql
 CREATE TABLE jobs (
     id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(MAX) UNIQUE NOT NULL,
-    description NVARCHAR(MAX),
+    name NVARCHAR(20) UNIQUE NOT NULL,
+    description NVARCHAR(255),
     active BIT DEFAULT 1,
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
+CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 **Postgresql**
@@ -164,13 +164,13 @@ CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
 ``` sql
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(20) UNIQUE NOT NULL,
     description VARCHAR(255),
     active BOOLEAN DEFAULT true,
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
+CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 ## Job Items
@@ -198,7 +198,7 @@ look for **id** or **job_id**.
 CREATE TABLE job_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
-    description NVARCHAR(MAX),
+    description NVARCHAR(255),
     created_by INT REFERENCES users(id) NOT NULL,
     created_at DATETIME DEFAULT GETDATE()
 );
@@ -241,7 +241,7 @@ the [job_workstation_links](#job-and-workstation-links)
 ``` sql
 CREATE TABLE workstations (
     id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(MAX),
+    name NVARCHAR(60),
     active BIT DEFAULT 1,
 );
 ```
@@ -251,7 +251,7 @@ CREATE TABLE workstations (
 ``` sql
 CREATE TABLE workstations(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(60),
     active BOOLEAN DEFAULT true
 );
 ```
@@ -272,7 +272,7 @@ the connection between jobs and workstations.
 
 ``` sql
 CREATE TABLE job_workstation_links (
-    workstation_id INT REFERENCES work_stations(id),
+    workstation_id INT REFERENCES workstations(id),
     job_id INT REFERENCES jobs(id),
     PRIMARY KEY (workstation_id, job_id)
 );
@@ -308,10 +308,10 @@ the [user_job_links](#group-and-job-links) table.
 ``` sql
 CREATE TABLE permissions (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_code_name on permissions(code_name);
+CREATE INDEX idx_permissions_code_name on permissions(code_name);
 ```
 
 **Postgresql**
@@ -319,10 +319,10 @@ CREATE INDEX idx_code_name on permissions(code_name);
 ``` sql
 CREATE TABLE permissions (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_code_name on permissions(code_name);
+CREATE INDEX idx_permissions_code_name on permissions(code_name);
 ```
 
 > Recommended values:
@@ -354,8 +354,8 @@ Indexing on **code_name** field is highly recommended.
 ``` sql
 CREATE TABLE groups (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
 ```
@@ -365,8 +365,8 @@ CREATE INDEX idx_groups_code_name ON groups(code_name);
 ``` sql
 CREATE TABLE groups (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
 ```
@@ -529,8 +529,8 @@ be used when the user inspect any product in the production.
 ``` sql
 CREATE TABLE qa_reasons (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(20),
     active BIT DEFAULT 1,
     severity_level_id INT NOT NULL,
     FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
@@ -543,8 +543,8 @@ CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 ``` sql
 CREATE TABLE qa_reasons (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255),
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(20),
     active BOOLEAN DEFAULT true,
     severity_level_id INT NOT NULL REFERENCES severity_levels(id)
 );
@@ -606,7 +606,7 @@ about the actual inspection.
 ``` sql
 CREATE TABLE qa_items (
     id INT PRIMARY KEY IDENTITY(1,1),
-    description NVARCHAR(MAX) NOT NULL,
+    description NVARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
@@ -643,7 +643,7 @@ production orders and get information from the SAP system.
 ``` sql
 CREATE TABLE sap_production_orders (
     id INT PRIMARY KEY IDENTITY(1,1),
-    po_number NVARCHAR(MAX) UNIQUE NOT NULL
+    po_number NVARCHAR(20) UNIQUE NOT NULL
 );
 ```
 
@@ -652,7 +652,7 @@ CREATE TABLE sap_production_orders (
 ``` sql
 CREATE TABLE sap_production_orders (
     id SERIAL PRIMARY KEY,
-    po_number VARCHAR(255) UNIQUE NOT NULL
+    po_number VARCHAR(20) UNIQUE NOT NULL
 );
 ```
 
@@ -683,7 +683,7 @@ fields are going to be queried a lot.
 CREATE TABLE products (
     id INT PRIMARY KEY IDENTITY(1,1),
     data_matrix BIGINT UNIQUE NOT NULL,
-    po_number NVARCHAR(MAX) NOT NULL,
+    po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
@@ -699,7 +699,7 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     data_matrix BIGINT UNIQUE NOT NULL,
-    po_number VARCHAR(255) NOT NULL,
+    po_number VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
@@ -735,7 +735,7 @@ CREATE TABLE product_histories (
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL
+    job_item_id INT REFERENCES job_items(id) NOT NULL,
     product_id INT REFERENCES products(id) NOT NULL
 );
 ```
@@ -808,9 +808,9 @@ CREATE TABLE product_virtual_assembly_links (
     active BIT DEFAULT 1,
     PRIMARY KEY (product_id, virtual_assembly_id)
 );
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON
     product_virtual_assembly_links(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
     product_virtual_assembly_links(virtual_assembly_id);
 ```
 
@@ -823,12 +823,10 @@ CREATE TABLE product_virtual_assembly_links (
     active BOOLEAN DEFAULT true,
     PRIMARY KEY (product_id, virtual_assembly_id)
 );
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
-product_virtual_assembly_links
-(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
-product_virtual_assembly_links
-(virtual_assembly_id);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON
+    product_virtual_assembly_links(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
+    product_virtual_assembly_links(virtual_assembly_id);
 ```
 
 ## International Languages
@@ -849,8 +847,8 @@ available list of languages are going to be defined in `languages` table.
 ``` sql
 CREATE TABLE international_languages (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(MAX) NOT NULL,
-    language VARCHAR(MAX) NOT NULL
+    code_name NVARCHAR(8) NOT NULL,
+    language NVARCHAR(20) NOT NULL
 );
 ```
 
@@ -859,12 +857,15 @@ CREATE TABLE international_languages (
 ``` sql 
 CREATE TABLE international_languages (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) NOT NULL,
-    language VARCHAR(255) NOT NULL
+    code_name VARCHAR(20) NOT NULL,
+    language VARCHAR(20) NOT NULL
 );
 ```
 
 ## International Labels
+
+Labels represents an element on the user interface where multiple languages are
+available.
 
 > Table name: `international_labels`
 
@@ -878,7 +879,7 @@ CREATE TABLE international_languages (
 ``` sql
 CREATE TABLE international_labels (
     id INT PRIMARY KEY IDENTITY(1,1),
-    usage_label NVARCHAR(MAX) NOT NULL
+    usage_label NVARCHAR(120) NOT NULL
 );
 ```
 
@@ -887,13 +888,16 @@ CREATE TABLE international_labels (
 ``` sql
 CREATE TABLE international_labels (
     id SERIAL PRIMARY KEY,
-    usage_label VARCHAR(255) NOT NULL
+    usage_label VARCHAR(120) NOT NULL
 );
 ```
 
 ## International Translations
 
 > Table name: `international_translations`
+
+Translated values of each label are defined in this table for the available
+languages.
 
 | Field name                | Key | Description          | Type    | Default value  | Required |
 |---------------------------|:---:|----------------------|---------|:--------------:|:--------:|
@@ -909,7 +913,7 @@ CREATE TABLE international_translations (
     id INT PRIMARY KEY IDENTITY(1,1),
     international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
     international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
-    value NVARCHAR(MAX) NOT NULL
+    value NVARCHAR(255) NOT NULL
 );
 CREATE INDEX idx_international_translations_international_language_id on
     international_translations(international_language_id);

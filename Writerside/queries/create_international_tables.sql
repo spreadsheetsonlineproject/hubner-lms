@@ -1,14 +1,14 @@
 -- create the languages table
 CREATE TABLE international_languages (
     id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(255) NOT NULL,
-    language NVARCHAR(255) NOT NULL
+    code_name NVARCHAR(8) NOT NULL,
+    language NVARCHAR(20) NOT NULL
 );
 
 -- create the labels table
 CREATE TABLE international_labels (
     id INT PRIMARY KEY IDENTITY(1,1),
-    usage_label NVARCHAR(MAX) NOT NULL
+    usage_label NVARCHAR(120) NOT NULL
 );
 
 -- create the translations table
@@ -16,7 +16,7 @@ CREATE TABLE international_translations (
     id INT PRIMARY KEY IDENTITY(1,1),
     international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
     international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
-    value NVARCHAR(MAX) NOT NULL
+    value NVARCHAR(255) NOT NULL
 );
 CREATE INDEX idx_international_translations_international_language_id on
     international_translations(international_language_id);
