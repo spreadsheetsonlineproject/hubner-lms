@@ -1,16 +1,14 @@
 -- create users table
 CREATE TABLE users (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    unique_id BIGINT UNIQUE,
+    id BIGINT PRIMARY KEY NOT NULL,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(60) NOT NULL,
-    badge_number NVARCHAR(20) NOT NULL,
+    email NVARCHAR(60) UNIQUE,
+    badge_number NVARCHAR(20) UNIQUE,
     first_name NVARCHAR(60) NOT NULL,
     last_name NVARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_users_unique_id ON users(unique_id);
 
 -- create production flow items for technology steps
 CREATE TABLE flow_items (
@@ -134,15 +132,13 @@ CREATE TABLE virtual_assemblies (
 
 -- create products table
 CREATE TABLE products (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    data_matrix BIGINT UNIQUE NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
     po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
-CREATE INDEX idx_products_data_matrix ON products(data_matrix);
 CREATE INDEX idx_products_po_number ON products(po_number);
 
 -- create product histories table

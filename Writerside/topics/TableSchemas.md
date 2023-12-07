@@ -27,53 +27,45 @@ history over an inactive period of time.
 
 > Table name:`users`
 
-| Field name   | Key | Description                        | Type       | Default value  | Required |
-|--------------|:---:|------------------------------------|------------|:--------------:|:--------:|
-| id           | PK  | Unique ID                          | Integer    | auto increment |    N     |
-| unique_id    |  -  | User's Data matrix number (Unique) | BigInteger |       -        |    Y     |
-| active       |  -  | Allow user to take actions         | Bool       |      true      |    N     |
-| deleted      |  -  | Deny any actions                   | Bool       |     false      |    N     |
-| deleted_at   |  -  | Time of deletion                   | Timestamp  |       -        |    N     |
-| email        |  -  | Email to identify person           | Varchar    |       -        |    Y     |
-| badge_number |  -  | Employee id to identify person     | Varchar    |       -        |    Y     |
-| first_name   |  -  | First name                         | Varchar    |       -        |    Y     |
-| last_name    |  -  | First name                         | Varchar    |       -        |    Y     |
-
-Indexes of the table should be the **unique_id**. This field is going to be the
-most queried field in this table.
+| Field name   | Key | Description                    | Type       | Default value | Required |
+|--------------|:---:|--------------------------------|------------|:-------------:|:--------:|
+| id           | PK  | Unique ID                      | BigInteger |       -       |    Y     |
+| active       |  -  | Allow user to take actions     | Bool       |     true      |    N     |
+| deleted      |  -  | Deny any actions               | Bool       |     false     |    N     |
+| deleted_at   |  -  | Time of deletion               | Timestamp  |       -       |    N     |
+| email        |  -  | Email to identify person       | Varchar    |       -       |    N     |
+| badge_number |  -  | Employee id to identify person | Varchar    |       -       |    N     |
+| first_name   |  -  | First name                     | Varchar    |       -       |    Y     |
+| last_name    |  -  | First name                     | Varchar    |       -       |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE users (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    unique_id BIGINT UNIQUE,
+    id BIGINT PRIMARY KEY NOT NULL,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(60) NOT NULL,
-    badge_number NVARCHAR(20) NOT NULL,
+    email NVARCHAR(60) UNIQUE,
+    badge_number NVARCHAR(20) UNIQUE,
     first_name NVARCHAR(60) NOT NULL,
     last_name NVARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
 
 **Postgresql**
 
 ``` sql
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    unique_id BIGINT UNIQUE NOT NULL,
+    unique_id BIGINT PRIMARY KEY NOT NULL,
     active BOOLEAN DEFAULT true,
     deleted BOOLEAN DEFAULT false,
     deleted_at TIMESTAMP,
-    email VARCHAR(60) NOT NULL,
-    badge_number VARCHAR(20) NOT NULL,
+    email VARCHAR(60) UNIQUE,
+    badge_number VARCHAR(20) UNIQUE,
     first_name VARCHAR(60) NOT NULL,
     last_name VARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
 
 ## Production Flow items
@@ -664,15 +656,14 @@ the system are created to support the tracking of the products.
 
 > Table name: `products`
 
-| Field name                                       | Key | Description                          | Type       | Default value  | Required |
-|--------------------------------------------------|:---:|--------------------------------------|------------|:--------------:|:--------:|
-| id                                               | PK  | Unique ID                            | Integer    | auto increment |    N     |
-| data_matrix                                      |  -  | Data matrix value (Unique)           | BigInteger |       -        |    Y     |
-| po_number                                        |  -  | PO number                            | Varchar    |       -        |    Y     |
-| active                                           |  -  | Is the item active                   | Bool       |       Y        |    N     |
-| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -        |    N     |
-| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -        |    N     |
-| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -        |    N     |
+| Field name                                       | Key | Description                          | Type       | Default value | Required |
+|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
+| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
+| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
+| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
+| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
+| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
+| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
 
 Indexing on **data_matrix** and **po_number** fields is recommended. These
 fields are going to be queried a lot.
@@ -681,15 +672,13 @@ fields are going to be queried a lot.
 
 ``` sql
 CREATE TABLE products (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    data_matrix BIGINT UNIQUE NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
     po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
-CREATE INDEX idx_products_data_matrix ON products(data_matrix);
 CREATE INDEX idx_products_po_number ON products(po_number);
 ```
 
@@ -697,15 +686,13 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 
 ``` sql
 CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    data_matrix BIGINT UNIQUE NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
     po_number VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
-CREATE INDEX idx_products_data_matrix ON products(data_matrix);
 CREATE INDEX idx_products_po_number ON products(po_number);
 ```
 
