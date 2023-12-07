@@ -27,53 +27,45 @@ history over an inactive period of time.
 
 > Table name:`users`
 
-| Field name   | Key | Description                        | Type       | Default value | Required |
-|--------------|:---:|------------------------------------|------------|:-------------:|:--------:|
-| id           | PK  | Unique ID                          | Integer    |   sequence    |    N     |
-| unique_id    |  -  | User's Data matrix number (Unique) | BigInteger |       -       |    Y     |
-| active       |  -  | Allow user to take actions         | Bool       |     true      |    N     |
-| deleted      |  -  | Deny any actions                   | Bool       |     false     |    N     |
-| deleted_at   |  -  | Time of deletion                   | Timestamp  |       -       |    N     |
-| email        |  -  | Email to identify person           | Varchar    |       -       |    Y     |
-| badge_number |  -  | Employee id to identify person     | Varchar    |       -       |    Y     |
-| first_name   |  -  | First name                         | Varchar    |       -       |    Y     |
-| last_name    |  -  | First name                         | Varchar    |       -       |    Y     |
-
-Indexes of the table should be the **unique_id**. This field is going to be the
-most queried field in this table.
+| Field name   | Key | Description                    | Type       | Default value | Required |
+|--------------|:---:|--------------------------------|------------|:-------------:|:--------:|
+| id           | PK  | Unique ID                      | BigInteger |       -       |    Y     |
+| active       |  -  | Allow user to take actions     | Bool       |     true      |    N     |
+| deleted      |  -  | Deny any actions               | Bool       |     false     |    N     |
+| deleted_at   |  -  | Time of deletion               | Timestamp  |       -       |    N     |
+| email        |  -  | Email to identify person       | Varchar    |       -       |    N     |
+| badge_number |  -  | Employee id to identify person | Varchar    |       -       |    N     |
+| first_name   |  -  | First name                     | Varchar    |       -       |    Y     |
+| last_name    |  -  | First name                     | Varchar    |       -       |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE users (
-    id INT PRIMARY KEY,
-    unique_id BIGINT UNIQUE,
+    id BIGINT PRIMARY KEY NOT NULL,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(MAX) NOT NULL,
-    badge_number NVARCHAR(MAX) NOT NULL,
-    first_name NVARCHAR(MAX) NOT NULL,
-    last_name NVARCHAR(MAX) NOT NULL
+    email NVARCHAR(60) UNIQUE,
+    badge_number NVARCHAR(20) UNIQUE,
+    first_name NVARCHAR(60) NOT NULL,
+    last_name NVARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
 
 **Postgresql**
 
 ``` sql
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    unique_id BIGINT UNIQUE NOT NULL,
+    unique_id BIGINT PRIMARY KEY NOT NULL,
     active BOOLEAN DEFAULT true,
     deleted BOOLEAN DEFAULT false,
     deleted_at TIMESTAMP,
-    email VARCHAR(255) NOT NULL,
-    badge_number VARCHAR(255) NOT NULL,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL
+    email VARCHAR(60) UNIQUE,
+    badge_number VARCHAR(20) UNIQUE,
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL
 );
-CREATE INDEX idx_users_unique_id ON users(unique_id);
 ```
 
 ## Production Flow items
@@ -92,11 +84,11 @@ ability to track the technology steps and journey of a single product.
 
 > Table name: `flow_items`
 
-| Field name | Key | Description                | Type    | Default value | Required |
-|------------|:---:|----------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                  | Integer |   sequence    |    N     |
-| code_name  |  -  | Codename of the flow item  | Varchar |       -       |    Y     |
-| active     |  -  | Allow user to take actions | Bool    |     true      |    N     |
+| Field name | Key | Description                | Type    | Default value  | Required |
+|------------|:---:|----------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer | auto increment |    N     |
+| code_name  |  -  | Codename of the flow item  | Varchar |       -        |    Y     |
+| active     |  -  | Allow user to take actions | Bool    |      true      |    N     |
 
 Indexing of the table can be made by the **code_name** field.
 
@@ -104,11 +96,11 @@ Indexing of the table can be made by the **code_name** field.
 
 ``` sql
 CREATE TABLE flow_items (
-    id INT PRIMARY KEY,
-    code_name NVARCHAR(MAX) NOT NULL,
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1
 );
-CREATE INDEX idx_code_name on flow_items(code_name);
+CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 ```
 
 **Postgresql**
@@ -116,10 +108,10 @@ CREATE INDEX idx_code_name on flow_items(code_name);
 ``` sql
 CREATE TABLE flow_items (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) NOT NULL,
+    code_name VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true
 );
-CREATE INDEX idx_code_name on flow_items(code_name);
+CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 ```
 
 ## Jobs
@@ -132,14 +124,14 @@ This is the place where the required permission is set on the specific job.
 
 > Table name: `jobs`
 
-| Field name                             | Key | Description                           | Type    | Default value | Required |
-|----------------------------------------|:---:|---------------------------------------|---------|:-------------:|:--------:|
-| id                                     | PK  | Unique ID                             | Integer |   sequence    |    N     |
-| name                                   |  -  | Name of the job (Unique)              | Varchar |       -       |    Y     |
-| description                            |  -  | Short description of the job          | Varchar |       -       |    N     |
-| active                                 |  -  | Determine the availability of the job | Bool    |     true      |    N     |
-| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -       |    Y     |
-| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -       |    Y     |
+| Field name                             | Key | Description                           | Type    | Default value  | Required |
+|----------------------------------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id                                     | PK  | Unique ID                             | Integer | auto increment |    N     |
+| name                                   |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
+| description                            |  -  | Short description of the job          | Varchar |       -        |    N     |
+| active                                 |  -  | Determine the availability of the job | Bool    |      true      |    N     |
+| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -        |    Y     |
+| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -        |    Y     |
 
 Querying the table is going to be made through the **id** field in most cases.
 Sometimes the query will look for **flow_item_id** so indexing of these fields
@@ -149,14 +141,14 @@ should be helpful.
 
 ``` sql
 CREATE TABLE jobs (
-    id INT PRIMARY KEY,
-    name NVARCHAR(MAX) UNIQUE NOT NULL,
-    description NVARCHAR(MAX),
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(20) UNIQUE NOT NULL,
+    description NVARCHAR(255),
     active BIT DEFAULT 1,
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
+CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 **Postgresql**
@@ -164,13 +156,13 @@ CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
 ``` sql
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(20) UNIQUE NOT NULL,
     description VARCHAR(255),
     active BOOLEAN DEFAULT true,
     flow_item_id INT REFERENCES flow_items(id) NOT NULL,
     permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_flow_item_id on jobs(flow_item_id);
+CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 ## Job Items
@@ -181,13 +173,13 @@ of the taken actions not just the metadata of the job.
 
 > Table name: `job_items`
 
-| Field name           | Key | Description                   | Type      | Default value | Required |
-|----------------------|:---:|-------------------------------|-----------|:-------------:|:--------:|
-| id                   | PK  | Unique ID                     | Integer   |   sequence    |    -     |
-| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -       |    Y     |
-| description          |  -  | Short description by the user | Varchar   |       -       |    N     |
-| [created_by](#users) | FK  | User id                       | Integer   |       -       |    Y     |
-| created_at           |  -  | Time of creation              | Timestamp |      now      |    N     |
+| Field name           | Key | Description                   | Type      | Default value  | Required |
+|----------------------|:---:|-------------------------------|-----------|:--------------:|:--------:|
+| id                   | PK  | Unique ID                     | Integer   | auto increment |    -     |
+| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -        |    Y     |
+| description          |  -  | Short description by the user | Varchar   |       -        |    N     |
+| [created_by](#users) | FK  | User id                       | Integer   |       -        |    Y     |
+| created_at           |  -  | Time of creation              | Timestamp |      now       |    N     |
 
 Indexing should be created on the **job_id** field. Most queries are going to
 look for **id** or **job_id**.
@@ -196,9 +188,9 @@ look for **id** or **job_id**.
 
 ``` sql
 CREATE TABLE job_items (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
-    description NVARCHAR(MAX),
+    description NVARCHAR(255),
     created_by INT REFERENCES users(id) NOT NULL,
     created_at DATETIME DEFAULT GETDATE()
 );
@@ -230,18 +222,18 @@ the [job_workstation_links](#job-and-workstation-links)
 
 > Table name: `workstations`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| name       |  -  | Name of the workstation (Unique) | Varchar |       -       |    Y     |
-| active     |  -  | Allow to use the workstation     | Bool    |     true      |    N     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| name       |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
+| active     |  -  | Allow to use the workstation     | Bool    |      true      |    N     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE workstations (
-    id INT PRIMARY KEY,
-    name NVARCHAR(MAX),
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(60),
     active BIT DEFAULT 1,
 );
 ```
@@ -251,7 +243,7 @@ CREATE TABLE workstations (
 ``` sql
 CREATE TABLE workstations(
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(60),
     active BOOLEAN DEFAULT true
 );
 ```
@@ -272,7 +264,7 @@ the connection between jobs and workstations.
 
 ``` sql
 CREATE TABLE job_workstation_links (
-    workstation_id INT REFERENCES work_stations(id),
+    workstation_id INT REFERENCES workstations(id),
     job_id INT REFERENCES jobs(id),
     PRIMARY KEY (workstation_id, job_id)
 );
@@ -297,21 +289,21 @@ the [user_job_links](#group-and-job-links) table.
 
 > Table name: `permissions`
 
-| Field name | Key | Description                           | Type    | Default value | Required |
-|------------|:---:|---------------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                             | Integer |   sequence    |    N     |
-| code_name  |  -  | Short name of the permission (Unique) | Varchar |       -       |    Y     |
-| name       |  -  | Detailed name of the permission       | Varchar |       -       |    N     |
+| Field name | Key | Description                           | Type    | Default value  | Required |
+|------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                             | Integer | auto increment |    N     |
+| code_name  |  -  | Short name of the permission (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Detailed name of the permission       | Varchar |       -        |    N     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE permissions (
-    id INT PRIMARY KEY,
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
-
+CREATE INDEX idx_permissions_code_name on permissions(code_name);
 ```
 
 **Postgresql**
@@ -319,9 +311,10 @@ CREATE TABLE permissions (
 ``` sql
 CREATE TABLE permissions (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(60) NOT NULL
 );
+CREATE INDEX idx_permissions_code_name on permissions(code_name);
 ```
 
 > Recommended values:
@@ -340,11 +333,11 @@ system.
 
 > Table name: `groups`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| code_name  |  -  | Short name of the group (Unique) | Varchar |       -       |    Y     |
-| name       |  -  | Detailed name of the group       | Varchar |       -       |    N     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| code_name  |  -  | Short name of the group (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Detailed name of the group       | Varchar |       -        |    N     |
 
 Indexing on **code_name** field is highly recommended.
 
@@ -352,9 +345,9 @@ Indexing on **code_name** field is highly recommended.
 
 ``` sql
 CREATE TABLE groups (
-    id INT PRIMARY KEY,
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX) NOT NULL
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
 ```
@@ -364,8 +357,8 @@ CREATE INDEX idx_groups_code_name ON groups(code_name);
 ``` sql
 CREATE TABLE groups (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
 ```
@@ -382,8 +375,8 @@ tables. With these links any access, role can be defined.
 | [group_id](#groups)           | PK, FK | Id of the group                   | Integer |       -       |    Y     |
 | [permission_id](#permissions) | PK, FK | Id of the permission that allowed | Integer |       -       |    Y     |
 
-This table is going to be queried a lot. Creating index on both fields is
-recommended.
+This table is going to be queried a lot. Creating index on both fields is done
+by database server by default.
 
 **MsSQL**
 
@@ -393,8 +386,6 @@ CREATE TABLE group_permission_links (
     permission_id INT REFERENCES permissions(id),
     PRIMARY KEY (group_id, permission_id)
 );
-CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
-CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
 ```
 
 **Postgresql**
@@ -405,8 +396,6 @@ CREATE TABLE group_permission_links (
     permission_id INT REFERENCES permissions(id),
     PRIMARY KEY (group_id, permission_id)
 );
-CREATE INDEX idx_group_permission_links_group_id ON group_permission_links(group_id);
-CREATE INDEX idx_group_permission_links_permission_id ON group_permission_links(permission_id);
 ```
 
 > For example
@@ -466,8 +455,6 @@ CREATE TABLE group_job_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
-CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 **Postgresql**
@@ -478,8 +465,6 @@ CREATE TABLE group_job_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (job_id, group_id)
 );
-CREATE INDEX idx_group_job_links_job_id ON group_job_links(job_id);
-CREATE INDEX idx_group_job_links_group_id ON group_job_links(group_id);
 ```
 
 ## User and Group Links
@@ -504,8 +489,6 @@ CREATE TABLE user_group_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
-CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
 **Postgresql**
@@ -516,8 +499,6 @@ CREATE TABLE user_group_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-CREATE INDEX idx_user_group_links_user_id ON user_group_links(user_id);
-CREATE INDEX idx_user_group_links_group_id ON user_group_links(group_id);
 ```
 
 ## Quality reasons
@@ -527,21 +508,21 @@ be used when the user inspect any product in the production.
 
 > Table name: `qa_reasons`
 
-| Field name                                         | Key | Description                          | Type    | Default value | Required |
-|----------------------------------------------------|:---:|--------------------------------------|---------|:-------------:|:--------:|
-| id                                                 | PK  | Unique ID                            | Integer |   sequence    |    N     |
-| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -       |    Y     |
-| name                                               |  -  | Descriptive name of the reason       | Varchar |       -       |    N     |
-| active                                             |  -  | Allows to deactivate reason          | Bool    |     true      |    N     |
-| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y       |    Y     |
+| Field name                                         | Key | Description                          | Type    | Default value  | Required |
+|----------------------------------------------------|:---:|--------------------------------------|---------|:--------------:|:--------:|
+| id                                                 | PK  | Unique ID                            | Integer | auto increment |    N     |
+| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -        |    Y     |
+| name                                               |  -  | Descriptive name of the reason       | Varchar |       -        |    N     |
+| active                                             |  -  | Allows to deactivate reason          | Bool    |      true      |    N     |
+| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y        |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE qa_reasons (
-    id INT PRIMARY KEY,
-    code_name NVARCHAR(MAX) UNIQUE NOT NULL,
-    name NVARCHAR(MAX),
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(20),
     active BIT DEFAULT 1,
     severity_level_id INT NOT NULL,
     FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
@@ -554,8 +535,8 @@ CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 ``` sql
 CREATE TABLE qa_reasons (
     id SERIAL PRIMARY KEY,
-    code_name VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255),
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(20),
     active BOOLEAN DEFAULT true,
     severity_level_id INT NOT NULL REFERENCES severity_levels(id)
 );
@@ -569,17 +550,17 @@ help building more sophisticated quality tracking system.
 
 > Table name: `severity_levels`
 
-| Field name          | Key | Description                                   | Type    | Default value | Required |
-|---------------------|:---:|-----------------------------------------------|---------|:-------------:|:--------:|
-| id                  | PK  | Unique ID                                     | Integer |   sequence    |    N     |
-| value               |  -  | Integer value where the 1 is the most serious | Integer |       -       |    Y     |
-| allow_product_usage |  -  | Allow to use the product production           | Bool    |       -       |    Y     |
+| Field name          | Key | Description                                   | Type    | Default value  | Required |
+|---------------------|:---:|-----------------------------------------------|---------|:--------------:|:--------:|
+| id                  | PK  | Unique ID                                     | Integer | auto increment |    N     |
+| value               |  -  | Integer value where the 1 is the most serious | Integer |       -        |    Y     |
+| allow_product_usage |  -  | Allow to use the product production           | Bool    |       -        |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE severity_levels (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     value INT NOT NULL,
     allow_product_usage BIT NOT NULL
 );
@@ -604,20 +585,20 @@ about the actual inspection.
 
 > Table name: `qa_items`
 
-| Field name                       | Key | Description                           | Type      | Default value | Required |
-|----------------------------------|:---:|---------------------------------------|-----------|:-------------:|:--------:|
-| id                               | PK  | Unique ID                             | Integer   |   sequence    |    N     |
-| description                      |  -  | User description of the qa inspection | Varchar   |       -       |    Y     |
-| created_at                       |  -  | Time of creation                      | Timestamp |      now      |    N     |
-| [created_by](#users)             | FK  | User id                               | Integer   |       -       |    Y     |
-| [qa_reason_id](#quality-reasons) | FK  | Quality reason item                   | Integer   |       -       |    Y     |
+| Field name                       | Key | Description                           | Type      | Default value  | Required |
+|----------------------------------|:---:|---------------------------------------|-----------|:--------------:|:--------:|
+| id                               | PK  | Unique ID                             | Integer   | auto increment |    N     |
+| description                      |  -  | User description of the qa inspection | Varchar   |       -        |    Y     |
+| created_at                       |  -  | Time of creation                      | Timestamp |      now       |    N     |
+| [created_by](#users)             | FK  | User id                               | Integer   |       -        |    Y     |
+| [qa_reason_id](#quality-reasons) | FK  | Quality reason item                   | Integer   |       -        |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE qa_items (
-    id INT PRIMARY KEY,
-    description NVARCHAR(MAX) NOT NULL,
+    id INT PRIMARY KEY IDENTITY(1,1),
+    description NVARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
@@ -644,17 +625,17 @@ production orders and get information from the SAP system.
 
 > Table name: `sap_production_orders`
 
-| Field name | Key | Description                      | Type    | Default value | Required |
-|------------|:---:|----------------------------------|---------|:-------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer |   sequence    |    N     |
-| po_number  |  -  | Production Order number (Unique) | Varchar |       -       |    Y     |
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| po_number  |  -  | Production Order number (Unique) | Varchar |       -        |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE sap_production_orders (
-    id INT PRIMARY KEY,
-    po_number NVARCHAR(MAX) UNIQUE NOT NULL
+    id INT PRIMARY KEY IDENTITY(1,1),
+    po_number NVARCHAR(20) UNIQUE NOT NULL
 );
 ```
 
@@ -663,7 +644,7 @@ CREATE TABLE sap_production_orders (
 ``` sql
 CREATE TABLE sap_production_orders (
     id SERIAL PRIMARY KEY,
-    po_number VARCHAR(255) UNIQUE NOT NULL
+    po_number VARCHAR(20) UNIQUE NOT NULL
 );
 ```
 
@@ -677,8 +658,7 @@ the system are created to support the tracking of the products.
 
 | Field name                                       | Key | Description                          | Type       | Default value | Required |
 |--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
-| id                                               | PK  | Unique ID                            | Integer    |   sequence    |    N     |
-| data_matrix                                      |  -  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
+| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
 | po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
 | active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
 | [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
@@ -692,15 +672,13 @@ fields are going to be queried a lot.
 
 ``` sql
 CREATE TABLE products (
-    id INT PRIMARY KEY,
-    data_matrix BIGINT UNIQUE NOT NULL,
-    po_number NVARCHAR(MAX) NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
+    po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
-CREATE INDEX idx_products_data_matrix ON products(data_matrix);
 CREATE INDEX idx_products_po_number ON products(po_number);
 ```
 
@@ -708,15 +686,13 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 
 ``` sql
 CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    data_matrix BIGINT UNIQUE NOT NULL,
-    po_number VARCHAR(255) NOT NULL,
+    id BIGINT PRIMARY KEY NOT NULL,
+    po_number VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true,
     sap_production_order_id INT REFERENCES sap_production_orders(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
-CREATE INDEX idx_products_data_matrix ON products(data_matrix);
 CREATE INDEX idx_products_po_number ON products(po_number);
 ```
 
@@ -729,24 +705,24 @@ to be created in the history table.
 
 > Table name: `product_histories`
 
-| Field name  | Key | Description              | Type      | Default value | Required |
-|-------------|:---:|--------------------------|-----------|:-------------:|:--------:|
-| id          | PK  | Unique ID                | Integer   |   sequence    |    N     |
-| created_at  |  -  | Time the item created    | Timestamp |      now      |    N     |
-| created_by  |  -  | User who create the item | Integer   |       -       |    Y     |
-| qa_item_id  | FK  | QA item                  | Integer   |       -       |    N     |
-| job_item_id | FK  | Job that made by user    | Integer   |       -       |    Y     |
-| product_id  | FK  | Product to belong        | Integer   |       -       |    Y     |
+| Field name  | Key | Description              | Type      | Default value  | Required |
+|-------------|:---:|--------------------------|-----------|:--------------:|:--------:|
+| id          | PK  | Unique ID                | Integer   | auto increment |    N     |
+| created_at  |  -  | Time the item created    | Timestamp |      now       |    N     |
+| created_by  |  -  | User who create the item | Integer   |       -        |    Y     |
+| qa_item_id  | FK  | QA item                  | Integer   |       -        |    N     |
+| job_item_id | FK  | Job that made by user    | Integer   |       -        |    Y     |
+| product_id  | FK  | Product to belong        | Integer   |       -        |    Y     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE product_histories (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     created_at DATETIME DEFAULT GETDATE(),
     created_by INT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL
+    job_item_id INT REFERENCES job_items(id) NOT NULL,
     product_id INT REFERENCES products(id) NOT NULL
 );
 ```
@@ -770,17 +746,17 @@ Collection of assembled products.
 
 > Table name: `virtual_assemblies`
 
-| Field name                       | Key | Description        | Type    | Default value | Required |
-|----------------------------------|:---:|--------------------|---------|:-------------:|:--------:|
-| id                               | PK  | Unique ID          | Integer |   sequence    |    -     |
-| active                           |  -  | Is the item active | Bool    |     true      |    -     |
-| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -       |    N     |
+| Field name                       | Key | Description        | Type    | Default value  | Required |
+|----------------------------------|:---:|--------------------|---------|:--------------:|:--------:|
+| id                               | PK  | Unique ID          | Integer | auto increment |    -     |
+| active                           |  -  | Is the item active | Bool    |      true      |    -     |
+| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -        |    N     |
 
 **MsSQL**
 
 ``` sql
 CREATE TABLE virtual_assemblies (
-    id INT PRIMARY KEY,
+    id INT PRIMARY KEY IDENTITY(1,1),
     active BIT DEFAULT 1,
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
@@ -790,7 +766,7 @@ CREATE TABLE virtual_assemblies (
 
 ``` sql
 CREATE TABLE virtual_assemblies (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY IDENTITY(1,1),
     active BOOLEAN DEFAULT true,
     qa_reason_id INT REFERENCES qa_reasons(id)
 );
@@ -800,12 +776,12 @@ CREATE TABLE virtual_assemblies (
 
 A single product can be part of different Virtual Assembly Products.
 
-> Table name: 'product_virtual_assembly_links'
+> Table name: `product_virtual_assembly_links`
 
 | Field name                                 |  Key   | Description                             | Type    | Default value | Required |
 |--------------------------------------------|:------:|-----------------------------------------|---------|:-------------:|:--------:|
 | [product_id](#products)                    | PK, FK | Product id as part of a virtual product | Integer |       -       |    Y     |
-| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |  <br/>     -  |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |       -       |    Y     |
 | active                                     |   -    | Connection active                       | Bool    |     true      |    N     |
 
 Indexing on both fields is required.
@@ -819,12 +795,10 @@ CREATE TABLE product_virtual_assembly_links (
     active BIT DEFAULT 1,
     PRIMARY KEY (product_id, virtual_assembly_id)
 );
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
-product_virtual_assembly_links
-(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
-product_virtual_assembly_links
-(virtual_assembly_id);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON
+    product_virtual_assembly_links(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
+    product_virtual_assembly_links(virtual_assembly_id);
 ```
 
 **Postgresql**
@@ -836,10 +810,115 @@ CREATE TABLE product_virtual_assembly_links (
     active BOOLEAN DEFAULT true,
     PRIMARY KEY (product_id, virtual_assembly_id)
 );
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON 
-product_virtual_assembly_links
-(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON 
-product_virtual_assembly_links
-(virtual_assembly_id);
+CREATE INDEX idx_product_virtual_assembly_links_product_id ON
+    product_virtual_assembly_links(product_id);
+CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
+    product_virtual_assembly_links(virtual_assembly_id);
+```
+
+## International Languages
+
+The LMS must be able to handle different languages for different sites. The
+available list of languages are going to be defined in `languages` table.
+
+> Table name: `international_languages`
+
+| Field name | Key | Description                | Type    | Default value  | Required |
+|------------|:---:|----------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                  | Integer | auto increment |    -     |
+| code_name  |  -  | Short name of the language | Bool    |       -        |    Y     |
+| language   |  -  | Language                   | Varchar |       -        |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_languages (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(8) NOT NULL,
+    language NVARCHAR(20) NOT NULL
+);
+```
+
+**Postgresql**
+
+``` sql 
+CREATE TABLE international_languages (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(20) NOT NULL,
+    language VARCHAR(20) NOT NULL
+);
+```
+
+## International Labels
+
+Labels represents an element on the user interface where multiple languages are
+available.
+
+> Table name: `international_labels`
+
+| Field name  | Key | Description             | Type    | Default value  | Required |
+|-------------|:---:|-------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID               | Integer | auto increment |    -     |
+| usage_label |  -  | Identifies the use case | Varchar |       -        |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_labels (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    usage_label NVARCHAR(120) NOT NULL
+);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE international_labels (
+    id SERIAL PRIMARY KEY,
+    usage_label VARCHAR(120) NOT NULL
+);
+```
+
+## International Translations
+
+> Table name: `international_translations`
+
+Translated values of each label are defined in this table for the available
+languages.
+
+| Field name                | Key | Description          | Type    | Default value  | Required |
+|---------------------------|:---:|----------------------|---------|:--------------:|:--------:|
+| id                        | PK  | Unique ID            | Integer | auto increment |    -     |
+| international_language_id | FK  | Defines the language | Integer |       -        |    Y     |
+| international_label_id    | FK  | Defines the use case | Integer |       -        |    Y     |
+| value                     |  -  | Text to display      | Varchar |       -        |    Y     |
+
+**MsSQL**
+
+``` sql
+CREATE TABLE international_translations (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
+    international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
+    value NVARCHAR(255) NOT NULL
+);
+CREATE INDEX idx_international_translations_international_language_id on
+    international_translations(international_language_id);
+CREATE INDEX idx_international_translations_international_label_id on
+    international_translations(international_label_id);
+```
+
+**Postgresql**
+
+``` sql
+CREATE TABLE international_translations (
+    id SERIAL PRIMARY KEY,
+    international_language_id INT REFERENCES international_languages(id),
+    international_label_id INT REFERENCES international_labels(id),
+    value VARCHAR(255) NOT NULL
+);
+CREATE INDEX idx_international_translations_international_language_id on
+    international_translations(international_language_id); 
+CREATE INDEX idx_international_translations_international_label_id on
+    international_translations(international_label_id);
 ```
