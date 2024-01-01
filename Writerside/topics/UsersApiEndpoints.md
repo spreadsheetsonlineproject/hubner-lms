@@ -3,38 +3,59 @@
 User related actions in the database performed via the flows below.
 The attributes of the PowerAutomate calls have to follow the given order.
 
-## Active
+## Get User By ID
 
-The status of the user depends on two different fields in the
-[users](TableSchemas.md#users) table. The **active** column
-with `true` value always represents an active user. An inactive user can be
-determined by the `false` value of **active** field or the `true` value of the
-**deleted** field.
-In case of any inconsistent changes on the **deleted** and **active** field of
-the [users](TableSchemas.md#users)
-table
+> The name of the flow is **ApiGetUserById**
 
-> The name of the flow is **ApiUserActive**
+The most common user endpoint is getting the user details by the ID of the user.
+This action will always return the user. Further actions in the user
+interface will be handled by the result of this endpoint.
 
-The flow requires a single input value to check the active status of a user. The
-input must be a number and comes from the **DataMatrix** ID of the user. This
-field is called **unique_id** in the [users](TableSchemas.md#users)
-table.
+The request will query the [users](TableSchemas.md#users) table to find the
+user.
 
-**Input attributes:**
+**Input attributes**
 
 | Attribute | Type   | Position | Required |
 |-----------|--------|----------|:--------:|
 | UniqueId  | Number | 1        |    Y     |
 
-**Output Attributes:**
+**Response**
 
-| Attribute | Type    | Position |
-|-----------|---------|----------|
-| Active    | Boolean | 1        |
+``` json
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "deleted": {
+      "type": "boolean"
+    }
+  }
+}
+```
 
-> If the user does not exist in the database, the API endpoint will return
-> error.
+**Response sample**
+
+``` json
+{
+  "id": 123456,
+  "first_name": "John",
+  "last_name": "Doe",
+  "active": true,
+  "deleted": false
+}
+```
 
 ## Has permission
 
@@ -47,7 +68,7 @@ given job.
 
 > The name of the flow is **ApiUserAccess**
 
-**Input attributes:**
+**Input attributes**
 
 | Attribute          | Type   | Position | Required |
 |--------------------|--------|----------|:--------:|
@@ -55,7 +76,7 @@ given job.
 | JobID              | Number | 2        |    Y     |
 | RequiredPermission | String | 3        |    Y     |
 
-**Output Attributes:**
+**Response**
 
 | Attribute     | Type    | Position |
 |---------------|---------|----------|
