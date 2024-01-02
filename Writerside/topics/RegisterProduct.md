@@ -18,10 +18,11 @@ flowchart
     UserHasAccess -->|NO| Stop((Stop))
     UserIsActive -->|NO| Stop
     UserHasAccess -->|YES| RequestProductID[\Request Product ID\]
-    RequestProductID --> ProductIdInDB{Product ID in DB}
+    RequestProductID --> GetProduct[(Get product)]
+    GetProduct --> ProductIdInDB{Product in DB}
     ProductIdInDB -->|YES| Stop
     ProductIdInDB -->|NO| RequestPO[\Request PO\]
-    RequestPO --> RegisterProduct[(Register Product)]
+    RequestPO --> RegisterProduct[(Register new Product)]
 ```
 
 ## Database actions
@@ -29,7 +30,7 @@ flowchart
 ### Get User From DB
 
 This action is going to return `true` or `false` depends on the user active
-or not. To get this result call the [ApiUserActive](UsersApiEndpoints.md#active)
+or not. To get this result call the [ApiUserActive](UsersApiEndpoints.md#get-user-by-id)
 API function from **PowerAutomate**.
 
 ### User has Access
