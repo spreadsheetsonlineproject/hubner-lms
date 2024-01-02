@@ -5,7 +5,7 @@ The attributes of the PowerAutomate calls have to follow the given order.
 
 ## Get User By ID
 
-> The name of the flow is **ApiGetUserById**
+> The name of the flow is **ApiUsersGetById**
 
 The most common user endpoint is getting the user details by the ID of the user.
 This action will always return the user. Further actions in the user
