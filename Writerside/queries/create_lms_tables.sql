@@ -50,7 +50,7 @@ CREATE TABLE job_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
     description NVARCHAR(255),
-    created_by INT REFERENCES users(id) NOT NULL,
+    created_by BIGINT REFERENCES users(id) NOT NULL,
     created_at DATETIME DEFAULT GETDATE()
 );
 CREATE INDEX idx_job_items_job_id ON job_items(job_id);
@@ -85,7 +85,7 @@ CREATE TABLE group_job_links (
 
 -- create user and group links
 CREATE TABLE user_group_links (
-    user_id INT REFERENCES users(id),
+    user_id BIGINT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
@@ -113,7 +113,7 @@ CREATE TABLE qa_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     description NVARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT GETDATE(),
-    created_by INT REFERENCES users(id) NOT NULL,
+    created_by BIGINT REFERENCES users(id) NOT NULL,
     qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
 );
 
@@ -145,15 +145,15 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 CREATE TABLE product_histories (
     id INT PRIMARY KEY IDENTITY(1,1),
     created_at DATETIME DEFAULT GETDATE(),
-    created_by INT REFERENCES users(id) NOT NULL,
+    created_by BIGINT REFERENCES users(id) NOT NULL,
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL,
-    product_id INT REFERENCES products(id) NOT NULL
+    product_id BIGINT REFERENCES products(id) NOT NULL
 );
 
 -- create product and virtual assembly connection
 CREATE TABLE product_virtual_assembly_links (
-    product_id INT REFERENCES products(id),
+    product_id BIGINT REFERENCES products(id),
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
     active BIT DEFAULT 1,
     PRIMARY KEY (product_id, virtual_assembly_id)
