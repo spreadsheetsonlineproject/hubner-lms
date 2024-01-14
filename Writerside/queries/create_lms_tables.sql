@@ -127,7 +127,8 @@ CREATE TABLE sap_production_orders (
 CREATE TABLE virtual_assemblies (
     id INT PRIMARY KEY IDENTITY(1,1),
     active BIT DEFAULT 1,
-    qa_reason_id INT REFERENCES qa_reasons(id)
+    qa_reason_id INT REFERENCES qa_reasons(id),
+    from_id INT
 );
 
 -- create products table

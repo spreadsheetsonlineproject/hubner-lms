@@ -746,11 +746,12 @@ Collection of assembled products.
 
 > Table name: `virtual_assemblies`
 
-| Field name                       | Key | Description        | Type    | Default value  | Required |
-|----------------------------------|:---:|--------------------|---------|:--------------:|:--------:|
-| id                               | PK  | Unique ID          | Integer | auto increment |    -     |
-| active                           |  -  | Is the item active | Bool    |      true      |    -     |
-| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -        |    N     |
+| Field name                       | Key | Description         | Type    | Default value  | Required |
+|----------------------------------|:---:|---------------------|---------|:--------------:|:--------:|
+| id                               | PK  | Unique ID           | Integer | auto increment |    -     |
+| active                           |  -  | Is the item active  | Bool    |      true      |    -     |
+| [qa_reason_id](#quality-reasons) |  -  | Quality status      | Integer |       -        |    N     |
+| from_id                          |  -  | Previous virtual id | Integer |       -        |    N     |
 
 **MsSQL**
 
@@ -759,6 +760,7 @@ CREATE TABLE virtual_assemblies (
     id INT PRIMARY KEY IDENTITY(1,1),
     active BIT DEFAULT 1,
     qa_reason_id INT REFERENCES qa_reasons(id)
+    from_id INT
 );
 ```
 
@@ -769,6 +771,7 @@ CREATE TABLE virtual_assemblies (
     id SERIAL PRIMARY KEY IDENTITY(1,1),
     active BOOLEAN DEFAULT true,
     qa_reason_id INT REFERENCES qa_reasons(id)
+    from_id INT
 );
 ```
 
