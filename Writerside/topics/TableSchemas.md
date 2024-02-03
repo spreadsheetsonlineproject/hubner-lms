@@ -13,17 +13,18 @@ queries as well.
 
 Users table stores the individual's information. Only those people can make any
 actions in the LMS system, who is member of the table, and they are in
-**active** status. When the **deleted** field is set as true, as the active
+***active*** status. When the ***deleted*** field is set as true, as the active
 status should set to false, but that is not mandatory. This step just makes the
 continuous development more stable.
 
 > **Hard delete**
 >
 > Hard delete of any record from this table is not recommended. Instead, use the
-> soft delete by setting the **deleted** field to `true` and the **deleted_at**
+> soft delete by setting the ***deleted*** field to `true` and the
+***deleted_at***
 > value to the time of deletion.
 
-The **badge_number** field is useful when an old user needs to be reactivated.
+The ***badge_number*** field is useful when an old user needs to be reactivated.
 This information gives the advantage of continuing the user history over an
 inactive period of time.
 
