@@ -14,16 +14,18 @@ queries as well.
 Users table stores the individual's information. Only those people can make any
 actions in the LMS system, who is member of the table, and they are in
 **active** status. When the **deleted** field is set as true, as the active
-status should set to false but that is not mandatory. This step just makes the
+status should set to false, but that is not mandatory. This step just makes the
 continuous development more stable.
 
+> **Hard delete**
+>
 > Hard delete of any record from this table is not recommended. Instead, use the
 > soft delete by setting the **deleted** field to `true` and the **deleted_at**
 > value to the time of deletion.
 
-**Email** or **badge_number** fields are useful when an old user needs to be
-activated again. This information gives the advantage of continuing the user
-history over an inactive period of time.
+The **badge_number** field is useful when an old user needs to be reactivated.
+This information gives the advantage of continuing the user history over an
+inactive period of time.
 
 > Table name:`users`
 
@@ -33,20 +35,18 @@ history over an inactive period of time.
 | active       |  -  | Allow user to take actions     | Bool       |     true      |    N     |
 | deleted      |  -  | Deny any actions               | Bool       |     false     |    N     |
 | deleted_at   |  -  | Time of deletion               | Timestamp  |       -       |    N     |
-| email        |  -  | Email to identify person       | Varchar    |       -       |    N     |
 | badge_number |  -  | Employee id to identify person | Varchar    |       -       |    N     |
 | first_name   |  -  | First name                     | Varchar    |       -       |    Y     |
 | last_name    |  -  | First name                     | Varchar    |       -       |    Y     |
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE users (
     id BIGINT PRIMARY KEY NOT NULL,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(60) UNIQUE,
     badge_number NVARCHAR(20) UNIQUE,
     first_name NVARCHAR(60) NOT NULL,
     last_name NVARCHAR(60) NOT NULL
@@ -55,13 +55,12 @@ CREATE TABLE users (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE users (
     unique_id BIGINT PRIMARY KEY NOT NULL,
     active BOOLEAN DEFAULT true,
     deleted BOOLEAN DEFAULT false,
     deleted_at TIMESTAMP,
-    email VARCHAR(60) UNIQUE,
     badge_number VARCHAR(20) UNIQUE,
     first_name VARCHAR(60) NOT NULL,
     last_name VARCHAR(60) NOT NULL
