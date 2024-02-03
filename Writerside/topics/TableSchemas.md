@@ -98,6 +98,47 @@ CREATE TABLE production_orders (
     quantity INT,
 );
 ```
+
+## Virtual Assemblies
+
+Collection of assembled products.
+
+> Table name: `virtual_assemblies`
+
+| Field name | Key | Description             | Type    | Default value  | Required |
+|------------|:---:|-------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID               | Integer | auto increment |    -     |
+| active     |  -  | Is the item active      | Bool    |      true      |    -     |
+| to_id      |  -  | New Virtual Assembly ID | Integer |       -        |    N     |
+
+The `to_id` field represents the new Virtual Assembly ID. That is the new group
+of assembled products. This field is meant to track the history of assembled
+products. For example, when an assembled product of two products is connected to
+another assembled product of 3 products. One of the two virtual assembly ID must
+have been deactivated. The deactivated virtual assembly will have the other
+virtual ID in the `to_id` field.
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE virtual_assemblies (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    active BIT DEFAULT 1,
+    to_id INT
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE virtual_assemblies (
+    id SERIAL PRIMARY KEY IDENTITY(1,1),
+    active BOOLEAN DEFAULT true,
+    qa_reason_id INT REFERENCES qa_reasons(id)
+    from_id INT
+);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -767,41 +808,6 @@ CREATE TABLE product_histories (
     qa_item_id INT REFERENCES qa_items(id),
     job_item_id INT REFERENCES job_items(id) NOT NULL
     product_id INT REFERENCES products(id) NOT NULL
-);
-```
-
-## Virtual Assemblies
-
-Collection of assembled products.
-
-> Table name: `virtual_assemblies`
-
-| Field name                       | Key | Description         | Type    | Default value  | Required |
-|----------------------------------|:---:|---------------------|---------|:--------------:|:--------:|
-| id                               | PK  | Unique ID           | Integer | auto increment |    -     |
-| active                           |  -  | Is the item active  | Bool    |      true      |    -     |
-| [qa_reason_id](#quality-reasons) |  -  | Quality status      | Integer |       -        |    N     |
-| from_id                          |  -  | Previous virtual id | Integer |       -        |    N     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE virtual_assemblies (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    active BIT DEFAULT 1,
-    qa_reason_id INT REFERENCES qa_reasons(id)
-    from_id INT
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE virtual_assemblies (
-    id SERIAL PRIMARY KEY IDENTITY(1,1),
-    active BOOLEAN DEFAULT true,
-    qa_reason_id INT REFERENCES qa_reasons(id)
-    from_id INT
 );
 ```
 
