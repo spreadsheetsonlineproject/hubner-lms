@@ -67,6 +67,37 @@ CREATE TABLE users (
 );
 ```
 
+## Production Orders
+
+The table of **production_orders** makes the connection between the LMS
+application, and it's database, and the information from the SAP system. Only
+those Production Orders can be used during any process that is registered in the
+**production_orders** table.
+
+> Table name: 'production_orders'
+
+| Field name | Key | Description              | Type    | Default value  | Required |
+|------------|:---:|--------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                | Integer | auto increment |    N     |
+| quantity   |     | Total quantity of the PO | Integer |       -        |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE production_orders (
+    id INT PRIMARY KEY NOT NULL,
+    quantity INT,
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE production_orders (
+    id INT PRIMARY KEY NOT NULL,
+    quantity INT,
+);
+```
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
