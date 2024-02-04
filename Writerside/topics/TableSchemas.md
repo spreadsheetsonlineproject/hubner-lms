@@ -102,7 +102,8 @@ CREATE TABLE production_orders (
 
 ## Virtual Assemblies
 
-Collection of assembled products.
+Collection of assembled products. The records of this table are the foreign key
+of the [products](#products) table as ***virtual_assembly_id***.
 
 > Table name: `virtual_assemblies`
 
@@ -112,12 +113,12 @@ Collection of assembled products.
 | active     |  -  | Is the item active      | Bool    |      true      |    -     |
 | to_id      |  -  | New Virtual Assembly ID | Integer |       -        |    N     |
 
-The `to_id` field represents the new Virtual Assembly ID. That is the new group
-of assembled products. This field is meant to track the history of assembled
-products. For example, when an assembled product of two products is connected to
-another assembled product of 3 products. One of the two virtual assembly ID must
-have been deactivated. The deactivated virtual assembly will have the other
-virtual ID in the `to_id` field.
+The ***to_id*** field represents the new Virtual Assembly ID. That is the new
+group of assembled products. This field is meant to track the history of
+assembled products. For example, when an assembled product of two products is
+connected to another assembled product of 3 products. One of the two virtual
+assembly ID must have been deactivated. The deactivated virtual assembly will
+have the other virtual ID in the ***to_id*** field.
 
 **MsSQL**
 
