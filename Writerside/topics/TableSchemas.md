@@ -188,6 +188,46 @@ CREATE INDEX idx_products_production_order_id ON products(production_order_id);
 CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
 ```
 
+## Product Histories
+
+One of the most important tables in the LMS system. This table stores the
+history of the products. Every time when the product is going to be moved to
+another workstation or the product is going to be inspected, a new row is going
+to be created in the history table.
+
+> Table name: `product_histories`
+
+| Field name              | Key | Description              | Type      | Default value  | Required |
+|-------------------------|:---:|--------------------------|-----------|:--------------:|:--------:|
+| id                      | PK  | Unique ID                | Integer   | auto increment |    N     |
+| created_at              |  -  | Time the item created    | Timestamp |      now       |    N     |
+| created_by              |  -  | User who create the item | Integer   |       -        |    Y     |
+| [product_id](#products) | FK  | Product to belong        | Integer   |       -        |    Y     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE product_histories (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    created_at DATETIME DEFAULT GETDATE(),
+    created_by BIGINT REFERENCES users(id) NOT NULL,
+    product_id BIGINT REFERENCES products(id) NOT NULL
+);
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE product_histories (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES users(id) NOT NULL,
+    product_id INT REFERENCES products(id) NOT NULL
+);
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -765,50 +805,6 @@ CREATE TABLE sap_production_orders (
 CREATE TABLE sap_production_orders (
     id SERIAL PRIMARY KEY,
     po_number VARCHAR(20) UNIQUE NOT NULL
-);
-```
-
-## Product Histories
-
-One of the most important tables in the LMS system. This table stores the
-history of the products. Every time when the product is going to be moved to
-another workstation or the product is going to be inspected, a new rows is going
-to be created in the history table.
-
-> Table name: `product_histories`
-
-| Field name  | Key | Description              | Type      | Default value  | Required |
-|-------------|:---:|--------------------------|-----------|:--------------:|:--------:|
-| id          | PK  | Unique ID                | Integer   | auto increment |    N     |
-| created_at  |  -  | Time the item created    | Timestamp |      now       |    N     |
-| created_by  |  -  | User who create the item | Integer   |       -        |    Y     |
-| qa_item_id  | FK  | QA item                  | Integer   |       -        |    N     |
-| job_item_id | FK  | Job that made by user    | Integer   |       -        |    Y     |
-| product_id  | FK  | Product to belong        | Integer   |       -        |    Y     |
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE product_histories (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    created_at DATETIME DEFAULT GETDATE(),
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL,
-    product_id INT REFERENCES products(id) NOT NULL
-);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE product_histories (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL
-    product_id INT REFERENCES products(id) NOT NULL
 );
 ```
 
