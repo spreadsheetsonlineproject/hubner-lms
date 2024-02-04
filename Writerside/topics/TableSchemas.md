@@ -228,6 +228,45 @@ CREATE TABLE product_histories (
 CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
 ```
 
+## Jobs
+
+This table stores the available actions that the users can perform during the
+production process. These jobs are small parts of the processes in production.
+An entry in this table is the main definition of the job.
+
+> Table name: `jobs`
+
+| Field name  | Key | Description                           | Type    | Default value  | Required |
+|-------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID                             | Integer | auto increment |    N     |
+| name        |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
+| description |  -  | Short description of the job          | Varchar |       -        |    N     |
+| active      |  -  | Determine the availability of the job | Bool    |      true      |    N     |
+
+Querying the table is going to be made through the **id** field in most cases.
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE jobs (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(20) UNIQUE NOT NULL,
+    description NVARCHAR(255),
+    active BIT DEFAULT 1,
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE jobs (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(20) UNIQUE NOT NULL,
+    description VARCHAR(255),
+    active BOOLEAN DEFAULT true,
+);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -272,57 +311,6 @@ CREATE TABLE flow_items (
     active BOOLEAN DEFAULT true
 );
 CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
-```
-
-## Jobs
-
-This table stores the available actions that the users can perform during the
-production process. These jobs are small parts of the processes in production.
-An entry in this table is the main definition of the job.
-
-This is the place where the required permission is set on the specific job.
-
-> Table name: `jobs`
-
-| Field name                             | Key | Description                           | Type    | Default value  | Required |
-|----------------------------------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
-| id                                     | PK  | Unique ID                             | Integer | auto increment |    N     |
-| name                                   |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
-| description                            |  -  | Short description of the job          | Varchar |       -        |    N     |
-| active                                 |  -  | Determine the availability of the job | Bool    |      true      |    N     |
-| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -        |    Y     |
-| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -        |    Y     |
-
-Querying the table is going to be made through the **id** field in most cases.
-Sometimes the query will look for **flow_item_id** so indexing of these fields
-should be helpful.
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE jobs (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(20) UNIQUE NOT NULL,
-    description NVARCHAR(255),
-    active BIT DEFAULT 1,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
-    permission_id INT REFERENCES permissions(id) NOT NULL
-);
-CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE jobs (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(20) UNIQUE NOT NULL,
-    description VARCHAR(255),
-    active BOOLEAN DEFAULT true,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
-    permission_id INT REFERENCES permissions(id) NOT NULL
-);
-CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 ## Job Items
