@@ -40,6 +40,7 @@ CREATE TABLE product_histories (
     created_by BIGINT REFERENCES users(id) NOT NULL,
     product_id BIGINT REFERENCES products(id) NOT NULL
 );
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
 
 -- create jobs table
 CREATE TABLE jobs (
