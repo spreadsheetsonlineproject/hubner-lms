@@ -141,6 +141,54 @@ CREATE TABLE virtual_assemblies (
 );
 ```
 
+## Products
+
+The main table of the LMS system. This table stores the products that are going
+to be produced. Every product has a unique data matrix number. Other tables of
+the system are created to support the tracking of the products.
+
+> Table name: `products`
+
+| Field name                                       | Key | Description                          | Type       | Default value | Required |
+|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
+| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
+| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
+| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
+| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
+| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
+| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
+
+Indexing on **data_matrix** and **po_number** fields is recommended. These
+fields are going to be queried a lot.
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE products (
+    id BIGINT PRIMARY KEY NOT NULL,
+    po_number NVARCHAR(10) NOT NULL,
+    active BIT DEFAULT 1,
+    sap_production_order_id INT REFERENCES sap_production_orders(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+CREATE INDEX idx_products_po_number ON products(po_number);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE products (
+    id BIGINT PRIMARY KEY NOT NULL,
+    po_number VARCHAR(10) NOT NULL,
+    active BOOLEAN DEFAULT true,
+    sap_production_order_id INT REFERENCES sap_production_orders(id),
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_reason_id INT REFERENCES qa_reasons(id)
+);
+CREATE INDEX idx_products_po_number ON products(po_number);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -719,54 +767,6 @@ CREATE TABLE sap_production_orders (
     id SERIAL PRIMARY KEY,
     po_number VARCHAR(20) UNIQUE NOT NULL
 );
-```
-
-## Products
-
-The main table of the LMS system. This table stores the products that are going
-to be produced. Every product has a unique data matrix number. Other tables of
-the system are created to support the tracking of the products.
-
-> Table name: `products`
-
-| Field name                                       | Key | Description                          | Type       | Default value | Required |
-|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
-| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
-| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
-| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
-| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
-| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
-| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
-
-Indexing on **data_matrix** and **po_number** fields is recommended. These
-fields are going to be queried a lot.
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE products (
-    id BIGINT PRIMARY KEY NOT NULL,
-    po_number NVARCHAR(10) NOT NULL,
-    active BIT DEFAULT 1,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-CREATE INDEX idx_products_po_number ON products(po_number);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE products (
-    id BIGINT PRIMARY KEY NOT NULL,
-    po_number VARCHAR(10) NOT NULL,
-    active BOOLEAN DEFAULT true,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-CREATE INDEX idx_products_po_number ON products(po_number);
 ```
 
 ## Product Histories
