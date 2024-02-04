@@ -269,10 +269,10 @@ CREATE TABLE jobs (
 
 ## Job Product Items
 
-A single representation of a job. When the user takes any action in the
-production that is represented by a [job](#jobs) item. This table stores details
-of the taken actions not just the metadata of the job. The timestamp and the
-user are registered in the [product_histories](#product-histories) table.
+A single representation of a job history item. When the user takes any action in
+the production that is represented by a [job](#jobs) item. This table stores
+details of the taken actions not just the metadata of the job. The timestamp and
+the user are registered in the [product_histories](#product-histories) table.
 
 > Table name: `job_product_items`
 
@@ -304,7 +304,7 @@ CREATE TABLE job_product_items (
 	product_history_id INT REFERENCES product_histories(id) NOT NULL,
 	description NVARCHAR(255)
 );
-CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
+CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
 ```
 
 ## Quality reasons
@@ -475,44 +475,6 @@ CREATE TABLE flow_items (
     active BOOLEAN DEFAULT true
 );
 CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
-```
-
-## Workstations
-
-A single workstation item in the database is a single place in the production
-area where workers can do their jobs. Workstation can be described as a device
-where users can open an LMS application. A workstation can perform multiple type
-of [jobs](#jobs), that assigned to the workstation.
-
-Workstation and job connections are going to be defined in
-the [job_workstation_links](#job-and-workstation-links)
-
-> Table name: `workstations`
-
-| Field name | Key | Description                      | Type    | Default value  | Required |
-|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
-| name       |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
-| active     |  -  | Allow to use the workstation     | Bool    |      true      |    N     |
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE workstations (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    name NVARCHAR(60),
-    active BIT DEFAULT 1,
-);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE workstations(
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(60),
-    active BOOLEAN DEFAULT true
-);
 ```
 
 ## Job and Workstation links
