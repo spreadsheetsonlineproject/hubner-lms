@@ -6,5 +6,10 @@ visualizing data and changing them in the database. API allow to control the
 read and write operations in a single separated place, which is individual from
 other parts of the application.
 
-Other advantages of a centralized API are the maintenance of the system and
-the consistency. 
+Other advantages of a centralized API are the maintenance of the system and the
+consistency.
+
+## Implementation
+
+The API endpoints are **Power Automate** flows, triggered by **PowerApps V2**
+action.
