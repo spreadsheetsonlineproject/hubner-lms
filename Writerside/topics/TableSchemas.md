@@ -307,6 +307,48 @@ CREATE TABLE job_product_items (
 CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
 ```
 
+## Quality reasons
+
+This table stores the available quality reason codes. These codes are going to
+be used when the user inspect any product in the production.
+
+> Table name: `qa_reasons`
+
+| Field name  | Key | Description                       | Type    | Default value  | Required |
+|-------------|:---:|-----------------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID                         | Integer | auto increment |    N     |
+| code_name   |  -  | Short name of the reason (Unique) | Varchar |       -        |    Y     |
+| name        |  -  | Descriptive name of the reason    | Varchar |       -        |    N     |
+| active      |  -  | Allows to deactivate reason       | Bool    |      true      |    N     |
+| description |  -  | Description of the QA status      | Varchar |       -        |    N     |
+| ok_status   |  -  | Product usability indicator       | Bool    |     false      |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE qa_reasons (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(20),
+	description NVARCHAR(255),
+	ok_status BIT DEFAULT 0,
+    active BIT DEFAULT 1
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE qa_reasons (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(20),
+	description VARCHAR(255),
+	ok_status BOOLEAN DEFAULT false,
+    active BOOLEAN DEFAULT true
+);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -642,48 +684,6 @@ CREATE TABLE user_group_links (
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-```
-
-## Quality reasons
-
-This table stores the available quality reason codes. These codes are going to
-be used when the user inspect any product in the production.
-
-> Table name: `qa_reasons`
-
-| Field name                                         | Key | Description                          | Type    | Default value  | Required |
-|----------------------------------------------------|:---:|--------------------------------------|---------|:--------------:|:--------:|
-| id                                                 | PK  | Unique ID                            | Integer | auto increment |    N     |
-| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -        |    Y     |
-| name                                               |  -  | Descriptive name of the reason       | Varchar |       -        |    N     |
-| active                                             |  -  | Allows to deactivate reason          | Bool    |      true      |    N     |
-| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y        |    Y     |
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE qa_reasons (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(20) UNIQUE NOT NULL,
-    name NVARCHAR(20),
-    active BIT DEFAULT 1,
-    severity_level_id INT NOT NULL,
-    FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
-);
-CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE qa_reasons (
-    id SERIAL PRIMARY KEY,
-    code_name VARCHAR(20) UNIQUE NOT NULL,
-    name VARCHAR(20),
-    active BOOLEAN DEFAULT true,
-    severity_level_id INT NOT NULL REFERENCES severity_levels(id)
-);
-CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
 ```
 
 ## Severity Level of QA reasons
