@@ -10,4 +10,10 @@
         <description>Created after removal of "About lms" from lms</description>
         <accepts>starter-topic.html</accepts>
     </rule>
+    <rule id="2ecdf9a0">
+        <description>Created after removal of "Input and Response schemas of API endpoints" from Hübner Kft. Lifecycle
+            Management System
+        </description>
+        <accepts>Schemas.html</accepts>
+    </rule>
 </rules>
