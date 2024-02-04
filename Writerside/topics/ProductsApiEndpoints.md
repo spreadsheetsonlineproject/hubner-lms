@@ -10,7 +10,7 @@ table to create, update, delete or get single or multiple rows.
 
 Creating a new instance of a product.
 
-> The name of the flow is `ApiProductsCreate`
+> Flow name: `ApiProductsCreate`
 
 **Sample usage**
 
@@ -116,7 +116,7 @@ ApiProductsCreate.Run(
 
 Request a single product by its ID.
 
-> The name of the flow is `ApiProductsGetById`
+> Flow name: `ApiProductsGetById`
 
 **Sample usage**
 
@@ -185,7 +185,7 @@ ApiProductsGetById.Run(1001)
 
 Request a single product by its ID.
 
-> The name of the flow is `ApiProductsUpdateById`
+> Flow name: `ApiProductsUpdateById`
 
 **Sample usage**
 
@@ -282,7 +282,7 @@ ApiProductsUpdateById.Run(
 
 Request a list of products by Virtual Assembly ID.
 
-> The name of the flow is `ApiProductsGetByVid`
+> Flow name: `ApiProductsGetByVid`
 
 **Sample usage**
 
