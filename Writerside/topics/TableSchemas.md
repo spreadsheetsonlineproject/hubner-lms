@@ -149,30 +149,29 @@ the system are created to support the tracking of the products.
 
 > Table name: `products`
 
-| Field name                                       | Key | Description                          | Type       | Default value | Required |
-|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
-| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
-| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
-| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
-| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
-| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
-| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
+| Field name                                 | Key | Description                               | Type       | Default value | Required |
+|--------------------------------------------|:---:|-------------------------------------------|------------|:-------------:|:--------:|
+| id                                         | PK  | Data matrix value (Unique)                | BigInteger |       -       |    Y     |
+| active                                     |  -  | Is the item active                        | Bool       |       Y       |    N     |
+| [production_order_id](#production-orders)  |  -  | Reference to PO                           | Integer    |       -       |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | FK  | Item from the Virtual Assembly table      | Integer    |       -       |    N     |
+| qa_ok_status                               |  -  | Indicates that the product is free to use | Bool       |       Y       |    N     |
 
-Indexing on **data_matrix** and **po_number** fields is recommended. These
-fields are going to be queried a lot.
+The ***qa_ok_status*** field indicates any quality issue. The boolean value
+helps to avoid a lot of queries to find out the product is ok or not.
 
 **MsSQL**
 
 ``` SQL
 CREATE TABLE products (
     id BIGINT PRIMARY KEY NOT NULL,
-    po_number NVARCHAR(10) NOT NULL,
     active BIT DEFAULT 1,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
+	production_order_id INT REFERENCES production_orders(id) NOT NULL,
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
+    qa_ok_status BIT DEFAULT 1
 );
-CREATE INDEX idx_products_po_number ON products(po_number);
+CREATE INDEX idx_products_production_order_id ON products(production_order_id);
+CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
 ```
 
 **Postgresql**
@@ -180,13 +179,13 @@ CREATE INDEX idx_products_po_number ON products(po_number);
 ``` SQL
 CREATE TABLE products (
     id BIGINT PRIMARY KEY NOT NULL,
-    po_number VARCHAR(10) NOT NULL,
     active BOOLEAN DEFAULT true,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
+    production_order_id INT REFERENCES production_orders(id) NOT NULL,
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
+    qa_ok_status BOOLEAN
 );
-CREATE INDEX idx_products_po_number ON products(po_number);
+CREATE INDEX idx_products_production_order_id ON products(production_order_id);
+CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
 ```
 
 ## Production Flow items
