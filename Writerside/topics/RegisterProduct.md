@@ -30,8 +30,4 @@ flowchart
 
 ### User has Access
 
-Users needs to have the required permission to create new product in the LMS.
-Checking the permissions of the current user should be done by calling the
-[ApiUserAccess](UsersApiEndpoints.md#has-permission) endpoint.
-
 ### Register Product
