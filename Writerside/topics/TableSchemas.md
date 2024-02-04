@@ -349,6 +349,88 @@ CREATE TABLE qa_reasons (
 );
 ```
 
+## Quality Product Items
+
+A single representation of a quality history item. When the user takes any
+action in the production that is represented by a [qa_reasons](#quality-reasons)
+item. This table stores details of the taken actions not just the metadata of
+the quality reason. The timestamp and the user are registered in
+the [product_histories](#product-histories) table.
+
+> Table name: `qa_product_items`
+
+| Field name                               | Key | Description                   | Type    | Default value  | Required |
+|------------------------------------------|:---:|-------------------------------|---------|:--------------:|:--------:|
+| id                                       | PK  | Unique ID                     | Integer | auto increment |    N     |
+| [qa_reason_id](#quality-reasons)         | FK  | Quality Reason ID             | Integer |       -        |    Y     |
+| [product_history_id](#product-histories) | FK  | Product History ID            | Integer |       -        |    Y     |
+| description                              |  -  | Short description by the user | Varchar |       -        |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE qa_product_items (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
+);
+CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE qa_product_items (
+    id SERIAL PRIMARY KEY,
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description VARCHAR(255)
+);
+CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
+```
+
+## Workstations
+
+A single workstation item in the database is a single place in the production
+area where workers can do their jobs. Workstation can be described as a device
+where users can open an LMS application. A workstation can perform multiple type
+of [jobs](#jobs), that assigned to the workstation.
+
+Workstation and job connections are going to be defined in
+the [job_workstation_links](#job-and-workstation-links)
+
+> Table name: `workstations`
+
+| Field name | Key | Description                      | Type    | Default value  | Required |
+|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
+| code_name  |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Description of the workstation   | Varchar |       -        |    N     |
+| active     |  -  | Allow to use the workstation     | Bool    |      true      |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE workstations (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) NOT NULL,
+    name NVARCHAR(60),
+    active BIT DEFAULT 1,
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE workstations(
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(20) NOT NULL,
+    name VARCHAR(60),
+    active BOOLEAN DEFAULT true
+);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
