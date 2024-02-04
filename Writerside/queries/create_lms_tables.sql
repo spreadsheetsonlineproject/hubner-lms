@@ -58,6 +58,7 @@ CREATE TABLE job_product_items (
 	product_history_id INT REFERENCES product_histories(id) NOT NULL,
 	description NVARCHAR(255)
 );
+CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
 
 -- create qa reasons table
 CREATE TABLE qa_reasons (
