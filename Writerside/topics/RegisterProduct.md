@@ -28,17 +28,6 @@ flowchart
 
 ### Get User From DB
 
-This action is going to return `true` or `false` depends on the user active
-or not. To get this result call the [ApiUserActive](UsersApiEndpoints.md#active)
-API function from **PowerAutomate**.
-
 ### User has Access
 
-Users needs to have the required permission to create new product in the LMS.
-Checking the permissions of the current user should be done by calling the
-[ApiUserAccess](UsersApiEndpoints.md#has-permission) endpoint.
-
 ### Register Product
-
-The [ApiRegisterProduct](ProductsApiEndpoints.md#register-product) API
-endpoint should be called when the user is active and 

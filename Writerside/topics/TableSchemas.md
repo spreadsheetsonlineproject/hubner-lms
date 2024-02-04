@@ -13,17 +13,20 @@ queries as well.
 
 Users table stores the individual's information. Only those people can make any
 actions in the LMS system, who is member of the table, and they are in
-**active** status. When the **deleted** field is set as true, as the active
-status should set to false but that is not mandatory. This step just makes the
+***active*** status. When the ***deleted*** field is set as true, as the active
+status should set to false, but that is not mandatory. This step just makes the
 continuous development more stable.
 
+> **Hard delete**
+>
 > Hard delete of any record from this table is not recommended. Instead, use the
-> soft delete by setting the **deleted** field to `true` and the **deleted_at**
+> soft delete by setting the ***deleted*** field to `true` and the
+***deleted_at***
 > value to the time of deletion.
 
-**Email** or **badge_number** fields are useful when an old user needs to be
-activated again. This information gives the advantage of continuing the user
-history over an inactive period of time.
+The ***badge_number*** field is useful when an old user needs to be reactivated.
+This information gives the advantage of continuing the user history over an
+inactive period of time.
 
 > Table name:`users`
 
@@ -33,20 +36,18 @@ history over an inactive period of time.
 | active       |  -  | Allow user to take actions     | Bool       |     true      |    N     |
 | deleted      |  -  | Deny any actions               | Bool       |     false     |    N     |
 | deleted_at   |  -  | Time of deletion               | Timestamp  |       -       |    N     |
-| email        |  -  | Email to identify person       | Varchar    |       -       |    N     |
 | badge_number |  -  | Employee id to identify person | Varchar    |       -       |    N     |
 | first_name   |  -  | First name                     | Varchar    |       -       |    Y     |
 | last_name    |  -  | First name                     | Varchar    |       -       |    Y     |
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE users (
     id BIGINT PRIMARY KEY NOT NULL,
     active BIT DEFAULT 1,
     deleted BIT DEFAULT 0,
     deleted_at DATETIME,
-    email NVARCHAR(60) UNIQUE,
     badge_number NVARCHAR(20) UNIQUE,
     first_name NVARCHAR(60) NOT NULL,
     last_name NVARCHAR(60) NOT NULL
@@ -55,63 +56,176 @@ CREATE TABLE users (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE users (
     unique_id BIGINT PRIMARY KEY NOT NULL,
     active BOOLEAN DEFAULT true,
     deleted BOOLEAN DEFAULT false,
     deleted_at TIMESTAMP,
-    email VARCHAR(60) UNIQUE,
     badge_number VARCHAR(20) UNIQUE,
     first_name VARCHAR(60) NOT NULL,
     last_name VARCHAR(60) NOT NULL
 );
 ```
 
-## Production Flow items
+## Production Orders
 
-Through the production, different orders require different steps to take. These
-steps are defined by the production order. The instances of the table gives the
-ability to track the technology steps and journey of a single product.
+This table makes the connection between the LMS application, and it's database,
+and the information from the SAP system. Only those Production Orders can be
+used during any process that is registered in this table. The meta information
+of the Production Orders are going to be stored here.
 
-> Hard delete not recommended in this table. In case, the flow item is not
-> used, the active field should be set to `false` value. Please note that
-> the [jobs](#jobs) table has a foreign key to these items. That means the
-> jobs where the deactivated flow item is member, should be deactivated as well.
+> Table name: `production_orders`
 
-*This is the table, where the flow of production can be followed.*
-*Additional fields can make the tracking more precise.*
-
-> Table name: `flow_items`
-
-| Field name | Key | Description                | Type    | Default value  | Required |
-|------------|:---:|----------------------------|---------|:--------------:|:--------:|
-| id         | PK  | Unique ID                  | Integer | auto increment |    N     |
-| code_name  |  -  | Codename of the flow item  | Varchar |       -        |    Y     |
-| active     |  -  | Allow user to take actions | Bool    |      true      |    N     |
-
-Indexing of the table can be made by the **code_name** field.
+| Field name | Key | Description              | Type    | Default value | Required |
+|------------|:---:|--------------------------|---------|:-------------:|:--------:|
+| id         | PK  | PO Number                | Integer |       -       |    Y     |
+| quantity   |     | Total quantity of the PO | Integer |       -       |    N     |
 
 **MsSQL**
 
-``` sql
-CREATE TABLE flow_items (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(10) NOT NULL,
-    active BIT DEFAULT 1
+``` SQL
+CREATE TABLE production_orders (
+    id INT PRIMARY KEY NOT NULL,
+    quantity INT,
 );
-CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
 ```
 
 **Postgresql**
 
-``` sql
-CREATE TABLE flow_items (
-    id SERIAL PRIMARY KEY,
-    code_name VARCHAR(10) NOT NULL,
-    active BOOLEAN DEFAULT true
+``` SQL
+CREATE TABLE production_orders (
+    id INT PRIMARY KEY NOT NULL,
+    quantity INT,
 );
-CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
+```
+
+## Virtual Assemblies
+
+Collection of assembled products. The records of this table are the foreign key
+of the [products](#products) table as ***virtual_assembly_id***.
+
+> Table name: `virtual_assemblies`
+
+| Field name | Key | Description             | Type    | Default value  | Required |
+|------------|:---:|-------------------------|---------|:--------------:|:--------:|
+| id         | PK  | Unique ID               | Integer | auto increment |    -     |
+| active     |  -  | Is the item active      | Bool    |      true      |    -     |
+| to_id      |  -  | New Virtual Assembly ID | Integer |       -        |    N     |
+
+The ***to_id*** field represents the new Virtual Assembly ID. That is the new
+group of assembled products. This field is meant to track the history of
+assembled products. For example, when an assembled product of two products is
+connected to another assembled product of 3 products. One of the two virtual
+assembly ID must have been deactivated. The deactivated virtual assembly will
+have the other virtual ID in the ***to_id*** field.
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE virtual_assemblies (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    active BIT DEFAULT 1,
+    to_id INT
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE virtual_assemblies (
+    id SERIAL PRIMARY KEY IDENTITY(1,1),
+    active BOOLEAN DEFAULT true,
+    qa_reason_id INT REFERENCES qa_reasons(id)
+    from_id INT
+);
+```
+
+## Products
+
+The main table of the LMS system. This table stores the products that are going
+to be produced. Every product has a unique data matrix number. Other tables of
+the system are created to support the tracking of the products.
+
+> Table name: `products`
+
+| Field name                                 | Key | Description                               | Type       | Default value | Required |
+|--------------------------------------------|:---:|-------------------------------------------|------------|:-------------:|:--------:|
+| id                                         | PK  | Data matrix value (Unique)                | BigInteger |       -       |    Y     |
+| active                                     |  -  | Is the item active                        | Bool       |       Y       |    N     |
+| [production_order_id](#production-orders)  |  -  | Reference to PO                           | Integer    |       -       |    Y     |
+| [virtual_assembly_id](#virtual-assemblies) | FK  | Item from the Virtual Assembly table      | Integer    |       -       |    N     |
+| qa_ok_status                               |  -  | Indicates that the product is free to use | Bool       |       Y       |    N     |
+
+The ***qa_ok_status*** field indicates any quality issue. The boolean value
+helps to avoid a lot of queries to find out the product is ok or not.
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE products (
+    id BIGINT PRIMARY KEY NOT NULL,
+    active BIT DEFAULT 1,
+	production_order_id INT REFERENCES production_orders(id) NOT NULL,
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_ok_status BIT DEFAULT 1
+);
+CREATE INDEX idx_products_production_order_id ON products(production_order_id);
+CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE products (
+    id BIGINT PRIMARY KEY NOT NULL,
+    active BOOLEAN DEFAULT true,
+    production_order_id INT REFERENCES production_orders(id) NOT NULL,
+    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
+    qa_ok_status BOOLEAN
+);
+CREATE INDEX idx_products_production_order_id ON products(production_order_id);
+CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
+```
+
+## Product Histories
+
+One of the most important tables in the LMS system. This table stores the
+history of the products. Every time when the product is going to be moved to
+another workstation or the product is going to be inspected, a new row is going
+to be created in the history table.
+
+> Table name: `product_histories`
+
+| Field name              | Key | Description              | Type      | Default value  | Required |
+|-------------------------|:---:|--------------------------|-----------|:--------------:|:--------:|
+| id                      | PK  | Unique ID                | Integer   | auto increment |    N     |
+| created_at              |  -  | Time the item created    | Timestamp |      now       |    N     |
+| created_by              |  -  | User who create the item | Integer   |       -        |    Y     |
+| [product_id](#products) | FK  | Product to belong        | Integer   |       -        |    Y     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE product_histories (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    created_at DATETIME DEFAULT GETDATE(),
+    created_by BIGINT REFERENCES users(id) NOT NULL,
+    product_id BIGINT REFERENCES products(id) NOT NULL
+);
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE product_histories (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by INT REFERENCES users(id) NOT NULL,
+    product_id INT REFERENCES products(id) NOT NULL
+);
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
 ```
 
 ## Jobs
@@ -120,94 +234,160 @@ This table stores the available actions that the users can perform during the
 production process. These jobs are small parts of the processes in production.
 An entry in this table is the main definition of the job.
 
-This is the place where the required permission is set on the specific job.
-
 > Table name: `jobs`
 
-| Field name                             | Key | Description                           | Type    | Default value  | Required |
-|----------------------------------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
-| id                                     | PK  | Unique ID                             | Integer | auto increment |    N     |
-| name                                   |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
-| description                            |  -  | Short description of the job          | Varchar |       -        |    N     |
-| active                                 |  -  | Determine the availability of the job | Bool    |      true      |    N     |
-| [flow_item_id](#production-flow-items) | FK  | Flow item made by this job            | Integer |       -        |    Y     |
-| [permission_id](#permissions)          | FK  | Required permission                   | Integer |       -        |    Y     |
+| Field name  | Key | Description                           | Type    | Default value  | Required |
+|-------------|:---:|---------------------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID                             | Integer | auto increment |    N     |
+| name        |  -  | Name of the job (Unique)              | Varchar |       -        |    Y     |
+| description |  -  | Short description of the job          | Varchar |       -        |    N     |
+| active      |  -  | Determine the availability of the job | Bool    |      true      |    N     |
 
 Querying the table is going to be made through the **id** field in most cases.
-Sometimes the query will look for **flow_item_id** so indexing of these fields
-should be helpful.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE jobs (
     id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(20) UNIQUE NOT NULL,
     description NVARCHAR(255),
     active BIT DEFAULT 1,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
-    permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE jobs (
     id SERIAL PRIMARY KEY,
     name VARCHAR(20) UNIQUE NOT NULL,
     description VARCHAR(255),
     active BOOLEAN DEFAULT true,
-    flow_item_id INT REFERENCES flow_items(id) NOT NULL,
-    permission_id INT REFERENCES permissions(id) NOT NULL
 );
-CREATE INDEX idx_jobs_flow_item_id on jobs(flow_item_id);
 ```
 
-## Job Items
+## Job Product Items
 
-A single representation of a job. When the user takes any action in the
-production that is represented by a [job](#jobs) item. This table stores details
-of the taken actions not just the metadata of the job.
+A single representation of a job history item. When the user takes any action in
+the production that is represented by a [job](#jobs) item. This table stores
+details of the taken actions not just the metadata of the job. The timestamp and
+the user are registered in the [product_histories](#product-histories) table.
 
-> Table name: `job_items`
+> Table name: `job_product_items`
 
-| Field name           | Key | Description                   | Type      | Default value  | Required |
-|----------------------|:---:|-------------------------------|-----------|:--------------:|:--------:|
-| id                   | PK  | Unique ID                     | Integer   | auto increment |    -     |
-| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -        |    Y     |
-| description          |  -  | Short description by the user | Varchar   |       -        |    N     |
-| [created_by](#users) | FK  | User id                       | Integer   |       -        |    Y     |
-| created_at           |  -  | Time of creation              | Timestamp |      now       |    N     |
-
-Indexing should be created on the **job_id** field. Most queries are going to
-look for **id** or **job_id**.
+| Field name                               | Key | Description                   | Type    | Default value  | Required |
+|------------------------------------------|:---:|-------------------------------|---------|:--------------:|:--------:|
+| id                                       | PK  | Unique ID                     | Integer | auto increment |    -     |
+| [job_id](#jobs)                          | FK  | Job item id                   | Integer |       -        |    Y     |
+| description                              |  -  | Short description by the user | Varchar |       -        |    N     |
+| [product_history_id](#product-histories) | FK  | The id of the product history | Integer |       -        |    Y     |
 
 **MsSQL**
 
-``` sql
-CREATE TABLE job_items (
+``` SQL
+CREATE TABLE job_product_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
-    description NVARCHAR(255),
-    created_by INT REFERENCES users(id) NOT NULL,
-    created_at DATETIME DEFAULT GETDATE()
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
 );
-CREATE INDEX idx_job_items_job_id ON job_items(job_id);
+CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
 ```
 
 **Postgresql**
 
-``` sql
-CREATE TABLE job_items (
+``` SQL
+CREATE TABLE job_product_items (
     id SERIAL PRIMARY KEY,
     job_id INT REFERENCES jobs(id) NOT NULL,
-    description VARCHAR(255),
-    created_by INT REFERENCES users(id) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
 );
-CREATE INDEX idx_job_items_job_id ON job_items(job_id);
+CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
+```
+
+## Quality reasons
+
+This table stores the available quality reason codes. These codes are going to
+be used when the user inspect any product in the production.
+
+> Table name: `qa_reasons`
+
+| Field name  | Key | Description                       | Type    | Default value  | Required |
+|-------------|:---:|-----------------------------------|---------|:--------------:|:--------:|
+| id          | PK  | Unique ID                         | Integer | auto increment |    N     |
+| code_name   |  -  | Short name of the reason (Unique) | Varchar |       -        |    Y     |
+| name        |  -  | Descriptive name of the reason    | Varchar |       -        |    N     |
+| active      |  -  | Allows to deactivate reason       | Bool    |      true      |    N     |
+| description |  -  | Description of the QA status      | Varchar |       -        |    N     |
+| ok_status   |  -  | Product usability indicator       | Bool    |     false      |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE qa_reasons (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) UNIQUE NOT NULL,
+    name NVARCHAR(20),
+	description NVARCHAR(255),
+	ok_status BIT DEFAULT 0,
+    active BIT DEFAULT 1
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE qa_reasons (
+    id SERIAL PRIMARY KEY,
+    code_name VARCHAR(20) UNIQUE NOT NULL,
+    name VARCHAR(20),
+	description VARCHAR(255),
+	ok_status BOOLEAN DEFAULT false,
+    active BOOLEAN DEFAULT true
+);
+```
+
+## Quality Product Items
+
+A single representation of a quality history item. When the user takes any
+action in the production that is represented by a [qa_reasons](#quality-reasons)
+item. This table stores details of the taken actions not just the metadata of
+the quality reason. The timestamp and the user are registered in
+the [product_histories](#product-histories) table.
+
+> Table name: `qa_product_items`
+
+| Field name                               | Key | Description                   | Type    | Default value  | Required |
+|------------------------------------------|:---:|-------------------------------|---------|:--------------:|:--------:|
+| id                                       | PK  | Unique ID                     | Integer | auto increment |    N     |
+| [qa_reason_id](#quality-reasons)         | FK  | Quality Reason ID             | Integer |       -        |    Y     |
+| [product_history_id](#product-histories) | FK  | Product History ID            | Integer |       -        |    Y     |
+| description                              |  -  | Short description by the user | Varchar |       -        |    N     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE qa_product_items (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
+);
+CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE qa_product_items (
+    id SERIAL PRIMARY KEY,
+    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description VARCHAR(255)
+);
+CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
 ```
 
 ## Workstations
@@ -225,14 +405,16 @@ the [job_workstation_links](#job-and-workstation-links)
 | Field name | Key | Description                      | Type    | Default value  | Required |
 |------------|:---:|----------------------------------|---------|:--------------:|:--------:|
 | id         | PK  | Unique ID                        | Integer | auto increment |    N     |
-| name       |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
+| code_name  |  -  | Name of the workstation (Unique) | Varchar |       -        |    Y     |
+| name       |  -  | Description of the workstation   | Varchar |       -        |    N     |
 | active     |  -  | Allow to use the workstation     | Bool    |      true      |    N     |
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE workstations (
     id INT PRIMARY KEY IDENTITY(1,1),
+    code_name NVARCHAR(20) NOT NULL,
     name NVARCHAR(60),
     active BIT DEFAULT 1,
 );
@@ -240,9 +422,10 @@ CREATE TABLE workstations (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE workstations(
     id SERIAL PRIMARY KEY,
+    code_name VARCHAR(20) NOT NULL,
     name VARCHAR(60),
     active BOOLEAN DEFAULT true
 );
@@ -262,7 +445,7 @@ the connection between jobs and workstations.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE job_workstation_links (
     workstation_id INT REFERENCES workstations(id),
     job_id INT REFERENCES jobs(id),
@@ -272,9 +455,9 @@ CREATE TABLE job_workstation_links (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE job_workstation_links (
-    workstation_id INT REFERENCES work_stations(id),
+    workstation_id INT REFERENCES workstations(id),
     job_id INT REFERENCES jobs(id),
     PRIMARY KEY (workstation_id, job_id)
 );
@@ -297,7 +480,7 @@ the [user_job_links](#group-and-job-links) table.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE permissions (
     id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(20) UNIQUE NOT NULL,
@@ -308,7 +491,7 @@ CREATE INDEX idx_permissions_code_name on permissions(code_name);
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE permissions (
     id SERIAL PRIMARY KEY,
     code_name VARCHAR(20) UNIQUE NOT NULL,
@@ -343,7 +526,7 @@ Indexing on **code_name** field is highly recommended.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE groups (
     id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(20) UNIQUE NOT NULL,
@@ -354,7 +537,7 @@ CREATE INDEX idx_groups_code_name ON groups(code_name);
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE groups (
     id SERIAL PRIMARY KEY,
     code_name VARCHAR(20) UNIQUE NOT NULL,
@@ -380,7 +563,7 @@ by database server by default.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE group_permission_links (
     group_id INT REFERENCES groups(id),
     permission_id INT REFERENCES permissions(id),
@@ -390,7 +573,7 @@ CREATE TABLE group_permission_links (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE group_permission_links (
     group_id INT REFERENCES groups(id),
     permission_id INT REFERENCES permissions(id),
@@ -449,7 +632,7 @@ Required to create index on every field.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE group_job_links (
     job_id INT REFERENCES jobs(id),
     group_id INT REFERENCES groups(id),
@@ -459,7 +642,7 @@ CREATE TABLE group_job_links (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE group_job_links (
     job_id INT REFERENCES jobs(id),
     group_id INT REFERENCES groups(id),
@@ -483,7 +666,7 @@ Indexing on both fields is required.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE user_group_links (
     user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
@@ -493,327 +676,12 @@ CREATE TABLE user_group_links (
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE user_group_links (
     user_id INT REFERENCES users(id),
     group_id INT REFERENCES groups(id),
     PRIMARY KEY (user_id, group_id)
 );
-```
-
-## Quality reasons
-
-This table stores the available quality reason codes. These codes are going to
-be used when the user inspect any product in the production.
-
-> Table name: `qa_reasons`
-
-| Field name                                         | Key | Description                          | Type    | Default value  | Required |
-|----------------------------------------------------|:---:|--------------------------------------|---------|:--------------:|:--------:|
-| id                                                 | PK  | Unique ID                            | Integer | auto increment |    N     |
-| code_name                                          |  -  | Short name of the reason (Unique)    | Varchar |       -        |    Y     |
-| name                                               |  -  | Descriptive name of the reason       | Varchar |       -        |    N     |
-| active                                             |  -  | Allows to deactivate reason          | Bool    |      true      |    N     |
-| [severity_level_id](#severity-level-of-qa-reasons) |  -  | Define the seriousness of the reason | Integer |       Y        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE qa_reasons (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(20) UNIQUE NOT NULL,
-    name NVARCHAR(20),
-    active BIT DEFAULT 1,
-    severity_level_id INT NOT NULL,
-    FOREIGN KEY (severity_level_id) REFERENCES severity_levels(id)
-);
-CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE qa_reasons (
-    id SERIAL PRIMARY KEY,
-    code_name VARCHAR(20) UNIQUE NOT NULL,
-    name VARCHAR(20),
-    active BOOLEAN DEFAULT true,
-    severity_level_id INT NOT NULL REFERENCES severity_levels(id)
-);
-CREATE INDEX idx_qa_reasons_code_name ON qa_reasons(code_name);
-```
-
-## Severity Level of QA reasons
-
-Set a level to a qa reason item. Extending this table with different fields can
-help building more sophisticated quality tracking system.
-
-> Table name: `severity_levels`
-
-| Field name          | Key | Description                                   | Type    | Default value  | Required |
-|---------------------|:---:|-----------------------------------------------|---------|:--------------:|:--------:|
-| id                  | PK  | Unique ID                                     | Integer | auto increment |    N     |
-| value               |  -  | Integer value where the 1 is the most serious | Integer |       -        |    Y     |
-| allow_product_usage |  -  | Allow to use the product production           | Bool    |       -        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE severity_levels (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    value INT NOT NULL,
-    allow_product_usage BIT NOT NULL
-);
-```
-
-**Postgresql**
-
-``` sql
-create table severity_levels (
-    id SERIAL PRIMARY KEY,
-    value INT NOT NULL,
-    allow_product_usage BOOLEAN NOT NULL
-);
-```
-
-## QA items
-
-Represent a quality check by the user. This is the point, where the product is
-going to be marked with any quality reason. Other quality related tables are
-contains metadata of the quality status. This table will provide more details
-about the actual inspection.
-
-> Table name: `qa_items`
-
-| Field name                       | Key | Description                           | Type      | Default value  | Required |
-|----------------------------------|:---:|---------------------------------------|-----------|:--------------:|:--------:|
-| id                               | PK  | Unique ID                             | Integer   | auto increment |    N     |
-| description                      |  -  | User description of the qa inspection | Varchar   |       -        |    Y     |
-| created_at                       |  -  | Time of creation                      | Timestamp |      now       |    N     |
-| [created_by](#users)             | FK  | User id                               | Integer   |       -        |    Y     |
-| [qa_reason_id](#quality-reasons) | FK  | Quality reason item                   | Integer   |       -        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE qa_items (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    description NVARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT GETDATE(),
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE qa_items (
-    id SERIAL PRIMARY KEY,
-    description VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL
-);
-```
-
-## SAP Production Order
-
-Placeholder table for future development. This table is going to store the
-production orders from the SAP system. Allows the LMS system to track the
-production orders and get information from the SAP system.
-
-> Table name: `sap_production_orders`
-
-| Field name | Key | Description                      | Type    | Default value  | Required |
-|------------|:---:|----------------------------------|---------|:--------------:|:--------:|
-| id         | PK  | Unique ID                        | Integer | auto increment |    N     |
-| po_number  |  -  | Production Order number (Unique) | Varchar |       -        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE sap_production_orders (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    po_number NVARCHAR(20) UNIQUE NOT NULL
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE sap_production_orders (
-    id SERIAL PRIMARY KEY,
-    po_number VARCHAR(20) UNIQUE NOT NULL
-);
-```
-
-## Products
-
-The main table of the LMS system. This table stores the products that are going
-to be produced. Every product has a unique data matrix number. Other tables of
-the system are created to support the tracking of the products.
-
-> Table name: `products`
-
-| Field name                                       | Key | Description                          | Type       | Default value | Required |
-|--------------------------------------------------|:---:|--------------------------------------|------------|:-------------:|:--------:|
-| id                                               | PK  | Data matrix value (Unique)           | BigInteger |       -       |    Y     |
-| po_number                                        |  -  | PO number                            | Varchar    |       -       |    Y     |
-| active                                           |  -  | Is the item active                   | Bool       |       Y       |    N     |
-| [sap_production_order_id](#sap-production-order) | FK  | Item from the SAP table              | Integer    |       -       |    N     |
-| [virtual_assembly_id](#virtual-assemblies)       | FK  | Item from the Virtual Assembly table | Integer    |       -       |    N     |
-| [qa_reason_id](#quality-reasons)                 |  -  | Quality status                       | Integer    |       -       |    N     |
-
-Indexing on **data_matrix** and **po_number** fields is recommended. These
-fields are going to be queried a lot.
-
-**MsSQL**
-
-``` sql
-CREATE TABLE products (
-    id BIGINT PRIMARY KEY NOT NULL,
-    po_number NVARCHAR(10) NOT NULL,
-    active BIT DEFAULT 1,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-CREATE INDEX idx_products_po_number ON products(po_number);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE products (
-    id BIGINT PRIMARY KEY NOT NULL,
-    po_number VARCHAR(10) NOT NULL,
-    active BOOLEAN DEFAULT true,
-    sap_production_order_id INT REFERENCES sap_production_orders(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-CREATE INDEX idx_products_po_number ON products(po_number);
-```
-
-## Product Histories
-
-One of the most important tables in the LMS system. This table stores the
-history of the products. Every time when the product is going to be moved to
-another workstation or the product is going to be inspected, a new rows is going
-to be created in the history table.
-
-> Table name: `product_histories`
-
-| Field name  | Key | Description              | Type      | Default value  | Required |
-|-------------|:---:|--------------------------|-----------|:--------------:|:--------:|
-| id          | PK  | Unique ID                | Integer   | auto increment |    N     |
-| created_at  |  -  | Time the item created    | Timestamp |      now       |    N     |
-| created_by  |  -  | User who create the item | Integer   |       -        |    Y     |
-| qa_item_id  | FK  | QA item                  | Integer   |       -        |    N     |
-| job_item_id | FK  | Job that made by user    | Integer   |       -        |    Y     |
-| product_id  | FK  | Product to belong        | Integer   |       -        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE product_histories (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    created_at DATETIME DEFAULT GETDATE(),
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL,
-    product_id INT REFERENCES products(id) NOT NULL
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE product_histories (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by INT REFERENCES users(id) NOT NULL,
-    qa_item_id INT REFERENCES qa_items(id),
-    job_item_id INT REFERENCES job_items(id) NOT NULL
-    product_id INT REFERENCES products(id) NOT NULL
-);
-```
-
-## Virtual Assemblies
-
-Collection of assembled products.
-
-> Table name: `virtual_assemblies`
-
-| Field name                       | Key | Description        | Type    | Default value  | Required |
-|----------------------------------|:---:|--------------------|---------|:--------------:|:--------:|
-| id                               | PK  | Unique ID          | Integer | auto increment |    -     |
-| active                           |  -  | Is the item active | Bool    |      true      |    -     |
-| [qa_reason_id](#quality-reasons) |  -  | Quality status     | Integer |       -        |    N     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE virtual_assemblies (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    active BIT DEFAULT 1,
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE virtual_assemblies (
-    id SERIAL PRIMARY KEY IDENTITY(1,1),
-    active BOOLEAN DEFAULT true,
-    qa_reason_id INT REFERENCES qa_reasons(id)
-);
-```
-
-## Product and Virtual Assembly Links
-
-A single product can be part of different Virtual Assembly Products.
-
-> Table name: `product_virtual_assembly_links`
-
-| Field name                                 |  Key   | Description                             | Type    | Default value | Required |
-|--------------------------------------------|:------:|-----------------------------------------|---------|:-------------:|:--------:|
-| [product_id](#products)                    | PK, FK | Product id as part of a virtual product | Integer |       -       |    Y     |
-| [virtual_assembly_id](#virtual-assemblies) | PK, FK | Virtual product id                      | Integer |       -       |    Y     |
-| active                                     |   -    | Connection active                       | Bool    |     true      |    N     |
-
-Indexing on both fields is required.
-
-**MsSQL**
-
-``` sql
-CREATE TABLE product_virtual_assembly_links (
-    product_id INT REFERENCES products(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    active BIT DEFAULT 1,
-    PRIMARY KEY (product_id, virtual_assembly_id)
-);
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON
-    product_virtual_assembly_links(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
-    product_virtual_assembly_links(virtual_assembly_id);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE product_virtual_assembly_links (
-    product_id INT REFERENCES products(id),
-    virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    active BOOLEAN DEFAULT true,
-    PRIMARY KEY (product_id, virtual_assembly_id)
-);
-CREATE INDEX idx_product_virtual_assembly_links_product_id ON
-    product_virtual_assembly_links(product_id);
-CREATE INDEX idx_product_virtual_assembly_links_virtual_assembly_id ON
-    product_virtual_assembly_links(virtual_assembly_id);
 ```
 
 ## International Languages
@@ -831,7 +699,7 @@ available list of languages are going to be defined in `languages` table.
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE international_languages (
     id INT PRIMARY KEY IDENTITY(1,1),
     code_name NVARCHAR(8) NOT NULL,
@@ -841,41 +709,11 @@ CREATE TABLE international_languages (
 
 **Postgresql**
 
-``` sql 
+``` SQL 
 CREATE TABLE international_languages (
     id SERIAL PRIMARY KEY,
     code_name VARCHAR(20) NOT NULL,
     language VARCHAR(20) NOT NULL
-);
-```
-
-## International Labels
-
-Labels represents an element on the user interface where multiple languages are
-available.
-
-> Table name: `international_labels`
-
-| Field name  | Key | Description             | Type    | Default value  | Required |
-|-------------|:---:|-------------------------|---------|:--------------:|:--------:|
-| id          | PK  | Unique ID               | Integer | auto increment |    -     |
-| usage_label |  -  | Identifies the use case | Varchar |       -        |    Y     |
-
-**MsSQL**
-
-``` sql
-CREATE TABLE international_labels (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    usage_label NVARCHAR(120) NOT NULL
-);
-```
-
-**Postgresql**
-
-``` sql
-CREATE TABLE international_labels (
-    id SERIAL PRIMARY KEY,
-    usage_label VARCHAR(120) NOT NULL
 );
 ```
 
@@ -890,35 +728,31 @@ languages.
 |---------------------------|:---:|----------------------|---------|:--------------:|:--------:|
 | id                        | PK  | Unique ID            | Integer | auto increment |    -     |
 | international_language_id | FK  | Defines the language | Integer |       -        |    Y     |
-| international_label_id    | FK  | Defines the use case | Integer |       -        |    Y     |
+| label                     |  -  | Defines the use case | Varchar |       -        |    Y     |
 | value                     |  -  | Text to display      | Varchar |       -        |    Y     |
 
 **MsSQL**
 
-``` sql
+``` SQL
 CREATE TABLE international_translations (
     id INT PRIMARY KEY IDENTITY(1,1),
     international_language_id INT FOREIGN KEY REFERENCES international_languages(id),
-    international_label_id INT FOREIGN KEY REFERENCES international_labels(id),
+    label NVARCHAR(255) NOT NULL
     value NVARCHAR(255) NOT NULL
 );
 CREATE INDEX idx_international_translations_international_language_id on
     international_translations(international_language_id);
-CREATE INDEX idx_international_translations_international_label_id on
-    international_translations(international_label_id);
 ```
 
 **Postgresql**
 
-``` sql
+``` SQL
 CREATE TABLE international_translations (
     id SERIAL PRIMARY KEY,
     international_language_id INT REFERENCES international_languages(id),
-    international_label_id INT REFERENCES international_labels(id),
+    label VARCHAR(255) NOT NULL
     value VARCHAR(255) NOT NULL
 );
 CREATE INDEX idx_international_translations_international_language_id on
     international_translations(international_language_id); 
-CREATE INDEX idx_international_translations_international_label_id on
-    international_translations(international_label_id);
 ```
