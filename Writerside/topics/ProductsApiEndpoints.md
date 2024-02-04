@@ -1,64 +1,367 @@
 # Product Endpoints
 
 The product is the main item in the LMS. The following endpoints allow to
-create,
-delete, modify these products in a centralized, independent environment.
+create, delete, modify these products in a centralized, independent environment.
 
-## Register Product
+Endpoints below interact with the [products](TableSchemas.md#products)
+table to create, update, delete or get single or multiple rows.
 
-When a new product starts its journey in the production, the item has to be
-created in the system. Without this action the item is not usable at any other
-places in the production.
+## Products Create
 
-This endpoint aim to register a new product and track the user and the job where
-the action was made.
+Creating a new instance of a product.
 
-> The name of the flow is **ApiRegisterProduct**
+> The name of the flow is `ApiProductsCreate`
 
-The flow requires multiple inputs to make the actions in the database. The
-**UserID** represents the DataMatrix ID of a user. The **ProductID** is also
-a DataMatrix ID read from the barcode of the product.
+**Sample usage**
 
-Input attributes:
+```
+ApiProductsCreate.Run(
+    1001,
+    5001,
+    {
+        virtual_assembly_id: 1,
+        qa_ok_status: true,
+        active: true
+    }
+)
+```
 
-| Attribute | Type   | Position | Required |
-|-----------|--------|----------|:--------:|
-| UserID    | Number | 1        |    Y     |
-| ProductID | Number | 2        |    Y     |
-| JobID     | Number | 3        |    Y     |
-| PoNumber  | Number | 4        |    Y     |
+**Input Schema**
 
-The flow is going to create a new item in the
-[products](TableSchemas.md#products) table where the **data_matrix** get the
-value of the **ProductID**. The **po_number** column value is going to be the
-**PoNumber** by the input value. Other field of the table will have the
-default value or `NULL`.
+``` json
+{
+    "type": "object",
+    "properties": {
+        "number": {
+            "title": "id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Product ID",
+            "x-ms-content-hint": "NUMBER"
+        },
+        "number_1": {
+            "title": "production_order_id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Production Order ID",
+            "x-ms-content-hint": "NUMBER"
+        },
+        "number_2": {
+            "title": "virtual_assembly_id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Virtual Assembly ID",
+            "x-ms-content-hint": "NUMBER"
+        },
+        "boolean": {
+            "title": "qa_ok_status",
+            "type": "boolean",
+            "x-ms-dynamically-added": true,
+            "description": "Quality OK Status",
+            "x-ms-content-hint": "BOOLEAN"
+        },
+        "boolean_1": {
+            "title": "active",
+            "type": "boolean",
+            "x-ms-dynamically-added": true,
+            "description": "Active",
+            "x-ms-content-hint": "BOOLEAN"
+        }
+    },
+    "required": [
+        "number",
+        "number_1"
+    ]
+}
+```
 
-There are other tables in the database where new rows are created.
+**Response Schema**
 
-**Output Attributes:**
+``` json
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "active": {
+            "type": "boolean"
+        },
+        "production_order_id": {
+            "type": "integer"
+        },
+        "virtual_assembly_id": {
+            "type": "integer"
+        },
+        "qa_ok_status": {
+            "type": "boolean"
+        }
+    }
+}
+```
 
-| Attribute   | Type   | Position |
-|-------------|--------|----------|
-| ProductDbID | Number | 1        |
+**Sample Response**
 
-## Assemble Product
+``` json
+{
+  "id": 1001,
+  "active": true,
+  "production_order_id": 5001,
+  "virtual_assembly_id": 1,
+  "qa_ok_status": true
+}
+```
 
-Multiple product items are become a single product during the assembly
-process. The unique id (DataMatrix) of the product is still linked to the
-item, but a new **Virtual ID** is going to be created for the assembled
-products.
+## Products Get By ID
 
-> The name of the flow is **ApiAssemble**
+Request a single product by its ID.
 
-| Attribute | Type   | Position | Required |
-|-----------|--------|----------|:--------:|
-| UniqueId  | Number | 1        |    Y     |
-| ProductID | Number | 2        |    Y     |
-| JobID     | Number | 3        |    Y     |
+> The name of the flow is `ApiProductsGetById`
 
-**Output Attributes:**
+**Sample usage**
 
-| Attribute   | Type   | Position |
-|-------------|--------|----------|
-| ProductDbID | Number | 1        |
+```
+ApiProductsGetById.Run(1001)
+```
+
+**Input Schema**
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "number": {
+            "title": "id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "ProductId",
+            "x-ms-content-hint": "NUMBER"
+        }
+    },
+    "required": [
+        "number"
+    ]
+}
+```
+
+**Response Schema**
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "active": {
+            "type": "boolean"
+        },
+        "production_order_id": {
+            "type": "integer"
+        },
+        "virtual_assembly_id": {
+            "type": "integer"
+        },
+        "qa_ok_status": {
+            "type": "boolean"
+        }
+    }
+}
+```
+
+**Sample Response**
+
+``` json
+{
+  "id": 1001,
+  "active": true,
+  "production_order_id": 5001,
+  "virtual_assembly_id": 1,
+  "qa_ok_status": true
+}
+```
+
+## Products Update By ID
+
+Request a single product by its ID.
+
+> The name of the flow is `ApiProductsUpdateById`
+
+**Sample usage**
+
+```
+ApiProductsUpdateById.Run(
+    1001,
+    {
+        active: true,
+        virtual_assembly_id: 1,
+        qa_ok_status: true
+    }
+)
+```
+
+**Input Schema**
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "number": {
+            "title": "id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Product ID",
+            "x-ms-content-hint": "NUMBER"
+        },
+        "number_1": {
+            "title": "virtual_assembly_id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Virtual Assembly ID",
+            "x-ms-content-hint": "NUMBER"
+        },
+        "boolean_1": {
+            "title": "qa_ok_status",
+            "type": "boolean",
+            "x-ms-dynamically-added": true,
+            "description": "QA OK Status",
+            "x-ms-content-hint": "BOOLEAN"
+        },
+        "boolean": {
+            "title": "active",
+            "type": "boolean",
+            "x-ms-dynamically-added": true,
+            "description": "Active status",
+            "x-ms-content-hint": "BOOLEAN"
+        }
+    },
+    "required": [
+        "number"
+    ]
+}
+```
+
+**Response Schema**
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "active": {
+            "type": "boolean"
+        },
+        "production_order_id": {
+            "type": "integer"
+        },
+        "virtual_assembly_id": {
+            "type": "integer"
+        },
+        "qa_ok_status": {
+            "type": "boolean"
+        }
+    }
+}
+```
+
+**Sample Response**
+
+``` json
+{
+  "id": 1001,
+  "active": true,
+  "production_order_id": 5001,
+  "virtual_assembly_id": 1,
+  "qa_ok_status": true
+}
+```
+
+## Products Get By Virtual Assembly ID
+
+Request a list of products by Virtual Assembly ID.
+
+> The name of the flow is `ApiProductsGetByVid`
+
+**Sample usage**
+
+```
+ApiProductsGetByVid.Run(1)
+```
+
+**Input Schema**
+
+``` json
+{
+    "type": "object",
+    "properties": {
+        "number": {
+            "title": "id",
+            "type": "number",
+            "x-ms-dynamically-added": true,
+            "description": "Virtual Assembly ID",
+            "x-ms-content-hint": "NUMBER"
+        }
+    },
+    "required": [
+        "number"
+    ]
+}
+```
+
+**Response Schema**
+
+``` json
+{
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer"
+            },
+            "production_order_id": {
+                "type": "integer"
+            },
+            "active": {
+                "type": "boolean"
+            },
+            "virtual_assembly_id": {
+                "type": "integer"
+            },
+            "qa_ok_status": {
+                "type": "boolean"
+            }
+        }
+    }
+}
+```
+
+**Sample Response**
+
+``` json
+[
+    {
+      "id": 1001,
+      "active": true,
+      "production_order_id": 5001,
+      "virtual_assembly_id": 1,
+      "qa_ok_status": true
+    },
+    {
+      "id": 1002,
+      "active": true,
+      "production_order_id": 5001,
+      "virtual_assembly_id": 1,
+      "qa_ok_status": true
+    },
+    {
+      "id": 1003,
+      "active": true,
+      "production_order_id": 5001,
+      "virtual_assembly_id": 1,
+      "qa_ok_status": true
+    }
+]
+```
