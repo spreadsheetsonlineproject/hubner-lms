@@ -431,6 +431,38 @@ CREATE TABLE workstations(
 );
 ```
 
+## Job and Workstation links
+
+A single workstation can perform multiple jobs. This table is meant to create
+the connection between jobs and workstations.
+
+> Table name: `job_workstation_links`
+
+| Field name                      |  Key   | Description                | Type    | Default value | Required |
+|---------------------------------|:------:|----------------------------|---------|:-------------:|:--------:|
+| [workstation_id](#workstations) | PK, FK | Id of the workstation      | Integer |       -       |    Y     |
+| [job_id](#jobs)                 | PK, FK | Id of the job that allowed | Integer |       -       |    Y     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE job_workstation_links (
+    workstation_id INT REFERENCES workstations(id),
+    job_id INT REFERENCES jobs(id),
+    PRIMARY KEY (workstation_id, job_id)
+);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE job_workstation_links (
+    workstation_id INT REFERENCES workstations(id),
+    job_id INT REFERENCES jobs(id),
+    PRIMARY KEY (workstation_id, job_id)
+);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -475,28 +507,6 @@ CREATE TABLE flow_items (
     active BOOLEAN DEFAULT true
 );
 CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
-```
-
-## Job and Workstation links
-
-A single workstation can perform multiple jobs. This table is meant to create
-the connection between jobs and workstations.
-
-> Table name: `job_workstation_links`
-
-| Field name                      |  Key   | Description                | Type    | Default value | Required |
-|---------------------------------|:------:|----------------------------|---------|:-------------:|:--------:|
-| [workstation_id](#workstations) | PK, FK | Id of the workstation      | Integer |       -       |    Y     |
-| [job_id](#jobs)                 | PK, FK | Id of the job that allowed | Integer |       -       |    Y     |
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE job_workstation_links (
-    workstation_id INT REFERENCES workstations(id),
-    job_id INT REFERENCES jobs(id),
-    PRIMARY KEY (workstation_id, job_id)
-);
 ```
 
 **Postgresql**
