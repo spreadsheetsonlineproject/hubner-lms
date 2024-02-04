@@ -267,6 +267,46 @@ CREATE TABLE jobs (
 );
 ```
 
+## Job Product Items
+
+A single representation of a job. When the user takes any action in the
+production that is represented by a [job](#jobs) item. This table stores details
+of the taken actions not just the metadata of the job. The timestamp and the
+user are registered in the [product_histories](#product-histories) table.
+
+> Table name: `job_product_items`
+
+| Field name                               | Key | Description                   | Type    | Default value  | Required |
+|------------------------------------------|:---:|-------------------------------|---------|:--------------:|:--------:|
+| id                                       | PK  | Unique ID                     | Integer | auto increment |    -     |
+| [job_id](#jobs)                          | FK  | Job item id                   | Integer |       -        |    Y     |
+| description                              |  -  | Short description by the user | Varchar |       -        |    N     |
+| [product_history_id](#product-histories) | FK  | The id of the product history | Integer |       -        |    Y     |
+
+**MsSQL**
+
+``` SQL
+CREATE TABLE job_product_items (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    job_id INT REFERENCES jobs(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
+);
+CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
+```
+
+**Postgresql**
+
+``` SQL
+CREATE TABLE job_product_items (
+    id SERIAL PRIMARY KEY,
+    job_id INT REFERENCES jobs(id) NOT NULL,
+	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	description NVARCHAR(255)
+);
+CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
+```
+
 ## Production Flow items
 
 Through the production, different orders require different steps to take. These
@@ -311,51 +351,6 @@ CREATE TABLE flow_items (
     active BOOLEAN DEFAULT true
 );
 CREATE INDEX idx_flow_items_code_name on flow_items(code_name);
-```
-
-## Job Items
-
-A single representation of a job. When the user takes any action in the
-production that is represented by a [job](#jobs) item. This table stores details
-of the taken actions not just the metadata of the job.
-
-> Table name: `job_items`
-
-| Field name           | Key | Description                   | Type      | Default value  | Required |
-|----------------------|:---:|-------------------------------|-----------|:--------------:|:--------:|
-| id                   | PK  | Unique ID                     | Integer   | auto increment |    -     |
-| [job_id](#jobs)      | FK  | Job item id                   | Integer   |       -        |    Y     |
-| description          |  -  | Short description by the user | Varchar   |       -        |    N     |
-| [created_by](#users) | FK  | User id                       | Integer   |       -        |    Y     |
-| created_at           |  -  | Time of creation              | Timestamp |      now       |    N     |
-
-Indexing should be created on the **job_id** field. Most queries are going to
-look for **id** or **job_id**.
-
-**MsSQL**
-
-``` SQL
-CREATE TABLE job_items (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    job_id INT REFERENCES jobs(id) NOT NULL,
-    description NVARCHAR(255),
-    created_by INT REFERENCES users(id) NOT NULL,
-    created_at DATETIME DEFAULT GETDATE()
-);
-CREATE INDEX idx_job_items_job_id ON job_items(job_id);
-```
-
-**Postgresql**
-
-``` SQL
-CREATE TABLE job_items (
-    id SERIAL PRIMARY KEY,
-    job_id INT REFERENCES jobs(id) NOT NULL,
-    description VARCHAR(255),
-    created_by INT REFERENCES users(id) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX idx_job_items_job_id ON job_items(job_id);
 ```
 
 ## Workstations
