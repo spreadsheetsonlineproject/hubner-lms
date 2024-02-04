@@ -77,11 +77,12 @@ CREATE TABLE qa_product_items (
 	product_history_id INT REFERENCES product_histories(id) NOT NULL,
 	description NVARCHAR(255)
 );
+CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
 
 -- create workstations
 CREATE TABLE workstations (
     id INT PRIMARY KEY IDENTITY(1,1),
-	code_name NVARCHAR(20),
+	code_name NVARCHAR(20) NOT NULL,
     name NVARCHAR(60),
     active BIT DEFAULT 1,
 );
