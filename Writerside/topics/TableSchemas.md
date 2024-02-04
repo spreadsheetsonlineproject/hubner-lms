@@ -70,17 +70,17 @@ CREATE TABLE users (
 
 ## Production Orders
 
-The table of **production_orders** makes the connection between the LMS
-application, and it's database, and the information from the SAP system. Only
-those Production Orders can be used during any process that is registered in the
-**production_orders** table.
+This table makes the connection between the LMS application, and it's database,
+and the information from the SAP system. Only those Production Orders can be
+used during any process that is registered in this table. The meta information
+of the Production Orders are going to be stored here.
 
-> Table name: 'production_orders'
+> Table name: `production_orders`
 
-| Field name | Key | Description              | Type    | Default value  | Required |
-|------------|:---:|--------------------------|---------|:--------------:|:--------:|
-| id         | PK  | Unique ID                | Integer | auto increment |    N     |
-| quantity   |     | Total quantity of the PO | Integer |       -        |    N     |
+| Field name | Key | Description              | Type    | Default value | Required |
+|------------|:---:|--------------------------|---------|:-------------:|:--------:|
+| id         | PK  | PO Number                | Integer |       -       |    Y     |
+| quantity   |     | Total quantity of the PO | Integer |       -       |    N     |
 
 **MsSQL**
 
