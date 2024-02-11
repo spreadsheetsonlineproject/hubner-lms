@@ -6,7 +6,7 @@ create, delete, modify these products in a centralized, independent environment.
 Endpoints below interact with the [products](TableSchemas.md#products)
 table to create, update, delete or get single or multiple rows.
 
-## Products Create
+## Create
 
 Creating a new instance of a product.
 
@@ -112,7 +112,7 @@ ApiProductsCreate.Run(
 }
 ```
 
-## Products Get By ID
+## Get By ID
 
 Request a single product by its ID.
 
@@ -181,7 +181,7 @@ ApiProductsGetById.Run(1001)
 }
 ```
 
-## Products Update By ID
+## Update By ID
 
 Request a single product by its ID.
 
@@ -278,7 +278,7 @@ ApiProductsUpdateById.Run(
 }
 ```
 
-## Products Get By Virtual Assembly ID
+## Get By Virtual Assembly ID
 
 Request a list of products by Virtual Assembly ID.
 
