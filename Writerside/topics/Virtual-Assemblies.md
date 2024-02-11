@@ -3,7 +3,7 @@
 Virtual Assembly API endpoints make changes or retrieve information based on
 content of the [virtual_assemblies](TableSchemas.md#virtual-assemblies) table.
 
-## Virtual Assemblies Create
+## Create
 
 Creating new virtual assembly item to link products together. This endpoint does
 not require any input parameter.
@@ -54,10 +54,11 @@ ApiVidCreate.Run()
 }
 ```
 
-## Virtual Assemblies Update By ID
+## Update By ID
 
 Creating new virtual assembly item to link products together. This endpoint does
 not require any input parameter.
+
 
 > Flow name: ApiVidUpdateById
 
