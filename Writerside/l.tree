@@ -19,6 +19,9 @@
         <toc-element topic="Production-Orders.md"/>
     </toc-element>
     <toc-element topic="Crud-Operations.md">
+        <toc-element topic="Workstations.md"/>
+        <toc-element topic="Product-History-Items.md"/>
+        <toc-element topic="Users.md"/>
         <toc-element topic="Product-Histories.md"/>
     </toc-element>
     <toc-element topic="ProductionProcesses.md">
