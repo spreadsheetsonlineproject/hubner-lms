@@ -3,7 +3,7 @@
 User related actions in the database performed via the flows below. The
 attributes of the PowerAutomate calls have to follow the given order.
 
-## Get User By ID
+## Get By ID
 
 > Flow name: `ApiUsersGetById`
 

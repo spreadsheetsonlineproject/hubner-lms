@@ -22,25 +22,47 @@ CREATE TABLE virtual_assemblies (
     to_id INT
 );
 
+-- create applications
+CREATE TABLE applications (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	code_name NVARCHAR(10) NOT NULL,
+	name NVARCHAR(20) NOT NULL,
+);
+
+-- create workstations
+CREATE TABLE workstations (
+    id INT PRIMARY KEY IDENTITY(1,1),
+	code_name NVARCHAR(20),
+    name NVARCHAR(60),
+    active BIT DEFAULT 1,
+);
+
+-- create application workstation links
+CREATE TABLE application_workstation_links (
+	application_id INT REFERENCES applications(id),
+	workstation_id INT REFERENCES workstations(id),
+	PRIMARY KEY (application_id, workstation_id)
+);
+
 -- create products table
 CREATE TABLE products (
     id BIGINT PRIMARY KEY NOT NULL,
+	production_order INT NOT NULL,
     active BIT DEFAULT 1,
-	production_order_id INT REFERENCES production_orders(id) NOT NULL,
     virtual_assembly_id INT REFERENCES virtual_assemblies(id),
-    qa_ok_status BIT DEFAULT 1
+    last_product_job_history INT,
+	last_product_qa_history INT
 );
-CREATE INDEX idx_products_production_order_id ON products(production_order_id);
 CREATE INDEX idx_products_virtual_assembly_id ON products(virtual_assembly_id);
+CREATE INDEX idx_products_production_order on products(production_order);
 
--- create product histories table
-CREATE TABLE product_histories (
+-- create product job histories table
+CREATE TABLE product_job_histories (
     id INT PRIMARY KEY IDENTITY(1,1),
     created_at DATETIME DEFAULT GETDATE(),
     created_by BIGINT REFERENCES users(id) NOT NULL,
     product_id BIGINT REFERENCES products(id) NOT NULL
 );
-CREATE INDEX idx_product_histories_product_id on product_histories(product_id);
 
 -- create jobs table
 CREATE TABLE jobs (
@@ -52,13 +74,21 @@ CREATE TABLE jobs (
 );
 
 -- create job items
-CREATE TABLE job_product_items (
+CREATE TABLE product_job_history_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     job_id INT REFERENCES jobs(id) NOT NULL,
-	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	product_job_history_id INT REFERENCES product_job_histories(id) NOT NULL,
+	workstation_id INT REFERENCES workstations(id),
 	description NVARCHAR(255)
 );
-CREATE INDEX idx_job_product_items_product_history_id on job_product_items(product_history_id);
+
+-- create product qa histories table
+CREATE TABLE product_qa_histories (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    created_at DATETIME DEFAULT GETDATE(),
+    created_by BIGINT REFERENCES users(id) NOT NULL,
+    product_id BIGINT REFERENCES products(id) NOT NULL
+);
 
 -- create qa reasons table
 CREATE TABLE qa_reasons (
@@ -71,20 +101,13 @@ CREATE TABLE qa_reasons (
 );
 
 -- create the qa items field
-CREATE TABLE qa_product_items (
+CREATE TABLE product_qa_history_items (
     id INT PRIMARY KEY IDENTITY(1,1),
     qa_reason_id INT REFERENCES qa_reasons(id) NOT NULL,
-	product_history_id INT REFERENCES product_histories(id) NOT NULL,
+	product_qa_history_id INT REFERENCES product_qa_histories(id) NOT NULL,
+	workstation_id INT REFERENCES workstations(id),
+	job_id INT REFERENCES jobs(id),
 	description NVARCHAR(255)
-);
-CREATE INDEX idx_qa_product_items_product_history_id on qa_product_items(product_history_id);
-
--- create workstations
-CREATE TABLE workstations (
-    id INT PRIMARY KEY IDENTITY(1,1),
-	code_name NVARCHAR(20) NOT NULL,
-    name NVARCHAR(60),
-    active BIT DEFAULT 1,
 );
 
 -- create job and workstation links
@@ -94,14 +117,6 @@ CREATE TABLE job_workstation_links (
     PRIMARY KEY (workstation_id, job_id)
 );
 
--- create permissions table
-CREATE TABLE permissions (
-    id INT PRIMARY KEY IDENTITY(1,1),
-    code_name NVARCHAR(20) UNIQUE NOT NULL,
-    name NVARCHAR(60) NOT NULL
-);
-CREATE INDEX idx_permissions_code_name on permissions(code_name);
-
 -- create groups
 CREATE TABLE groups (
     id INT PRIMARY KEY IDENTITY(1,1),
@@ -109,13 +124,6 @@ CREATE TABLE groups (
     name NVARCHAR(60) NOT NULL
 );
 CREATE INDEX idx_groups_code_name ON groups(code_name);
-
--- create group and permission links
-CREATE TABLE group_permission_links (
-    group_id INT REFERENCES groups(id),
-    permission_id INT REFERENCES permissions(id),
-    PRIMARY KEY (group_id, permission_id)
-);
 
 -- create group and job links
 CREATE TABLE group_job_links (
