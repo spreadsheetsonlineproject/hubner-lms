@@ -13,9 +13,18 @@
         <toc-element topic="RelationsBetweenTables.md"/>
     </toc-element>
     <toc-element topic="PowerAutomateApiEndpoints.md">
-        <toc-element topic="Virtual-Assemblies.md"/>
-        <toc-element topic="ProductsApiEndpoints.md"/>
         <toc-element topic="UsersApiEndpoints.md"/>
+        <toc-element topic="ProductsApiEndpoints.md"/>
+        <toc-element topic="Virtual-Assemblies.md"/>
+        <toc-element topic="Production-Orders.md"/>
+    </toc-element>
+    <toc-element topic="Crud-Operations.md">
+        <toc-element topic="Products.md"/>
+        <toc-element topic="Jobs.md"/>
+        <toc-element topic="Workstations.md"/>
+        <toc-element topic="Product-History-Items.md"/>
+        <toc-element topic="Users.md"/>
+        <toc-element topic="Product-Histories.md"/>
     </toc-element>
     <toc-element topic="ProductionProcesses.md">
         <toc-element topic="RegisterProduct.md"/>
