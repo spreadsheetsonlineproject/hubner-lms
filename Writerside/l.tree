@@ -13,6 +13,7 @@
         <toc-element topic="RelationsBetweenTables.md"/>
     </toc-element>
     <toc-element topic="PowerAutomateApiEndpoints.md">
+        <toc-element topic="ApiUsers.md"/>
     </toc-element>
     <toc-element topic="Crud-Operations.md">
     </toc-element>
