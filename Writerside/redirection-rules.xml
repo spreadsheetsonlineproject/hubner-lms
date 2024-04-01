@@ -16,4 +16,24 @@
         </description>
         <accepts>Schemas.html</accepts>
     </rule>
+    <rule id="32dc6fa">
+        <description>Created after removal of "User Endpoints" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>UsersApiEndpoints.html</accepts>
+    </rule>
+    <rule id="2b882fd1">
+        <description>Created after removal of "Product Endpoints" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>ProductsApiEndpoints.html</accepts>
+    </rule>
+    <rule id="10132fc">
+        <description>Created after removal of "Virtual Assemblies" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Virtual-Assemblies.html</accepts>
+    </rule>
+    <rule id="435c838">
+        <description>Created after removal of "Production Orders" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Production-Orders.html</accepts>
+    </rule>
 </rules>
