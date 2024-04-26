@@ -12,7 +12,12 @@ CREATE TABLE users (
 
 -- create sap placeholder table
 CREATE TABLE production_orders (
-    id INT PRIMARY KEY NOT NULL
+    id INT PRIMARY KEY NOT NULL,
+	item_code VARChAR(60),
+	item_name VARCHAR(120),
+    quantity INT,
+	customer VARCHAR(255),
+	circle_time INT
 );
 
 -- create virtual assemblies table
