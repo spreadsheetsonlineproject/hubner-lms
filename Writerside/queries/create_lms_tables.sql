@@ -13,10 +13,10 @@ CREATE TABLE users (
 -- create sap placeholder table
 CREATE TABLE production_orders (
     id INT PRIMARY KEY NOT NULL,
-	item_code VARChAR(60),
-	item_name VARCHAR(120),
-    quantity INT,
-	customer VARCHAR(255),
+	item_code NVARCHAR(60),
+	item_name NVARCHAR(120),
+    order_quantity INT,
+	customer NVARCHAR(255),
 	circle_time INT
 );
 

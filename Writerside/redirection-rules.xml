@@ -62,4 +62,12 @@
         </description>
         <accepts>Product-Histories.html</accepts>
     </rule>
+    <rule id="757bd96b">
+        <description>Created after removal of "Users" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudUsers.html</accepts>
+    </rule>
+    <rule id="5feeafbc">
+        <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Products.html</accepts>
+    </rule>
 </rules>
