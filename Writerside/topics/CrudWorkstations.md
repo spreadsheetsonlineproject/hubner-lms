@@ -1,10 +1,12 @@
-# Users
+# Workstations
+
+Workstations is a place where the users make changes on the product.
 
 ## Get By ID
 
-Returns a user object by the given ID
+Returns a single workstation object.
 
-> Flow name: **CrudUsersGetById**
+> Flow name: **CrudWorkstationsGetById**
 
 **Input Schema**
 
@@ -16,7 +18,7 @@ Returns a user object by the given ID
       "title": "id",
       "type": "number",
       "x-ms-dynamically-added": true,
-      "description": "User ID",
+      "description": "Workstation ID",
       "x-ms-content-hint": "NUMBER"
     }
   },
@@ -35,23 +37,14 @@ Returns a user object by the given ID
     "id": {
       "type": "integer"
     },
+    "code_name": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
     "active": {
       "type": "boolean"
-    },
-    "deleted": {
-      "type": "boolean"
-    },
-    "deleted_at": {
-      "type": "string"
-    },
-    "badge_number": {
-      "type": "integer"
-    },
-    "first_name": {
-      "type": "string"
-    },
-    "last_name": {
-      "type": "string"
     }
   }
 }
@@ -61,11 +54,9 @@ Returns a user object by the given ID
 
 ```json
 {
-  "id": 1,
-  "active": true,
-  "deleted": false,
-  "badge_number": "1",
-  "first_name": "User Steinl",
-  "last_name": "Doe"
+  "id": 9,
+  "code_name": "STEINL9",
+  "name": "Steinl 9",
+  "active": true
 }
 ```

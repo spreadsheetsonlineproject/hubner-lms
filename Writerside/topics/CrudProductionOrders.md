@@ -1,10 +1,11 @@
-# Users
+# Production Orders
 
 ## Get By ID
 
-Returns a user object by the given ID
+Returns the meta information of a
+single [ProductionOrders](TableSchemas.md#production-orders).
 
-> Flow name: **CrudUsersGetById**
+> Flow name: **CrudProductionOrdersGetById**
 
 **Input Schema**
 
@@ -16,7 +17,7 @@ Returns a user object by the given ID
       "title": "id",
       "type": "number",
       "x-ms-dynamically-added": true,
-      "description": "User ID",
+      "description": "Production Order number",
       "x-ms-content-hint": "NUMBER"
     }
   },
@@ -35,23 +36,20 @@ Returns a user object by the given ID
     "id": {
       "type": "integer"
     },
-    "active": {
-      "type": "boolean"
-    },
-    "deleted": {
-      "type": "boolean"
-    },
-    "deleted_at": {
+    "item_code": {
       "type": "string"
     },
-    "badge_number": {
+    "item_name": {
+      "type": "string"
+    },
+    "order_quantity": {
       "type": "integer"
     },
-    "first_name": {
+    "customer": {
       "type": "string"
     },
-    "last_name": {
-      "type": "string"
+    "cycle_time": {
+      "type": "integer"
     }
   }
 }
@@ -61,11 +59,11 @@ Returns a user object by the given ID
 
 ```json
 {
-  "id": 1,
-  "active": true,
-  "deleted": false,
-  "badge_number": "1",
-  "first_name": "User Steinl",
-  "last_name": "Doe"
+  "id": 11213220,
+  "item_code": "32344523",
+  "item_name": "Test Product",
+  "order_quantity": 20,
+  "customer": "Test Customer",
+  "cycle_time": 15
 }
 ```
