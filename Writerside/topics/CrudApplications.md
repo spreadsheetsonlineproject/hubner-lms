@@ -1,6 +1,10 @@
-# Users
+# Applications
 
 ## Get By ID
+
+Returns the application meta information by Application ID.
+
+> Flow name: **CrudApplicationsGetById**
 
 **Input Schema**
 
@@ -12,7 +16,7 @@
       "title": "id",
       "type": "number",
       "x-ms-dynamically-added": true,
-      "description": "User ID",
+      "description": "Aplication ID",
       "x-ms-content-hint": "NUMBER"
     }
   },
@@ -31,38 +35,26 @@
     "id": {
       "type": "integer"
     },
-    "active": {
-      "type": "boolean"
-    },
-    "deleted": {
-      "type": "boolean"
-    },
-    "deleted_at": {
+    "code_name": {
       "type": "string"
     },
-    "badge_number": {
-      "type": "integer"
-    },
-    "first_name": {
+    "name": {
       "type": "string"
     },
-    "last_name": {
+    "default_language": {
       "type": "string"
     }
   }
 }
 ```
 
-**Response sample**
+**Response Sample**
 
 ```json
 {
-  "id": 1003347848,
-  "active": false,
-  "deleted": true,
-  "deleted_at": "2023-12-24T11:24:45",
-  "badge_number": 388475,
-  "first_name": "John",
-  "last_name": "Doe"
+  "id": 1,
+  "code_name": "PROD",
+  "name": "Gyártás",
+  "default_language": "hu-hu"
 }
 ```

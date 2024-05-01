@@ -16,4 +16,58 @@
         </description>
         <accepts>Schemas.html</accepts>
     </rule>
+    <rule id="32dc6fa">
+        <description>Created after removal of "User Endpoints" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>UsersApiEndpoints.html</accepts>
+    </rule>
+    <rule id="2b882fd1">
+        <description>Created after removal of "Product Endpoints" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>ProductsApiEndpoints.html</accepts>
+    </rule>
+    <rule id="10132fc">
+        <description>Created after removal of "Virtual Assemblies" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Virtual-Assemblies.html</accepts>
+    </rule>
+    <rule id="435c838">
+        <description>Created after removal of "Production Orders" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Production-Orders.html</accepts>
+    </rule>
+    <rule id="7b82fbae">
+        <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Products.html</accepts>
+    </rule>
+    <rule id="58af4d65">
+        <description>Created after removal of "Jobs" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Jobs.html</accepts>
+    </rule>
+    <rule id="34d22023">
+        <description>Created after removal of "Workstations" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Workstations.html</accepts>
+    </rule>
+    <rule id="73711e9a">
+        <description>Created after removal of "Users" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Users.html</accepts>
+    </rule>
+    <rule id="90cf9a5">
+        <description>Created after removal of "Product History Items" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Product-History-Items.html</accepts>
+    </rule>
+    <rule id="50411c36">
+        <description>Created after removal of "Product Histories" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Product-Histories.html</accepts>
+    </rule>
+    <rule id="757bd96b">
+        <description>Created after removal of "Users" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudUsers.html</accepts>
+    </rule>
+    <rule id="5feeafbc">
+        <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>Products.html</accepts>
+    </rule>
 </rules>
