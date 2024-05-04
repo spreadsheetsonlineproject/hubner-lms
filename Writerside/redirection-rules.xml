@@ -70,4 +70,15 @@
         <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
         <accepts>Products.html</accepts>
     </rule>
+    <rule id="4d615648">
+        <description>Created after removal of "Relations Between Tables" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>RelationsBetweenTables.html</accepts>
+    </rule>
+    <rule id="d3977f">
+        <description>Created after removal of "Schemas of the tables in the database" from Hübner Kft. Lifecycle
+            Management System
+        </description>
+        <accepts>TableSchemas.html</accepts>
+    </rule>
 </rules>
