@@ -17,7 +17,8 @@ CREATE TABLE production_orders (
 	item_name NVARCHAR(120),
     order_quantity INT,
 	customer NVARCHAR(255),
-	circle_time INT
+	cycle_time FLOAT,
+	message NVARCHAR(255)
 );
 
 -- create virtual assemblies table
