@@ -3,7 +3,7 @@
 ## Create
 
 This endpoint is responsible for creating a new item in the
-[**Product Histories**](TableSchemas.md#product-histories) table.
+[**Product Histories**](TableProductHistories.md) table.
 
 > Flow name: **CrudProductHistoriesCreate**
 

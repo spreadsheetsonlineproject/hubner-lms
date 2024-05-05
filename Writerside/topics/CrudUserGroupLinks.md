@@ -2,7 +2,7 @@
 
 Handle the changes in the table that stores the connections between Users and
 Groups. This information is stored in
-the [UserGroupLinks](TableSchemas.md#user-and-group-links) table.
+the [UserGroupLinks](TableUserGroupLinks.md) table.
 
 ## Get All
 

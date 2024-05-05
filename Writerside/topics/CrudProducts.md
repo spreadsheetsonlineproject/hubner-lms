@@ -76,7 +76,7 @@ Register a new profile in the database.
 
 ## Get By ID
 
-Returns a [Product](TableSchemas.md#products) objects.
+Returns a [Product](TableProducts.md) objects.
 
 > Flow name: CrudProductsGetById
 

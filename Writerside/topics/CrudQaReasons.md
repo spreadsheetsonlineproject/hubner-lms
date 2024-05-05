@@ -1,7 +1,7 @@
 # Quality Reasons
 
 Quality Reasons endpoints are responsible for handling database communication
-with the [QualityReasons](TableSchemas.md#quality-reasons) table.
+with the [QualityReasons](TableQaReasons.md) table.
 
 ## Get By ID
 
