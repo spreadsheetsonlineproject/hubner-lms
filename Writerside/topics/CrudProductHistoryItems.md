@@ -2,9 +2,10 @@
 
 ## Create
 
-Multiple [**ProductHistoryItems**](TableSchemas.md) can be linked to a single
-[**ProductHistories**](TableSchemas.md#product-histories) item. This endpoint
-creates a single **ProductHistoryItems** entry in the database.
+Multiple [**ProductHistoryItems**](TableProductHistoryItems.md) can be linked to
+a single
+[**ProductHistories**](TableProductHistories.md) item. This endpoint creates a
+single **ProductHistoryItems** entry in the database.
 
 > Flow name: **CrudProductHistoryItemsCreate**
 

@@ -3,7 +3,7 @@
 ## Get By ID
 
 Returns the meta information of a
-single [ProductionOrders](TableSchemas.md#production-orders).
+single [ProductionOrders](TableProductionOrders.md).
 
 > Flow name: **CrudProductionOrdersGetById**
 
