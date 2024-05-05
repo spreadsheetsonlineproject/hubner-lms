@@ -1,6 +1,12 @@
-# Jobs
+# Workstations
+
+Workstations is a place where the users make changes on the product.
 
 ## Get By ID
+
+Returns a single workstation object.
+
+> Flow name: **CrudWorkstationsGetById**
 
 **Input Schema**
 
@@ -12,7 +18,7 @@
       "title": "id",
       "type": "number",
       "x-ms-dynamically-added": true,
-      "description": "Job ID",
+      "description": "Workstation ID",
       "x-ms-content-hint": "NUMBER"
     }
   },
@@ -37,9 +43,6 @@
     "name": {
       "type": "string"
     },
-    "description": {
-      "type": "string"
-    },
     "active": {
       "type": "boolean"
     }
@@ -51,10 +54,9 @@
 
 ```json
 {
-  "id": 1,
-  "code_name": "K1",
-  "name": "Create Product",
-  "description": "Create a new Product",
+  "id": 9,
+  "code_name": "STEINL9",
+  "name": "Steinl 9",
   "active": true
 }
 ```

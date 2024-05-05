@@ -9,22 +9,41 @@
 
     <toc-element topic="LifecycleManagementSystem.md"/>
     <toc-element topic="DatabaseSchemasAndRelations.md">
-        <toc-element topic="TableSchemas.md"/>
-        <toc-element topic="RelationsBetweenTables.md"/>
+        <toc-element topic="TableApplicationWorkstationLink.md"/>
+        <toc-element topic="TableApplications.md"/>
+        <toc-element topic="TableGroupJobLinks.md"/>
+        <toc-element topic="TableGroups.md"/>
+        <toc-element topic="TableInternationalLanguages.md"/>
+        <toc-element topic="TableInternationalTranslations.md"/>
+        <toc-element topic="TableJobWorkstationLinks.md"/>
+        <toc-element topic="TableJobs.md"/>
+        <toc-element topic="TableProductHistories.md"/>
+        <toc-element topic="TableProductHistoryItems.md"/>
+        <toc-element topic="TableProductionOrders.md"/>
+        <toc-element topic="TableProducts.md"/>
+        <toc-element topic="TableQaReasons.md"/>
+        <toc-element topic="TableUserGroupLinks.md"/>
+        <toc-element topic="TableUsers.md"/>
+        <toc-element topic="TableVirtualHandlingUnits.md"/>
+        <toc-element topic="TableWorkstations.md"/>
     </toc-element>
     <toc-element topic="PowerAutomateApiEndpoints.md">
-        <toc-element topic="UsersApiEndpoints.md"/>
-        <toc-element topic="ProductsApiEndpoints.md"/>
-        <toc-element topic="Virtual-Assemblies.md"/>
-        <toc-element topic="Production-Orders.md"/>
+        <toc-element topic="ApiProducts.md"/>
+        <toc-element topic="ApiUsers.md"/>
     </toc-element>
     <toc-element topic="Crud-Operations.md">
-        <toc-element topic="Products.md"/>
-        <toc-element topic="Jobs.md"/>
-        <toc-element topic="Workstations.md"/>
-        <toc-element topic="Product-History-Items.md"/>
-        <toc-element topic="Users.md"/>
-        <toc-element topic="Product-Histories.md"/>
+        <toc-element topic="CrudApplications.md"/>
+        <toc-element topic="CrudGroupJobLinks.md"/>
+        <toc-element topic="CrudJobs.md"/>
+        <toc-element topic="CrudProductHistories.md"/>
+        <toc-element topic="CrudProductHistoryItems.md"/>
+        <toc-element topic="CrudProductionOrders.md"/>
+        <toc-element topic="CrudProducts.md"/>
+        <toc-element topic="CrudQaReasons.md"/>
+        <toc-element topic="CrudUserGroupLinks.md"/>
+        <toc-element topic="CrudUsers.md"/>
+        <toc-element topic="CrudVirtualHandlingUnits.md"/>
+        <toc-element topic="CrudWorkstations.md"/>
     </toc-element>
     <toc-element topic="ProductionProcesses.md">
         <toc-element topic="RegisterProduct.md"/>
