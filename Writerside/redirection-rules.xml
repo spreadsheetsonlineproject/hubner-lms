@@ -153,4 +153,14 @@
         </description>
         <accepts>Crud-Operations.html</accepts>
     </rule>
+    <rule id="6a0c2e3">
+        <description>Created after removal of "Register New Product" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>RegisterProduct.html</accepts>
+    </rule>
+    <rule id="59f9e905">
+        <description>Created after removal of "Production Processes" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>ProductionProcesses.html</accepts>
+    </rule>
 </rules>

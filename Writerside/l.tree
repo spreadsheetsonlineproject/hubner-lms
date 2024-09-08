@@ -27,8 +27,5 @@
         <toc-element topic="TableVirtualHandlingUnits.md"/>
         <toc-element topic="TableWorkstations.md"/>
     </toc-element>
-    <toc-element topic="ProductionProcesses.md">
-        <toc-element topic="RegisterProduct.md"/>
-    </toc-element>
     <toc-element topic="Power-Platform.md"/>
 </instance-profile>
