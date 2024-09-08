@@ -163,4 +163,9 @@
         </description>
         <accepts>ProductionProcesses.html</accepts>
     </rule>
+    <rule id="4c0b09b9">
+        <description>Created after removal of "Empty MD Topic" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Empty-MD-Topic.html</accepts>
+    </rule>
 </rules>
