@@ -1,7 +1,8 @@
 # Groups
 
 Groups represent the different user roles. These groups should be defined by
-responsibility.
+responsibility. [User](TableUsers.md) and [Job](TableJobs.md) are connected
+to these records. Combination of these connections can define the user role.
 
 ## Table Schema
 
