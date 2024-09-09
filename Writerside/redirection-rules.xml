@@ -168,4 +168,15 @@
         </description>
         <accepts>Empty-MD-Topic.html</accepts>
     </rule>
+    <rule id="6e2270b2">
+        <description>Created after removal of "Application Workstation Links" from Hübner Kft. Lifecycle Management
+            System
+        </description>
+        <accepts>TableApplicationWorkstationLink.html</accepts>
+    </rule>
+    <rule id="71171117">
+        <description>Created after removal of "Power Platform" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Power-Platform.html</accepts>
+    </rule>
 </rules>
