@@ -2,6 +2,35 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.5.1
+
+> Updated: **2024-10-13**
+
+1. Applications are completely responsive
+2. Filtering option on the history gallery:
+   1. See only quality related job history
+   2. See history without quality related jobs
+   3. See every history item
+
+## V0.3.4.7
+
+> Updated: **2024-10-13**
+
+1. LMS production app full responsive.
+2. Quality app scale to fit off and orientation locked.
+
+## V0.3.4.6
+
+> Updated: **2024-10-06**
+
+1. Scanner button hide functionality on desktop devices modified.
+
+## V0.3.4.5
+
+> Updated: **2024-10-02**
+
+1. Virtual handling unit is blocked when disassemble happens or profiles are blocked.
+
 ## V0.3.4.4
 
 > Updated: **2024-10-01**
