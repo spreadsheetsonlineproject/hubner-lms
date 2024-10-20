@@ -2,6 +2,14 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.5.2
+
+> Updated: **2024-10-20**
+
+1. Blocking VHU depends on metadata config
+   1. BLOCK_VHU_ON_QA_NOK_CHECK define if the VHU will be blocked after a not OK quality result
+   2. BLOCK_VHU_ON_DISASSEMBLY_PROCESS define if the VHU will be blocked after disassembly
+
 ## V0.3.5.1
 
 > Updated: **2024-10-13**
