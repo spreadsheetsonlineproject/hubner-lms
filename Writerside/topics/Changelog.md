@@ -2,6 +2,12 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.5.3
+
+> Updated: **2024-10-21**
+
+1. Support profile selection by mouse click on profile card checkbox section.
+
 ## V0.3.5.2
 
 > Updated: **2024-10-20**
