@@ -2,6 +2,23 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.6.2
+
+> Updated: **2024-11-27**
+
+1. Applications have new screens to display the structured history.
+2. Items are cross-linked to see every aspect of the history
+
+## V0.3.6.1
+
+> Updated: **2024-10-27**
+
+1. Attachment support for quality inspection.
+2. History handling changed:
+   1. History saved in two levels from this version.
+   2. The first level represents a session when the user pushes the save button.
+   3. The second level is saved records of the selected actions, linked back to the session.
+
 ## V0.3.5.3
 
 > Updated: **2024-10-21**
