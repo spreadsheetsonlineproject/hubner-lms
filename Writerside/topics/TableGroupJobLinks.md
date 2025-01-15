@@ -1,44 +1,26 @@
 # Group Job Links
 
 This is the table where the roles and responsibilities are defined in the
-system. Groups are the user groups where the jobs in this table are assigned to
-them. A job can be assigned for multiple groups and group can have multiple jobs
-of course.
+system. The connection between the [Group](TableGroups.md) and
+the [Job](TableJobs.md) defines what kind of action can be made in the
+production area by the user who is member of the given group.
 
 ## Table Schema
 
-> Table name: **group_job_links**
+> Table name: **LMS Group Job Link**
 
-| Field name |  Key   | Description | Type    | Default value | Required |
-|------------|:------:|-------------|---------|:-------------:|:--------:|
-| job_id     | PK, FK | Job ID      | Integer |       -       |    Y     |
-| group_id   | PK, FK | Group ID    | Integer |       -       |    Y     |
+| Field name | Description                   | Type   | Default value | Required |
+|------------|-------------------------------|--------|:-------------:|:--------:|
+| Group      | Connection to the Group table | Lookup |       -       |    Y     |
+| Job        | Connection to the Job table   | Lookup |       -       |    Y     |
 
-## References
+## Relationships
 
-### Foreign Keys
+| Display Name | Related table | Relationship |
+|--------------|---------------|--------------|
+| Group        | LMS Group     | Many-to-one  |
+| Job          | LMS Job       | Many-to-one  |
 
-1. The [job_id](TableJobs.md) represents the job part of the connection
-2. The [group](TableGroups.md) represents the group part of the connection
+## Keys
 
-## SQL Queries
-
-### MsSQL
-
-```SQL
-CREATE TABLE group_job_links (
-    job_id INT REFERENCES jobs(id),
-    group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
-);
-```
-
-### PostgreSQL
-
-```SQL
-CREATE TABLE group_job_links (
-    job_id INT REFERENCES jobs(id),
-    group_id INT REFERENCES groups(id),
-    PRIMARY KEY (job_id, group_id)
-);
-```
+This table does not have keys.
