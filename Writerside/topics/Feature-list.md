@@ -2,6 +2,15 @@
 
 The Lifecycle Management System capabilities are improved continuously.
 
+## Localized user interface
+
+The applications are available in English and Hungarian languages. The 
+language can be changed in the home screens of the applications. The default 
+language is determined based on the language of the browser.
+
+It is easy to upload new language packages and support any other site of the 
+Hübner group.
+
 ## Detailed history of production processes
 
 The save events of the applications create a history item in the database. 
