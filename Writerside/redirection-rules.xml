@@ -81,4 +81,102 @@
         </description>
         <accepts>TableSchemas.html</accepts>
     </rule>
+    <rule id="483be327">
+        <description>Created after removal of "Users" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>ApiUsers.html</accepts>
+    </rule>
+    <rule id="53e22340">
+        <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>ApiProducts.html</accepts>
+    </rule>
+    <rule id="1ccb8708">
+        <description>Created after removal of "API Endpoints" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>PowerAutomateApiEndpoints.html</accepts>
+    </rule>
+    <rule id="357b998a">
+        <description>Created after removal of "Applications" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudApplications.html</accepts>
+    </rule>
+    <rule id="7f9b1bb">
+        <description>Created after removal of "Group Job Links" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudGroupJobLinks.html</accepts>
+    </rule>
+    <rule id="51e6721e">
+        <description>Created after removal of "Jobs" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudJobs.html</accepts>
+    </rule>
+    <rule id="43b6e9a7">
+        <description>Created after removal of "Product Histories" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudProductHistories.html</accepts>
+    </rule>
+    <rule id="61f8e022">
+        <description>Created after removal of "Product History Items" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudProductHistoryItems.html</accepts>
+    </rule>
+    <rule id="2dabbde2">
+        <description>Created after removal of "Production Orders" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudProductionOrders.html</accepts>
+    </rule>
+    <rule id="4a15e72b">
+        <description>Created after removal of "Products" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudProducts.html</accepts>
+    </rule>
+    <rule id="457daa26">
+        <description>Created after removal of "Quality Reasons" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudQaReasons.html</accepts>
+    </rule>
+    <rule id="3a7ebd2e">
+        <description>Created after removal of "User Group Links" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudUserGroupLinks.html</accepts>
+    </rule>
+    <rule id="27341d24">
+        <description>Created after removal of "Users" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudUsers.html</accepts>
+    </rule>
+    <rule id="3191ceb6">
+        <description>Created after removal of "Virtual Handling Units" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>CrudVirtualHandlingUnits.html</accepts>
+    </rule>
+    <rule id="2bb14032">
+        <description>Created after removal of "Workstations" from Hübner Kft. Lifecycle Management System</description>
+        <accepts>CrudWorkstations.html</accepts>
+    </rule>
+    <rule id="56801c6f">
+        <description>Created after removal of "CRUD Operations" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Crud-Operations.html</accepts>
+    </rule>
+    <rule id="6a0c2e3">
+        <description>Created after removal of "Register New Product" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>RegisterProduct.html</accepts>
+    </rule>
+    <rule id="59f9e905">
+        <description>Created after removal of "Production Processes" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>ProductionProcesses.html</accepts>
+    </rule>
+    <rule id="4c0b09b9">
+        <description>Created after removal of "Empty MD Topic" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Empty-MD-Topic.html</accepts>
+    </rule>
+    <rule id="6e2270b2">
+        <description>Created after removal of "Application Workstation Links" from Hübner Kft. Lifecycle Management
+            System
+        </description>
+        <accepts>TableApplicationWorkstationLink.html</accepts>
+    </rule>
+    <rule id="71171117">
+        <description>Created after removal of "Power Platform" from Hübner Kft. Lifecycle Management System
+        </description>
+        <accepts>Power-Platform.html</accepts>
+    </rule>
 </rules>

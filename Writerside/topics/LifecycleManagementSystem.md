@@ -24,11 +24,10 @@ flow of production and the technologies used in the project.
 
 The project is built with the following technologies:
 
-- MsSQL database server
-- PowerPlatform
-    - PowerApps
-    - PowerAutomate
-    - PowerBI
+- Dataverse
+- PowerApps
+- Power Automate
+- PowerBI
 
 ## Definition of Terms
 
@@ -39,8 +38,3 @@ UI
 : User Interface
 : The graphical representation of the application. This is the place where
 users can interact with the system. They can view and send information.
-
-API
-: Application Programming Interface
-: One of the layers of the system which is responsible for make
-communication between the database and the UI.

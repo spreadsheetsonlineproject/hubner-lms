@@ -1,3 +1,0 @@
-# Power Platform
-
-Start typing here...
