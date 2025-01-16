@@ -2,6 +2,17 @@
 
 The Lifecycle Management System capabilities are improved continuously.
 
+## Power Platform advantages
+
+## Functions
+
+1. Product registration
+2.
+
+## Future
+
+### SAP integration
+
 ## Localized user interface
 
 The applications are available in English and Hungarian languages. The 
