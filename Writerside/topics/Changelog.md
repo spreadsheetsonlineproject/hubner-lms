@@ -2,6 +2,13 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.6.3
+
+> Updated: **2025-01-16**
+
+1. LMS Admin application to manage users, workstations, processes...
+2. Single option in drop down menus is selected by default.
+
 ## V0.3.6.2
 
 > Updated: **2024-11-27**

@@ -8,6 +8,7 @@
                   start-page="LifecycleManagementSystem.md">
 
     <toc-element topic="LifecycleManagementSystem.md"/>
+    <toc-element topic="Power-Platform.md"/>
     <toc-element topic="Feature-list.md"/>
     <toc-element topic="DatabaseSchemasAndRelations.md">
         <toc-element topic="TableApplications.md"/>
