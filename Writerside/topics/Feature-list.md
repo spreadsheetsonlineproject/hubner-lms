@@ -1,102 +1,121 @@
-# Feature list
+# LMS Capabilities
 
-The Lifecycle Management System capabilities are improved continuously.
+The Lifecycle Management System (LMS) is designed to enhance operational
+efficiency, ensure process traceability, and support seamless scalability across
+production environments. Below is an overview of the system's key features,
+aimed at demonstrating its flexibility, adaptability, and potential to optimize
+production workflows.
 
-## Power Platform advantages
+## Frame and Profile Creation
 
-## Functions
+The LMS enables the construction of products by linking multiple profiles into a
+unified frame. Each profile can have technology steps registered and tracked,
+allowing for precise process control. This modular approach ensures efficient
+and consistent production management.
 
-1. Product registration
-2.
+## Quality Inspection
 
-## Future
+The integrated quality assurance module ensures only defect-free products move
+forward in production. Any quality issues flagged during inspection prevent
+process completion until resolved, with the system promptly notifying users of
+identified defects. This mechanism maintains product standards and prevents
+downstream errors.
 
-### SAP integration
+## Repair Capabilities
 
-## Localized user interface
+The repair application empowers trained users to address product issues
+effectively. Users can split frames, replace defective profiles or parts, and
+document repairs to ensure compliance. This feature streamlines issue resolution
+without unnecessary part replacements, minimizing downtime and waste.
 
-The applications are available in English and Hungarian languages. The 
-language can be changed in the home screens of the applications. The default 
-language is determined based on the language of the browser.
+## Mobile Device Support
 
-It is easy to upload new language packages and support any other site of the 
-Hübner group.
+LMS applications are fully responsive and accessible on desktops, tablets, and
+mobile devices. Quality inspectors and repair personnel can perform their tasks
+anywhere on the production floor, enhancing flexibility and reducing reliance on
+static workstations.
 
-## Detailed history of production processes
+## Product History Tracking
 
-The save events of the applications create a history item in the database. 
-These history items store the timestamp of the action with the user and 
-workstation information.
+The system provides a detailed product history view, accessible via mobile
+devices. Shift leaders can verify production accuracy by scanning product
+barcodes, enabling real-time, data-driven decision-making.
 
-As the save events can represent multiple actions through the production 
-process, the changes on the production order, the quality status are stored 
-on other level of the history. The details of changes are linked to a product.
+## Scalable Production Processes
 
-<code-block lang="mermaid">
-mindmap
-  root((Save event))
-    Session History
-        Product 1 history
-          QA Status change
-            From Status
-            To Status
-          Production Order change
-            From PO number
-            To PO number
-        Product 2 history
-          QA Status change
-            From Status
-            To Status
-          Production Order change
-            From PO number
-            To PO number
-</code-block>
+The LMS allows seamless introduction, activation, or deactivation of production
+processes. This flexibility ensures the system can adapt to evolving operational
+needs without disrupting workflows.
 
-## Admin application
+## Role-Based User Access
 
-![home](admin_home_screen.png ':size=50% :align=center')
+The system supports multiple user roles, each with tailored production
+processes. This structured approach simplifies user interactions while
+maintaining scalability, ensuring a secure and efficient experience for every
+user.
 
-The admin application allows the superusers to maintain the Lifecycle 
-Management System and the behaviour of the production applications.
+## Workstation Tracking
 
-### User management
+User actions and workstation details are tracked to provide a complete
+production overview. This feature enables management to monitor product movement
+and identify process bottlenecks.
 
-![users](admin_user_screen.png ':size=50% :align=center')
+## Admin Application
 
-Creating new user and deactivate existing one is available in the user 
-management section of the admin application.
-The users can be assigned to different user roles. These user roles define 
-the user capabilities.
+The admin module simplifies system maintenance by enabling superusers to manage
+users, roles, workstations, and production processes. This centralized control
+supports scalable operations and ensures alignment with organizational needs.
 
-### Role management
+## Attachment Handling
 
-User roles or user groups are the different levels of user capabilities in 
-the system.
+Users can attach photos, documents, or measurement data during production
+processes. This functionality enhances documentation and provides a reference
+for quality assurance and compliance purposes.
 
-### Workstation management
+## Comments Section
 
-### Job management
+A free-text input field allows users to record notes and observations during
+production. This promotes transparency and facilitates communication across
+teams.
 
-### QA Reason management
+## Internationalized Views
 
-### Metadata management
+The LMS supports multiple languages, currently offering English and Hungarian.
+Additional languages can be easily integrated to accommodate global operations
+and diverse teams.
 
-The metadata data table stores key values about the behaviour of certain 
-parts of the applications
+## Future Capabilities
 
-The administrator is able to turn on and off the attachment capabilities, 
-change the product documentation SharePoint folder, the number of 
-attachments, and other key features.
+The Lifecycle Management System (LMS) continues to evolve to meet the growing
+demands of modern production environments. Future enhancements focus on
+improving transparency, efficiency, and compliance, enabling organizations to
+make data-driven decisions and streamline operations.
 
-## Attach file to saved actions
+These upcoming enhancements will reinforce LMS’s position as a robust,
+future-ready solution, driving operational efficiency, compliance, and informed
+decision-making for management teams.
 
-Application allows the user to add images, PDF documents and other digital 
-content to any saved event.
+### Enhanced Reporting
 
-This feature can be very helpful with the quality issues to identify and 
-investigate the problem.
+The integration of Power BI will provide a transparent, interactive, and
+user-friendly reporting interface. This functionality will empower the planning
+and management teams to analyze real-time production data, identify trends, and
+make informed decisions. By visualizing key metrics, the system will facilitate
+better production planning and resource allocation.
 
-## Log in with unique ID
+### Seamless SAP Integration
 
-Users are able to log in the system by scanning a single 2D bar code on 
-their badge.
+Bidirectional integration with SAP will significantly enhance process
+efficiency. Users will interact with a single, unified tool, while the system
+ensures that all necessary data is synchronized between SAP and the LMS.
+Critical information required by SAP will be automatically updated, while other
+data will remain within the Power Platform, ensuring optimal data management
+across platforms.
+
+### Accessory Registration and Compliance Support
+
+For products requiring external accessories such as sensors or cables, the
+system will introduce dedicated functionality to register and validate these
+components. This capability will enhance compliance by ensuring that all
+necessary accessories are accounted for and correctly installed. The accessory
+tracking feature will further support quality assurance and streamline audits.
