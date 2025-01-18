@@ -119,3 +119,7 @@ system will introduce dedicated functionality to register and validate these
 components. This capability will enhance compliance by ensuring that all
 necessary accessories are accounted for and correctly installed. The accessory
 tracking feature will further support quality assurance and streamline audits.
+
+### Digital skill matrix
+
+### Training and Exam role
