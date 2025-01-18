@@ -119,3 +119,19 @@ system will introduce dedicated functionality to register and validate these
 components. This capability will enhance compliance by ensuring that all
 necessary accessories are accounted for and correctly installed. The accessory
 tracking feature will further support quality assurance and streamline audits.
+
+### Digital skill matrix
+
+The digital skill matrix leverages the combination of user roles, production
+processes, and workstation interactions to map an individual’s acquired skills
+and capabilities. This data-driven tool will support management decisions
+regarding employee replacements, promotions, and role adjustments by providing
+clear insights into the workforce’s skill sets.
+
+### Training and Exam role
+
+The system will introduce entry-level roles as prerequisites for advanced
+positions. Members assigned to these roles will be required to validate their
+actions within the system, ensuring accountability. Additionally, the system
+will notify them of any missed actions during the production process, promoting
+continuous learning and operational accuracy. 
