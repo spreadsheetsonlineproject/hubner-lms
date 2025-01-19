@@ -2,6 +2,15 @@
 
 Track changes of the LMS applications and databases.
 
+## V0.3.6.4
+
+> Updated: **2025-01-29**
+
+1. Introducing the `Workstation Current` column in Virtual Handling Unit table
+2. Cloud flow to update the existing VHU rows and set the `Workstation
+   Current` value
+3. Add the `Workstation Current` value update functionality to applications
+
 ## V0.3.6.3
 
 > Updated: **2025-01-16**
@@ -22,9 +31,11 @@ Track changes of the LMS applications and databases.
 
 1. Attachment support for quality inspection.
 2. History handling changed:
-   1. History saved in two levels from this version.
-   2. The first level represents a session when the user pushes the save button.
-   3. The second level is saved records of the selected actions, linked back to the session.
+    1. History saved in two levels from this version.
+    2. The first level represents a session when the user pushes the save
+       button.
+    3. The second level is saved records of the selected actions, linked back to
+       the session.
 
 ## V0.3.5.3
 
@@ -37,8 +48,10 @@ Track changes of the LMS applications and databases.
 > Updated: **2024-10-20**
 
 1. Blocking VHU depends on metadata config
-   1. BLOCK_VHU_ON_QA_NOK_CHECK define if the VHU will be blocked after a not OK quality result
-   2. BLOCK_VHU_ON_DISASSEMBLY_PROCESS define if the VHU will be blocked after disassembly
+    1. BLOCK_VHU_ON_QA_NOK_CHECK define if the VHU will be blocked after a not
+       OK quality result
+    2. BLOCK_VHU_ON_DISASSEMBLY_PROCESS define if the VHU will be blocked after
+       disassembly
 
 ## V0.3.5.1
 
@@ -46,9 +59,9 @@ Track changes of the LMS applications and databases.
 
 1. Applications are completely responsive
 2. Filtering option on the history gallery:
-   1. See only quality related job history
-   2. See history without quality related jobs
-   3. See every history item
+    1. See only quality related job history
+    2. See history without quality related jobs
+    3. See every history item
 
 ## V0.3.4.7
 
@@ -67,7 +80,8 @@ Track changes of the LMS applications and databases.
 
 > Updated: **2024-10-02**
 
-1. Virtual handling unit is blocked when disassemble happens or profiles are blocked.
+1. Virtual handling unit is blocked when disassemble happens or profiles are
+   blocked.
 
 ## V0.3.4.4
 
