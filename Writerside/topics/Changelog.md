@@ -4,7 +4,7 @@ Track changes of the LMS applications and databases.
 
 ## V0.3.6.4
 
-> Updated: **2025-01-29**
+> Updated: **2025-01-19**
 
 1. Introducing the `Workstation Current` column in Virtual Handling Unit table
 2. Cloud flow to update the existing VHU rows and set the `Workstation
